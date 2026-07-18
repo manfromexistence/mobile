@@ -1,0 +1,26 @@
+{
+  "name": "@dx-serializer/cli",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CLI for JSON ↔ DX Compact conversion",
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "bin": {
+    "dx": "bin/dx.mjs"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@dx-serializer/core": "workspace:*",
+    "citty": "^0.2.2",
+    "consola": "^3.4.2"
+  }
+}
