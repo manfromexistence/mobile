@@ -30,7 +30,7 @@ function parseArgs(): BackfillOptions {
 
   if (!options.from || !options.to) {
     console.error(
-      "Usage: npm run backfill-aggregation -- --from=YYYY-MM-DD --to=YYYY-MM-DD [--granularity=hourly|daily|both]",
+      "Usage: npm run backfill-aggregation -- --from=YYYY-MM-DD --to=YYYY-MM-DD [--granularity=hourly|daily|both]"
     );
     process.exit(1);
   }
@@ -83,7 +83,7 @@ async function backfillAggregation() {
       totalInserted += dailyResult.inserted;
       totalErrors += dailyResult.errors;
       console.log(
-        `[Daily Aggregation] Processed: ${dailyResult.processed}, Inserted: ${dailyResult.inserted}, Errors: ${dailyResult.errors}`,
+        `[Daily Aggregation] Processed: ${dailyResult.processed}, Inserted: ${dailyResult.inserted}, Errors: ${dailyResult.errors}`
       );
     }
 
@@ -96,7 +96,7 @@ async function backfillAggregation() {
       totalInserted += hourlyResult.inserted;
       totalErrors += hourlyResult.errors;
       console.log(
-        `[Hourly Aggregation] Processed: ${hourlyResult.processed}, Inserted: ${hourlyResult.inserted}, Errors: ${hourlyResult.errors}`,
+        `[Hourly Aggregation] Processed: ${hourlyResult.processed}, Inserted: ${hourlyResult.inserted}, Errors: ${hourlyResult.errors}`
       );
     }
 

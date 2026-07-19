@@ -13,7 +13,7 @@ import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error";
 
 const assessor = new Assessor(
   process.env.OMNIROUTe_API_KEY ?? process.env.API_KEY ?? "",
-  process.env.OMNIROUTe_BASE_URL ?? "http://localhost:20128/v1",
+  process.env.OMNIROUTe_BASE_URL ?? "http://localhost:20128/v1"
 );
 
 const categorizer = new Categorizer();
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -159,7 +159,7 @@ async function getAllModels(): Promise<Array<{ providerId: string; modelId: stri
 }
 
 async function getModelsForProvider(
-  providerId: string,
+  providerId: string
 ): Promise<Array<{ providerId: string; modelId: string }>> {
   void providerId;
   return getAllModels();

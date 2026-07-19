@@ -282,7 +282,7 @@ export default function A2ADashboardPage() {
           t("smokeStreamSuccessWithTask", {
             taskId: streamTaskId,
             stateSuffix: terminalState ? `, ${t(`state.${terminalState as A2ATaskState}`)}` : "",
-          }),
+          })
         );
       } else {
         setActionMessage(t("smokeStreamNoTaskId"));
@@ -321,7 +321,7 @@ export default function A2ADashboardPage() {
                 <p className="text-xs text-text-muted uppercase">{t(`state.${state}`)}</p>
                 <p className="text-2xl font-semibold mt-1">{status?.tasks?.counts?.[state] || 0}</p>
               </div>
-            ),
+            )
           )}
         </div>
       </Card>
@@ -444,7 +444,7 @@ export default function A2ADashboardPage() {
                   else if (fsmPhase === "execute") fsmBadgeColor = "bg-blue-500/15 text-blue-500";
                   else if (
                     ["code_review", "quality_review", "security", "test", "output_review"].includes(
-                      fsmPhase,
+                      fsmPhase
                     )
                   )
                     fsmBadgeColor = "bg-amber-500/15 text-amber-500";
@@ -521,7 +521,7 @@ export default function A2ADashboardPage() {
             disabled={offset + PAGE_SIZE >= tasksData.total}
             onClick={() =>
               setOffset((current) =>
-                current + PAGE_SIZE < tasksData.total ? current + PAGE_SIZE : current,
+                current + PAGE_SIZE < tasksData.total ? current + PAGE_SIZE : current
               )
             }
           >
@@ -553,7 +553,7 @@ export default function A2ADashboardPage() {
                     metadata: selectedTask.metadata,
                   },
                   null,
-                  2,
+                  2
                 )}
               </code>
             </div>

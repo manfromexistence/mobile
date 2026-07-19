@@ -26,7 +26,7 @@ function useHfSuggestedImageModels(providerId: string): SuggestedHfModel[] {
   // for the "not huggingface" early-return case; switching providers simply
   // stops matching the tag instead of requiring an explicit reset call.
   const [fetched, setFetched] = useState<{ providerId: string; models: SuggestedHfModel[] } | null>(
-    null,
+    null
   );
 
   useEffect(() => {

@@ -33,7 +33,7 @@ export function comboStepModelId(step: unknown): string | null {
  */
 export function promoteModelToFront<T extends StepLike>(
   models: readonly T[] | null | undefined,
-  winningModel: string | null | undefined,
+  winningModel: string | null | undefined
 ): T[] | null {
   if (!Array.isArray(models) || models.length === 0) return null;
   if (typeof winningModel !== "string" || winningModel.length === 0) return null;
@@ -65,14 +65,14 @@ export async function promoteSuccessfulComboModel(
   combo: { id?: unknown; name?: unknown; models?: unknown } | null | undefined,
   winningModel: string | null | undefined,
   settings: Record<string, unknown> | null | undefined,
-  deps: PromoteComboDeps,
+  deps: PromoteComboDeps
 ): Promise<boolean> {
   if (!combo || !settings || !settings.comboAutoPromoteEnabled) return false;
   const comboId = typeof combo.id === "string" ? combo.id : null;
   if (!comboId) return false;
   const reordered = promoteModelToFront(
     Array.isArray(combo.models) ? (combo.models as unknown[]) : null,
-    winningModel,
+    winningModel
   );
   if (!reordered) return false;
   const label = typeof combo.name === "string" ? combo.name : comboId;
@@ -85,7 +85,7 @@ export async function promoteSuccessfulComboModel(
       "COMBO",
       `Failed to promote model "${winningModel}" in combo "${label}": ${
         dbErr?.message || "unknown error"
-      }`,
+      }`
     );
     return false;
   }

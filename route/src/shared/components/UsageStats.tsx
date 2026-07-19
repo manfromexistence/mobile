@@ -106,12 +106,12 @@ export default function UsageStats() {
           return 0;
         });
     },
-    [sortBy, sortOrder],
+    [sortBy, sortOrder]
   );
 
   const sortedModels = useMemo(
     () => sortData(stats?.byModel, stats?.pending?.byModel),
-    [stats?.byModel, stats?.pending?.byModel, sortData],
+    [stats?.byModel, stats?.pending?.byModel, sortData]
   );
   const sortedAccounts = useMemo(() => {
     // For accounts, pendingMap is by connectionId, but dataMap is by accountKey

@@ -60,7 +60,7 @@ export async function POST(request) {
           code: "unsupported_media_type",
         },
       }),
-      { status: 415, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } },
+      { status: 415, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
     );
   }
 
@@ -104,7 +104,7 @@ export async function POST(request) {
               detections: result.detections.length,
             },
           }),
-          { status: 400, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } },
+          { status: 400, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
         );
       }
     }
@@ -137,13 +137,13 @@ export async function POST(request) {
         thresholdMs: resolveKeepaliveThreshold(parsedBody?.model),
         keepaliveFrame: OPENAI_KEEPALIVE_FRAME,
         extraHeaders: { "X-Correlation-Id": reqId },
-      },
+      }
     );
     return withCompressionHeaderEcho(streamedResponse, compressionRequestHeader);
   }
 
   return withCompressionHeaderEcho(
     await handleChat(request, null, parsedBody),
-    compressionRequestHeader,
+    compressionRequestHeader
   );
 }

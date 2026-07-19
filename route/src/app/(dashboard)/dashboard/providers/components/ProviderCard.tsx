@@ -97,7 +97,7 @@ function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>,
+  values?: Record<string, unknown>
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -105,7 +105,7 @@ function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback,
+      fallback
     );
   }
   return fallback;
@@ -117,14 +117,14 @@ function getStatusDisplay(
   warning: number,
   errorCode: string | null | undefined,
   t: ReturnType<typeof useTranslations>,
-  afterConnected?: ReactNode,
+  afterConnected?: ReactNode
 ) {
   const parts: ReactNode[] = [];
   if (connected > 0) {
     parts.push(
       <Badge key="connected" variant="success" size="sm" dot>
         {t("connected", { count: connected })}
-      </Badge>,
+      </Badge>
     );
     if (afterConnected) parts.push(afterConnected);
   }
@@ -132,7 +132,7 @@ function getStatusDisplay(
     parts.push(
       <Badge key="warning" variant="warning" size="sm" dot>
         {t("warningCount", { count: warning })}
-      </Badge>,
+      </Badge>
     );
   }
   if (error > 0) {
@@ -142,7 +142,7 @@ function getStatusDisplay(
     parts.push(
       <Badge key="error" variant="error" size="sm" dot>
         {errText}
-      </Badge>,
+      </Badge>
     );
   }
   if (parts.length === 0) {
@@ -365,7 +365,7 @@ export default function ProviderCard({
                       Number(stats.warning || 0),
                       stats.errorCode,
                       t,
-                      codexServiceTierChip,
+                      codexServiceTierChip
                     )}
                     {stats.expiryStatus === "expired" && (
                       <Badge variant="error" size="sm" dot>

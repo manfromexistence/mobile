@@ -73,7 +73,7 @@ describe("CachePerformance", () => {
           avgLatencyMs={0}
           p95LatencyMs={0}
           totalRequests={0}
-        />,
+        />
       );
       expect(screen.getAllByText("0").length).toBeGreaterThan(0);
     });

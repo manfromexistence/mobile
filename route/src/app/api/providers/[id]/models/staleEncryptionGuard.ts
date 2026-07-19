@@ -18,7 +18,7 @@ const STALE_ENCRYPTION_MESSAGE =
   "Stored API key cannot be decrypted (STORAGE_ENCRYPTION_KEY changed or unset). Re-enter the API key.";
 
 export function buildStaleEncryptionKeyResponse(
-  connection: { credentialDecryptFailed?: unknown } | null | undefined,
+  connection: { credentialDecryptFailed?: unknown } | null | undefined
 ): NextResponse | null {
   if (!connection || connection.credentialDecryptFailed !== true) return null;
 

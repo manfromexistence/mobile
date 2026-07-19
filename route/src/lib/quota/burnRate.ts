@@ -41,7 +41,7 @@ export interface BurnRateResult {
 export function computeBurnRateFromWindow(
   consumedTotal: number,
   windowMs: number,
-  remaining?: number,
+  remaining?: number
 ): BurnRateResult {
   if (consumedTotal <= 0 || windowMs <= 0) {
     return { tokensPerSecond: 0, timeToExhaustionMs: null };

@@ -31,7 +31,7 @@ export const PreviewRequestSchema = z.object({
       z.object({
         role: z.string(),
         content: z.union([z.string(), z.array(z.unknown())]),
-      }),
+      })
     )
     .min(1),
   mode: z
@@ -102,7 +102,7 @@ function buildStep(engine: string, fuzzy?: { enabled: boolean }) {
 function headroomParticipates(
   engineId: string | undefined,
   pipeline: string[] | undefined,
-  mode: CompressionMode,
+  mode: CompressionMode
 ): boolean {
   // An explicit single-engine or pipeline override decides on its own terms:
   // headroom only participates if it is the engine / is named in the pipeline.
@@ -124,7 +124,7 @@ async function dispatchCompression(
     fuzzyDedup?: { enabled: boolean };
     riskGate?: { enabled: boolean };
     quantumLock?: { enabled: boolean };
-  },
+  }
 ) {
   // resolveRiskGate reads `options.riskGate ?? options.config.riskGate`. applyCompressionAsync
   // does not surface a top-level `riskGate` option, so thread it through the synthesized config
@@ -182,7 +182,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -235,7 +235,7 @@ export async function POST(req: Request) {
           ensureEngineBreakdown(result.stats),
           originalTokens,
           compressedTokens,
-          savingsPct,
+          savingsPct
         )
       : [];
     const diff = buildCompressionPreviewDiff(
@@ -243,7 +243,7 @@ export async function POST(req: Request) {
       compressedText,
       result.stats,
       {},
-      heatmapMode as HeatmapMode | undefined,
+      heatmapMode as HeatmapMode | undefined
     );
 
     const encoderComparison = headroomParticipates(engineId, pipeline, effectiveMode)
@@ -317,7 +317,7 @@ export async function POST(req: Request) {
     console.error("[/api/compression/preview]", msg);
     return NextResponse.json(
       { error: "Compression failed", details: sanitizeErrorMessage(msg) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

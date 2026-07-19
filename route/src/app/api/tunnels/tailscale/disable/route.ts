@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       {
         error: error instanceof Error ? error.message : "Failed to disable Tailscale Funnel",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

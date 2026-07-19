@@ -76,7 +76,7 @@ interface ApplyThinkingOptions {
  */
 export function applyThinking(
   request: ThinkingRequest,
-  options: ApplyThinkingOptions = {},
+  options: ApplyThinkingOptions = {}
 ): ThinkingRequest {
   if (!request || typeof request !== "object") return request;
   const out: ThinkingRequest = { ...request };

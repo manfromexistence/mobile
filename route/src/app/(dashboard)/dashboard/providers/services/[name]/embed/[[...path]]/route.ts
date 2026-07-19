@@ -35,49 +35,49 @@ async function handleProxy(request: Request, params: RouteParams): Promise<Respo
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function HEAD(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }
 
 export async function OPTIONS(
   request: Request,
-  { params }: { params: Promise<RouteParams> },
+  { params }: { params: Promise<RouteParams> }
 ): Promise<Response> {
   return handleProxy(request, await params);
 }

@@ -26,7 +26,7 @@ const idParamSchema = z.object({ id: z.string().min(1) });
  */
 export async function POST(
   request: Request,
-  context: { params: Promise<{ id: string }> | { id: string } },
+  context: { params: Promise<{ id: string }> | { id: string } }
 ) {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;

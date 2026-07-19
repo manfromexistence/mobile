@@ -19,7 +19,7 @@ export function parseConfiguredOnlyPreference(value: string | null | undefined):
 }
 
 export function parseProviderDisplayModePreference(
-  value: string | null | undefined,
+  value: string | null | undefined
 ): ProviderDisplayMode | null {
   if (value === "all" || value === "configured" || value === "compact") return value;
 
@@ -42,7 +42,7 @@ export function readConfiguredOnlyPreference(storage: StorageReader | null = get
 
 export function writeConfiguredOnlyPreference(
   enabled: boolean,
-  storage: StorageWriter | null = getBrowserStorage(),
+  storage: StorageWriter | null = getBrowserStorage()
 ) {
   if (!storage) return;
 
@@ -55,12 +55,12 @@ export function writeConfiguredOnlyPreference(
 }
 
 export function readProviderDisplayModePreference(
-  storage: StorageReaderWriter | null = getBrowserStorage(),
+  storage: StorageReaderWriter | null = getBrowserStorage()
 ): ProviderDisplayMode {
   if (!storage) return "all";
 
   const storedMode = parseProviderDisplayModePreference(
-    storage.getItem(PROVIDER_DISPLAY_MODE_STORAGE_KEY),
+    storage.getItem(PROVIDER_DISPLAY_MODE_STORAGE_KEY)
   );
   if (storedMode) return storedMode;
 
@@ -73,7 +73,7 @@ export function readProviderDisplayModePreference(
 
 export function writeProviderDisplayModePreference(
   mode: ProviderDisplayMode,
-  storage: StorageWriter | null = getBrowserStorage(),
+  storage: StorageWriter | null = getBrowserStorage()
 ) {
   if (!storage) return;
 

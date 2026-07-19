@@ -32,7 +32,7 @@ export default function CliComparisonCard({ currentType }: CliComparisonCardProp
                 "flex flex-col gap-2 p-3 rounded-lg",
                 isCurrent
                   ? "bg-primary/10 border border-primary/30"
-                  : "bg-black/[0.02] dark:bg-white/[0.02] border border-transparent",
+                  : "bg-black/[0.02] dark:bg-white/[0.02] border border-transparent"
               )}
             >
               {/* Title */}
@@ -40,7 +40,7 @@ export default function CliComparisonCard({ currentType }: CliComparisonCardProp
                 <span
                   className={cn(
                     "text-xs font-semibold uppercase tracking-wider",
-                    isCurrent ? "text-primary" : "text-text-muted",
+                    isCurrent ? "text-primary" : "text-text-muted"
                   )}
                 >
                   {t(`comparison.${type}.title`)}

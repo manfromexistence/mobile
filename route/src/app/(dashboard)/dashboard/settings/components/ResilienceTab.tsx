@@ -1056,7 +1056,7 @@ export default function ResilienceTab() {
       }
       return fallback;
     },
-    [t],
+    [t]
   );
 
   useEffect(() => {
@@ -1075,7 +1075,7 @@ export default function ResilienceTab() {
         notify.error(
           error instanceof Error
             ? error.message
-            : tx("failedLoadResilience", "Failed to load resilience settings"),
+            : tx("failedLoadResilience", "Failed to load resilience settings")
         );
       } finally {
         if (mounted) setLoading(false);
@@ -1106,7 +1106,7 @@ export default function ResilienceTab() {
       notify.error(
         error instanceof Error
           ? error.message
-          : tx("saveFailed", "Failed to save resilience settings"),
+          : tx("saveFailed", "Failed to save resilience settings")
       );
       throw error;
     } finally {

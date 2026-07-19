@@ -94,13 +94,13 @@ function healthText(
   t: HealthMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>,
+  values?: Record<string, unknown>
 ): string {
   if (typeof t.has === "function" && t.has(key)) return t(key, values);
   if (!values) return fallback;
   return Object.entries(values).reduce(
     (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-    fallback,
+    fallback
   );
 }
 
@@ -113,7 +113,7 @@ function formatDuration(ms: number | null | undefined, t?: HealthMessageTranslat
 
 function formatDate(
   value: string | number | null | undefined,
-  t?: HealthMessageTranslator,
+  t?: HealthMessageTranslator
 ): string {
   if (!value) return t ? healthText(t, "notAvailable", "n/a") : "n/a";
   const date = typeof value === "number" ? new Date(value) : new Date(value);
@@ -160,7 +160,7 @@ function ModelPill({ model }: { model: HealthMatrixModel }) {
         model.status === "degraded" && "border-yellow-500/20 bg-yellow-500/5",
         model.status === "locked" && "border-amber-500/20 bg-amber-500/5",
         model.status === "error" && "border-red-500/20 bg-red-500/5",
-        model.status === "idle" && "border-border bg-bg-subtle/60",
+        model.status === "idle" && "border-border bg-bg-subtle/60"
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -177,7 +177,7 @@ function ModelPill({ model }: { model: HealthMatrixModel }) {
                 requests: model.requests.toLocaleString(),
                 successRate: successRateLabel,
                 latency: formatDuration(model.avgLatencyMs, t),
-              },
+              }
             )}
           </p>
           {model.isLockedOut ? (
@@ -324,7 +324,7 @@ export default function ProviderHealthMatrixCard() {
                 {healthText(
                   t,
                   "providerHealthMatrixDescription",
-                  "Provider × account × model states from breakers, cooldowns, lockouts and logs.",
+                  "Provider × account × model states from breakers, cooldowns, lockouts and logs."
                 )}
               </p>
             </div>
@@ -368,7 +368,7 @@ export default function ProviderHealthMatrixCard() {
               "rounded-lg border px-3 py-2 text-sm transition-colors",
               onlyIssues
                 ? "border-warning/40 bg-warning/10 text-warning"
-                : "border-border bg-bg text-text-muted hover:text-text-main",
+                : "border-border bg-bg text-text-muted hover:text-text-main"
             )}
           >
             {healthText(t, "onlyIssues", "Only issues")}
@@ -418,7 +418,7 @@ export default function ProviderHealthMatrixCard() {
             "Failed to load Provider Health Matrix: {error}",
             {
               error,
-            },
+            }
           )}
         </div>
       ) : null}
@@ -477,7 +477,7 @@ export default function ProviderHealthMatrixCard() {
                             ? healthText(t, "notAvailable", "n/a")
                             : `${provider.successRate}%`,
                         latency: formatDuration(provider.avgLatencyMs, t),
-                      },
+                      }
                     )}
                   </p>
                 </div>

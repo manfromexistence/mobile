@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     if (!rangeParam || !VALID_RANGES.includes(rangeParam as UtilizationTimeRange)) {
       return NextResponse.json(
         { error: "Invalid range. Must be one of: 1h, 24h, 7d, 30d" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 

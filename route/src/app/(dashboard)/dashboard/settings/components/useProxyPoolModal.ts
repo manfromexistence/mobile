@@ -9,12 +9,12 @@ interface UseProxyPoolModalOptions {
     scope: string,
     scopeIds: string,
     proxyId: string,
-    strategy: "round-robin" | "random" | "sticky",
+    strategy: "round-robin" | "random" | "sticky"
   ) => Promise<void>;
   onLoad: (
     scope: string,
     scopeIds: string,
-    proxyId: string,
+    proxyId: string
   ) => Promise<{ members: string[]; strategy: string } | null>;
 }
 

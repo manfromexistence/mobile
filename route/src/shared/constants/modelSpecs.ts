@@ -44,7 +44,7 @@ const BEDROCK_CLAUDE_ALIASES = (...modelIds: string[]) => [
       `bedrock/eu.anthropic.${modelId}`,
       `bedrock/us.anthropic.${modelId}`,
       `bedrock/global.anthropic.${modelId}`,
-    ]),
+    ])
   ),
 ];
 
@@ -560,7 +560,7 @@ export function getAuthoritativeContextWindow(modelId: string | null | undefined
 
 export function getAuthoritativeProviderContextWindow(
   provider: string | null | undefined,
-  modelId: string | null | undefined,
+  modelId: string | null | undefined
 ): number | null {
   if (typeof provider !== "string" || typeof modelId !== "string") return null;
   const key = `${provider}/${modelId}`.toLowerCase();
@@ -580,7 +580,7 @@ export function getAuthoritativeProviderContextWindow(
  */
 export function normalizeThinkingForModel<T extends Record<string, unknown>>(
   body: T,
-  modelId: string,
+  modelId: string
 ): T {
   const thinking = body?.thinking as Record<string, unknown> | undefined;
   if (

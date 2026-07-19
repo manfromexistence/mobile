@@ -78,7 +78,7 @@ export async function GET() {
         reachable: false,
         error: "No container runtime (podman or docker) found on PATH",
       },
-      { status: 503 },
+      { status: 503 }
     );
   }
 

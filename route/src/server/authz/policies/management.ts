@@ -28,7 +28,7 @@ function requestPeerAddress(ctx: PolicyContext): string | null {
   // null → isLoopbackRequest/isPrivateLanRequest return false → fail closed.
   const stamped = resolveStampedPeer(
     ctx.request.headers?.get?.(PEER_IP_HEADER) ?? null,
-    process.env.OMNIROUTE_PEER_STAMP_TOKEN,
+    process.env.OMNIROUTE_PEER_STAMP_TOKEN
   );
   if (stamped) return stamped;
   // Non-middleware callers (tests / direct Node) may carry a real socket peer.
@@ -46,7 +46,7 @@ function requestPeerAddress(ctx: PolicyContext): string | null {
 function isViaProxyRequest(ctx: PolicyContext): boolean {
   return resolveStampedViaProxy(
     ctx.request.headers?.get?.(VIA_PROXY_HEADER) ?? null,
-    process.env.OMNIROUTE_PEER_STAMP_TOKEN,
+    process.env.OMNIROUTE_PEER_STAMP_TOKEN
   );
 }
 
@@ -264,7 +264,7 @@ export const managementPolicy: RoutePolicy = {
         return reject(
           403,
           "AUTH_SCOPE",
-          `Access token scope '${accessVerdict.have}' is insufficient; '${accessVerdict.need}' required.`,
+          `Access token scope '${accessVerdict.have}' is insufficient; '${accessVerdict.need}' required.`
         );
       case "absent":
         break; // no oma_ token → fall through to API-key auth
@@ -296,7 +296,7 @@ export const managementPolicy: RoutePolicy = {
     return reject(
       bearerPresent ? 403 : 401,
       "AUTH_001",
-      bearerPresent ? "Invalid management token" : "Authentication required",
+      bearerPresent ? "Invalid management token" : "Authentication required"
     );
   },
 };

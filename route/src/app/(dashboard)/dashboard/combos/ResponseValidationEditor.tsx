@@ -80,7 +80,7 @@ export function ResponseValidationEditor({
         {tr(
           t,
           "responseValidationHelp",
-          "Fail over to the next target when a 200 OK body fails these checks (assistant content).",
+          "Fail over to the next target when a 200 OK body fails these checks (assistant content)."
         )}
       </p>
 

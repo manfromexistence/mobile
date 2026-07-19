@@ -124,7 +124,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -210,7 +210,7 @@ export async function POST(request: Request) {
     if (!existingConfig.modelProviders.openai) existingConfig.modelProviders.openai = [];
     const openaiProviders = existingConfig.modelProviders.openai;
     const openaiIdx = openaiProviders.findIndex(
-      (p: any) => p && (p.baseUrl === normalizedBaseUrl || p.id === "omniroute"),
+      (p: any) => p && (p.baseUrl === normalizedBaseUrl || p.id === "omniroute")
     );
     if (openaiIdx >= 0) {
       openaiProviders[openaiIdx] = openaiEntry;
@@ -232,7 +232,7 @@ export async function POST(request: Request) {
     if (!existingConfig.modelProviders.anthropic) existingConfig.modelProviders.anthropic = [];
     const anthropicProviders = existingConfig.modelProviders.anthropic;
     const anthropicIdx = anthropicProviders.findIndex(
-      (p: any) => p && p.baseUrl === normalizedBaseUrl,
+      (p: any) => p && p.baseUrl === normalizedBaseUrl
     );
     if (anthropicIdx >= 0) {
       anthropicProviders[anthropicIdx] = anthropicEntry;
@@ -315,7 +315,7 @@ export async function DELETE(request: Request) {
     for (const type of providerTypes) {
       if (Array.isArray(existingConfig.modelProviders?.[type])) {
         existingConfig.modelProviders[type] = existingConfig.modelProviders[type].filter(
-          (p: any) => !p.name?.includes("OmniRoute") && p.id !== "omniroute",
+          (p: any) => !p.name?.includes("OmniRoute") && p.id !== "omniroute"
         );
         // Remove empty provider arrays
         if (existingConfig.modelProviders[type].length === 0) {

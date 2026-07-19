@@ -238,14 +238,14 @@ export function sanitizePII(text: string, isStreaming = false): SanitizeResult {
   if (detections.length > 0) {
     if (mode === "warn") {
       console.warn(
-        `[PII] Detected PII in response: ${detections.map((d) => `${d.pattern}(${d.count})`).join(", ")}`,
+        `[PII] Detected PII in response: ${detections.map((d) => `${d.pattern}(${d.count})`).join(", ")}`
       );
     } else if (mode === "block") {
       // Log the matched pattern types server-side, but never put them in the
       // thrown message — it can surface to the client via controller.error
       // (Hard Rule #12: no internal detail in response/stream errors).
       console.warn(
-        `[PII] Blocked response due to PII detection: ${detections.map((d) => d.pattern).join(", ")}`,
+        `[PII] Blocked response due to PII detection: ${detections.map((d) => d.pattern).join(", ")}`
       );
       throw new Error("[PII] Blocked response due to PII detection");
     }

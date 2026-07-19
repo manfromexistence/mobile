@@ -116,7 +116,7 @@ export default function AddCompatibleProviderModal({
       { value: "audio-speech", label: t("audioSpeech") },
       { value: "images-generations", label: t("imagesGenerations") },
     ],
-    [t],
+    [t]
   );
 
   useEffect(() => {
@@ -166,7 +166,7 @@ export default function AddCompatibleProviderModal({
   const chatPathHint = mode === "cc" ? t("ccCompatibleChatPathHint") : t("chatPathHint");
   const advancedId = `advanced-settings-${mode}`;
   const hasRequiredFields = Boolean(
-    formData.name.trim() && formData.prefix.trim() && formData.baseUrl.trim(),
+    formData.name.trim() && formData.prefix.trim() && formData.baseUrl.trim()
   );
   const canValidate = Boolean(checkKey.trim() && formData.baseUrl.trim());
 

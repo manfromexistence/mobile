@@ -90,7 +90,7 @@ export function getComboForecastUsageRows(opts: {
        FROM call_logs
        WHERE ${conditions.join(" AND ")}
        GROUP BY combo_name, executionKey, combo_step_id, provider, model, requested_model, connection_id
-       ORDER BY combo_name ASC, requests DESC`,
+       ORDER BY combo_name ASC, requests DESC`
     )
     .all(params) as ComboForecastUsageSqlRow[];
 

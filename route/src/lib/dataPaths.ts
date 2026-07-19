@@ -101,7 +101,7 @@ export function resolveWritableDataDir({ isCloud = false }: { isCloud?: boolean 
     if (code === "EACCES" || code === "EPERM") {
       const fallback = getDefaultDataDir();
       console.warn(
-        `[DATA_DIR] '${resolved}' is not writable (${code}) → falling back to '${fallback}'`,
+        `[DATA_DIR] '${resolved}' is not writable (${code}) → falling back to '${fallback}'`
       );
       return fallback;
     }

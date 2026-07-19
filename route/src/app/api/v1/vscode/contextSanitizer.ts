@@ -109,7 +109,7 @@ function isSensitivePath(path: string): boolean {
 function collectExplicitPaths(
   value: unknown,
   parentKey = "",
-  paths = new Set<string>(),
+  paths = new Set<string>()
 ): Set<string> {
   if (Array.isArray(value)) {
     for (const item of value) {
@@ -154,7 +154,7 @@ function sanitizeString(
   value: string,
   explicitPaths: Set<string>,
   audit: VscodeContextSanitizerAudit,
-  parentKey = "",
+  parentKey = ""
 ) {
   let changed = false;
   let sanitized = value.replace(IMPLICIT_TEXT_BLOCK_PATTERN, (block, leadingNewline = "") => {
@@ -183,7 +183,7 @@ function sanitizeValue(
   value: unknown,
   explicitPaths: Set<string>,
   audit: VscodeContextSanitizerAudit,
-  parentKey = "",
+  parentKey = ""
 ): { value: unknown; changed: boolean } {
   if (typeof value === "string") {
     return sanitizeString(value, explicitPaths, audit, parentKey);

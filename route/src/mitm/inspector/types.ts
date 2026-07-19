@@ -1,11 +1,7 @@
 import { z } from "zod";
 
 export type CaptureSource =
-  | "agent-bridge"
-  | "custom-host"
-  | "http-proxy"
-  | "system-proxy"
-  | "tproxy";
+  "agent-bridge" | "custom-host" | "http-proxy" | "system-proxy" | "tproxy";
 export type DetectedKind = "llm" | "app" | "unknown";
 
 export interface InterceptedRequest {

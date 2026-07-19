@@ -79,7 +79,7 @@ export function setReasoningCache(
   provider: string,
   model: string,
   reasoning: string,
-  ttlMs: number = DEFAULT_TTL_MS,
+  ttlMs: number = DEFAULT_TTL_MS
 ): void {
   if (reasoning.length > MAX_ENTRY_BYTES) {
     reasoning = reasoning.slice(0, MAX_ENTRY_BYTES);
@@ -91,7 +91,7 @@ export function setReasoningCache(
   db.prepare(
     `INSERT OR REPLACE INTO reasoning_cache
        (tool_call_id, provider, model, reasoning, char_count, created_at, expires_at)
-     VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`,
+     VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`
   ).run(toolCallId, provider, model, reasoning, charCount, expiresAt);
 }
 
@@ -100,13 +100,13 @@ export function setReasoningCache(
  * Returns null if not found or expired.
  */
 export function getReasoningCache(
-  toolCallId: string,
+  toolCallId: string
 ): { reasoning: string; provider: string; model: string } | null {
   const db = getDbInstance();
   const row = db
     .prepare(
       `SELECT reasoning, provider, model FROM reasoning_cache
-       WHERE tool_call_id = ? AND ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')`,
+       WHERE tool_call_id = ? AND ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')`
     )
     .get(toolCallId) as { reasoning: string; provider: string; model: string } | undefined;
 
@@ -159,7 +159,7 @@ export function getReasoningCacheStats(): ReasoningCacheStats {
   const totals = db
     .prepare(
       `SELECT COUNT(*) as total_entries, COALESCE(SUM(char_count), 0) as total_chars
-       FROM reasoning_cache WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')`,
+       FROM reasoning_cache WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')`
     )
     .get() as { total_entries: number; total_chars: number };
 
@@ -168,7 +168,7 @@ export function getReasoningCacheStats(): ReasoningCacheStats {
     .prepare(
       `SELECT provider, COUNT(*) as entries, COALESCE(SUM(char_count), 0) as chars
        FROM reasoning_cache WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')
-       GROUP BY provider ORDER BY entries DESC`,
+       GROUP BY provider ORDER BY entries DESC`
     )
     .all() as { provider: string; entries: number; chars: number }[];
 
@@ -182,7 +182,7 @@ export function getReasoningCacheStats(): ReasoningCacheStats {
     .prepare(
       `SELECT model, COUNT(*) as entries, COALESCE(SUM(char_count), 0) as chars
        FROM reasoning_cache WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now')
-       GROUP BY model ORDER BY entries DESC`,
+       GROUP BY model ORDER BY entries DESC`
     )
     .all() as { model: string; entries: number; chars: number }[];
 
@@ -195,14 +195,14 @@ export function getReasoningCacheStats(): ReasoningCacheStats {
   const oldest = db
     .prepare(
       `SELECT created_at FROM reasoning_cache
-       WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now') ORDER BY created_at ASC LIMIT 1`,
+       WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now') ORDER BY created_at ASC LIMIT 1`
     )
     .get() as { created_at: string } | undefined;
 
   const newest = db
     .prepare(
       `SELECT created_at FROM reasoning_cache
-       WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now') ORDER BY created_at DESC LIMIT 1`,
+       WHERE ${EXPIRES_AT_EPOCH_SQL} > unixepoch('now') ORDER BY created_at DESC LIMIT 1`
     )
     .get() as { created_at: string } | undefined;
 
@@ -227,7 +227,7 @@ export function getReasoningCacheEntries(
     offset?: number;
     provider?: string;
     model?: string;
-  } = {},
+  } = {}
 ): ReasoningCacheEntry[] {
   const db = getDbInstance();
   const limit = Math.min(opts.limit ?? 50, 200);
@@ -252,7 +252,7 @@ export function getReasoningCacheEntries(
       `SELECT tool_call_id, provider, model, reasoning, char_count, created_at, expires_at
        FROM reasoning_cache ${where}
        ORDER BY created_at DESC
-       LIMIT ? OFFSET ?`,
+       LIMIT ? OFFSET ?`
     )
     .all(...params, limit, offset) as {
     tool_call_id: string;

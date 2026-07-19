@@ -55,7 +55,7 @@ function extractJwtEmail(idToken: string): string | null {
 
 function extractCodexAccountId(
   idToken: string,
-  tokensAccountId: string | undefined,
+  tokensAccountId: string | undefined
 ): string | null {
   if (tokensAccountId && tokensAccountId.trim()) return tokensAccountId.trim();
   const payload = decodeJwtPayload(idToken);
@@ -118,7 +118,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
     throw new CodexAuthFileError(
       "Not a Codex auth.json — unexpected auth_mode value",
       400,
-      "invalid_auth_file",
+      "invalid_auth_file"
     );
   }
 
@@ -131,7 +131,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
     throw new CodexAuthFileError(
       "id_token is missing or empty in the auth.json",
       400,
-      "missing_id_token",
+      "missing_id_token"
     );
   }
 
@@ -139,7 +139,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
     throw new CodexAuthFileError(
       "access_token is missing or empty in the auth.json",
       400,
-      "missing_access_token",
+      "missing_access_token"
     );
   }
 
@@ -147,7 +147,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
     throw new CodexAuthFileError(
       "refresh_token is missing or empty in the auth.json",
       400,
-      "missing_refresh_token",
+      "missing_refresh_token"
     );
   }
 
@@ -158,7 +158,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
     throw new CodexAuthFileError(
       "Unable to derive account_id from the auth.json tokens",
       400,
-      "missing_account_id",
+      "missing_account_id"
     );
   }
 
@@ -177,7 +177,7 @@ export function parseAndValidateCodexAuth(raw: unknown): ParsedCodexAuth {
 
 export async function createConnectionFromAuthFile(
   parsed: ParsedCodexAuth,
-  options: CreateConnectionOptions,
+  options: CreateConnectionOptions
 ): Promise<{ connection: JsonRecord; created: boolean }> {
   const existing = await findExistingCodexConnection(parsed.accountId, parsed.userId);
 
@@ -186,7 +186,7 @@ export async function createConnectionFromAuthFile(
       throw new CodexAuthFileError(
         "A Codex connection for this account already exists. Pass overwriteExisting: true to replace it.",
         409,
-        "duplicate_account",
+        "duplicate_account"
       );
     }
 
@@ -267,25 +267,25 @@ export async function createConnectionFromAuthFile(
 // (different) userId; if none do, they are legacy records and we dedup with the first.
 function pickCodexConnectionForUser(
   workspaceMatches: JsonRecord[],
-  userId: string,
+  userId: string
 ): JsonRecord | null {
   const exact = workspaceMatches.find(
-    (c) => toNonEmptyString(toRecord(c.providerSpecificData).chatgptUserId) === userId,
+    (c) => toNonEmptyString(toRecord(c.providerSpecificData).chatgptUserId) === userId
   );
   if (exact) return exact;
   const anyHasStoredUserId = workspaceMatches.some(
-    (c) => toNonEmptyString(toRecord(c.providerSpecificData).chatgptUserId) !== null,
+    (c) => toNonEmptyString(toRecord(c.providerSpecificData).chatgptUserId) !== null
   );
   return anyHasStoredUserId ? null : workspaceMatches[0];
 }
 
 async function findExistingCodexConnection(
   accountId: string,
-  userId: string | null,
+  userId: string | null
 ): Promise<JsonRecord | null> {
   const connections = await getProviderConnections({ provider: "codex" });
   const workspaceMatches = (connections as JsonRecord[]).filter(
-    (c) => toNonEmptyString(toRecord(c.providerSpecificData).workspaceId) === accountId,
+    (c) => toNonEmptyString(toRecord(c.providerSpecificData).workspaceId) === accountId
   );
   if (workspaceMatches.length === 0) return null;
   // No incoming userId → legacy accountId-only dedup with the first workspace match.

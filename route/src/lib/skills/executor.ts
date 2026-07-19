@@ -37,7 +37,7 @@ class SkillExecutor {
   async execute(
     skillName: string,
     input: Record<string, unknown>,
-    context: { apiKeyId: string; sessionId?: string },
+    context: { apiKeyId: string; sessionId?: string }
   ): Promise<SkillExecution> {
     const settings = await getSettings();
     if (settings.skillsEnabled === false) {
@@ -62,7 +62,7 @@ class SkillExecutor {
     try {
       db.prepare(
         `INSERT INTO skill_executions (id, skill_id, api_key_id, session_id, input, status, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
       ).run(
         executionId,
         skill.id,
@@ -70,7 +70,7 @@ class SkillExecutor {
         context.sessionId || null,
         JSON.stringify(input),
         SkillStatus.RUNNING,
-        new Date().toISOString(),
+        new Date().toISOString()
       );
 
       const handler = this.handlers.get(skill.handler);
@@ -84,7 +84,7 @@ class SkillExecutor {
 
       try {
         const result = await this.executeWithTimeout(
-          handler(input, { apiKeyId: context.apiKeyId, sessionId: context.sessionId || "" }),
+          handler(input, { apiKeyId: context.apiKeyId, sessionId: context.sessionId || "" })
         );
         output = result;
       } catch (err) {
@@ -95,7 +95,7 @@ class SkillExecutor {
       const durationMs = Date.now() - startTime;
 
       db.prepare(
-        `UPDATE skill_executions SET output = ?, status = ?, error_message = ?, duration_ms = ? WHERE id = ?`,
+        `UPDATE skill_executions SET output = ?, status = ?, error_message = ?, duration_ms = ? WHERE id = ?`
       ).run(output ? JSON.stringify(output) : null, status, errorMessage, durationMs, executionId);
 
       log.info("skills.executor.complete", {
@@ -121,7 +121,7 @@ class SkillExecutor {
       const errorMessage = err instanceof Error ? err.message : String(err);
 
       db.prepare(
-        `UPDATE skill_executions SET status = ?, error_message = ?, duration_ms = ? WHERE id = ?`,
+        `UPDATE skill_executions SET status = ?, error_message = ?, duration_ms = ? WHERE id = ?`
       ).run(SkillStatus.ERROR, errorMessage, durationMs, executionId);
 
       throw err;
@@ -132,7 +132,7 @@ class SkillExecutor {
     return Promise.race([
       promise,
       new Promise<T>((_, reject) =>
-        setTimeout(() => reject(new Error("Skill execution timed out")), this.timeout),
+        setTimeout(() => reject(new Error("Skill execution timed out")), this.timeout)
       ),
     ]);
   }
@@ -161,7 +161,7 @@ class SkillExecutor {
     const rows = apiKeyId
       ? db
           .prepare(
-            "SELECT * FROM skill_executions WHERE api_key_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?",
+            "SELECT * FROM skill_executions WHERE api_key_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?"
           )
           .all(apiKeyId, limit, offset)
       : db

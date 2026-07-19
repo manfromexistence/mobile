@@ -49,8 +49,8 @@ describe("phase-1d extractions (#3501)", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>
-        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response),
-      ),
+        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response)
+      )
     );
     vi.stubGlobal("localStorage", {
       getItem: () => null,
@@ -88,7 +88,7 @@ describe("phase-1d extractions (#3501)", () => {
         onRetest={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
-      />,
+      />
     );
     expect(c).toBeDefined();
   });
@@ -114,7 +114,7 @@ describe("phase-1d extractions (#3501)", () => {
         onRetest={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
-      />,
+      />
     );
     expect(c).toBeDefined();
   });
@@ -141,7 +141,7 @@ describe("phase-1d extractions (#3501)", () => {
         onRetest={vi.fn()}
         onEdit={vi.fn()}
         onDelete={vi.fn()}
-      />,
+      />
     );
     expect(c).toBeDefined();
   });
@@ -156,7 +156,7 @@ describe("phase-1d extractions (#3501)", () => {
         effectiveModelPreserveDeveloper={() => true}
         getUpstreamHeadersRecord={() => ({})}
         onCompatPatch={vi.fn()}
-      />,
+      />
     );
     expect(c).toBeDefined();
   });
@@ -171,7 +171,7 @@ describe("phase-1d extractions (#3501)", () => {
         onCompatPatch={vi.fn()}
         compact={true}
         disabled={true}
-      />,
+      />
     );
     expect(c).toBeDefined();
   });
@@ -180,14 +180,14 @@ describe("phase-1d extractions (#3501)", () => {
 
   it("SiliconFlowEndpointModal mounts when isOpen=false (renders nothing visible)", () => {
     const c = renderComponent(
-      <SiliconFlowEndpointModal isOpen={false} onSelect={vi.fn()} onClose={vi.fn()} />,
+      <SiliconFlowEndpointModal isOpen={false} onSelect={vi.fn()} onClose={vi.fn()} />
     );
     expect(c).toBeDefined();
   });
 
   it("SiliconFlowEndpointModal mounts when isOpen=true without throwing", () => {
     const c = renderComponent(
-      <SiliconFlowEndpointModal isOpen={true} onSelect={vi.fn()} onClose={vi.fn()} />,
+      <SiliconFlowEndpointModal isOpen={true} onSelect={vi.fn()} onClose={vi.fn()} />
     );
     expect(c).toBeDefined();
   });

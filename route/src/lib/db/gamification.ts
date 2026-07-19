@@ -115,7 +115,7 @@ export function updateScore(apiKeyId: string, scope: string, points: number): vo
       `INSERT INTO leaderboard (api_key_id, scope, score, updated_at)
      VALUES (?, ?, ?, datetime('now'))
      ON CONFLICT(api_key_id, scope)
-     DO UPDATE SET score = score + excluded.score, updated_at = datetime('now')`,
+     DO UPDATE SET score = score + excluded.score, updated_at = datetime('now')`
     )
     .run(apiKeyId, scope, points);
 }
@@ -135,7 +135,7 @@ export function getTopN(scope: string, limit: number, offset: number = 0): Leade
   const rows = db()
     .prepare(
       `SELECT api_key_id, scope, score, updated_at FROM leaderboard
-     WHERE scope = ? ORDER BY score DESC LIMIT ? OFFSET ?`,
+     WHERE scope = ? ORDER BY score DESC LIMIT ? OFFSET ?`
     )
     .all(scope, limit, offset) as Array<{
     api_key_id: string;
@@ -157,7 +157,7 @@ export function addXp(apiKeyId: string, action: string, amount: number, metadata
   db()
     .prepare(
       `INSERT INTO xp_audit_log (api_key_id, action, xp_earned, metadata)
-     VALUES (?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?)`
     )
     .run(apiKeyId, action, amount, metadata ?? null);
 
@@ -166,7 +166,7 @@ export function addXp(apiKeyId: string, action: string, amount: number, metadata
       `INSERT INTO user_levels (api_key_id, total_xp, current_level, updated_at)
      VALUES (?, ?, ?, datetime('now'))
      ON CONFLICT(api_key_id)
-     DO UPDATE SET total_xp = total_xp + excluded.total_xp, updated_at = datetime('now')`,
+     DO UPDATE SET total_xp = total_xp + excluded.total_xp, updated_at = datetime('now')`
     )
     .run(apiKeyId, amount, calculateLevel(amount));
 }
@@ -174,7 +174,7 @@ export function addXp(apiKeyId: string, action: string, amount: number, metadata
 export function getXp(apiKeyId: string): UserLevelRow | null {
   const row = db()
     .prepare(
-      `SELECT api_key_id, total_xp, current_level, updated_at FROM user_levels WHERE api_key_id = ?`,
+      `SELECT api_key_id, total_xp, current_level, updated_at FROM user_levels WHERE api_key_id = ?`
     )
     .get(apiKeyId) as
     | {
@@ -199,7 +199,7 @@ export function updateLevel(apiKeyId: string, level: number): void {
       `INSERT INTO user_levels (api_key_id, total_xp, current_level, updated_at)
      VALUES (?, 0, ?, datetime('now'))
      ON CONFLICT(api_key_id)
-     DO UPDATE SET current_level = ?, updated_at = datetime('now')`,
+     DO UPDATE SET current_level = ?, updated_at = datetime('now')`
     )
     .run(apiKeyId, level, level);
 }
@@ -234,7 +234,7 @@ export function getBadges(apiKeyId: string): UserBadge[] {
             bd.name, bd.description, bd.icon, bd.category, bd.rarity
      FROM user_badges ub
      JOIN badge_definitions bd ON bd.id = ub.badge_id
-     WHERE ub.api_key_id = ?`,
+     WHERE ub.api_key_id = ?`
     )
     .all(apiKeyId) as Array<{
     api_key_id: string;
@@ -297,7 +297,7 @@ export function getAggregateXp(): UserLevelRow {
       `SELECT COALESCE(SUM(total_xp), 0) AS total_xp,
               COALESCE(MAX(current_level), 1) AS current_level,
               MAX(updated_at) AS updated_at
-       FROM user_levels`,
+       FROM user_levels`
     )
     .get() as { total_xp: number; current_level: number; updated_at: string | null };
   return {
@@ -319,7 +319,7 @@ export function getAllEarnedBadges(): UserBadge[] {
               bd.name, bd.description, bd.icon, bd.category, bd.rarity
        FROM user_badges ub
        JOIN badge_definitions bd ON bd.id = ub.badge_id
-       GROUP BY ub.badge_id`,
+       GROUP BY ub.badge_id`
     )
     .all() as Array<{
     badge_id: string;
@@ -349,7 +349,7 @@ export function transferTokens(
   toId: string,
   amount: number,
   reason: string,
-  idempotencyKey: string,
+  idempotencyKey: string
 ): { success: boolean; error?: string } {
   // Atomic transaction: balance check + insert
   const instance = getDbInstance();
@@ -369,7 +369,7 @@ export function transferTokens(
     instance
       .prepare(
         `INSERT INTO token_ledger (from_api_key_id, to_api_key_id, amount, reason, idempotency_key)
-         VALUES (?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?)`
       )
       .run(fromId, toId, amount, reason, idempotencyKey);
 
@@ -394,7 +394,7 @@ export function getHistory(apiKeyId: string, limit: number): TokenLedgerEntry[] 
     .prepare(
       `SELECT * FROM token_ledger
      WHERE from_api_key_id = ? OR to_api_key_id = ?
-     ORDER BY created_at DESC LIMIT ?`,
+     ORDER BY created_at DESC LIMIT ?`
     )
     .all(apiKeyId, apiKeyId, limit) as Array<{
     id: number;
@@ -424,12 +424,12 @@ export function createInviteToken(
   tokenHash: string,
   createdBy: string,
   serverUrl?: string,
-  maxUses?: number,
+  maxUses?: number
 ): void {
   db()
     .prepare(
       `INSERT INTO invite_tokens (id, code, token_hash, created_by, server_url, max_uses)
-     VALUES (?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?)`
     )
     .run(id, code, tokenHash, createdBy, serverUrl ?? null, maxUses ?? 1);
 }
@@ -473,7 +473,7 @@ export function redeemInvite(code: string, usedBy: string): boolean {
      SET use_count = use_count + 1, used_by = ?
      WHERE code = ? AND revoked_at IS NULL
        AND use_count < max_uses
-       AND (expires_at IS NULL OR expires_at > datetime('now'))`,
+       AND (expires_at IS NULL OR expires_at > datetime('now'))`
     )
     .run(usedBy, code);
   return result.changes > 0;
@@ -500,7 +500,7 @@ export function connectServer(id: string, name: string, url: string, apiKeyHash:
   db()
     .prepare(
       `INSERT OR REPLACE INTO community_servers (id, name, url, api_key_hash)
-     VALUES (?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?)`
     )
     .run(id, name, url, apiKeyHash);
 }
@@ -513,7 +513,7 @@ export function disconnectServer(id: string): void {
 export function listServers(): Omit<CommunityServer, "apiKeyHash">[] {
   const rows = db()
     .prepare(
-      `SELECT id, name, url, connected_at, last_sync_at, status, error_message FROM community_servers`,
+      `SELECT id, name, url, connected_at, last_sync_at, status, error_message FROM community_servers`
     )
     .all() as Array<{
     id: string;
@@ -541,7 +541,7 @@ export function listServers(): Omit<CommunityServer, "apiKeyHash">[] {
 export function getLeaderboardNeighbors(
   apiKeyId: string,
   scope: string,
-  radius: number = 5,
+  radius: number = 5
 ): {
   above: Array<{ apiKeyId: string; score: number }>;
   below: Array<{ apiKeyId: string; score: number }>;
@@ -558,7 +558,7 @@ export function getLeaderboardNeighbors(
     .prepare(
       `SELECT api_key_id, score FROM leaderboard
        WHERE scope = ? AND score > ?
-       ORDER BY score ASC LIMIT ?`,
+       ORDER BY score ASC LIMIT ?`
     )
     .all(scope, scoreRow.score, radius) as Array<{ api_key_id: string; score: number }>;
 
@@ -566,7 +566,7 @@ export function getLeaderboardNeighbors(
     .prepare(
       `SELECT api_key_id, score FROM leaderboard
        WHERE scope = ? AND score < ?
-       ORDER BY score DESC LIMIT ?`,
+       ORDER BY score DESC LIMIT ?`
     )
     .all(scope, scoreRow.score, radius) as Array<{ api_key_id: string; score: number }>;
 
@@ -602,7 +602,7 @@ export function rotateLeaderboardScope(scope: "weekly" | "monthly"): void {
   // Step 2: INSERT with parameters (no string interpolation)
   if (rows.length > 0) {
     const insert = d.prepare(
-      "INSERT OR IGNORE INTO leaderboard (api_key_id, scope, score, updated_at) VALUES (?, ?, ?, ?)",
+      "INSERT OR IGNORE INTO leaderboard (api_key_id, scope, score, updated_at) VALUES (?, ?, ?, ?)"
     );
     for (const row of rows) {
       insert.run(row.api_key_id, archiveSuffix, row.score, row.updated_at);

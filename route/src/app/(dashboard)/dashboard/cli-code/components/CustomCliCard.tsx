@@ -42,13 +42,13 @@ export default function CustomCliCard({
         return fallback;
       }
     },
-    [t],
+    [t]
   );
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [cliName, setCliName] = useState("Custom CLI");
   const [defaultModel, setDefaultModel] = useState("");
   const [selectedApiKeyId, setSelectedApiKeyId] = useState(() =>
-    apiKeys?.length > 0 ? apiKeys[0].id : "",
+    apiKeys?.length > 0 ? apiKeys[0].id : ""
   );
   const [aliasMappings, setAliasMappings] = useState<CustomCliMappingRow[]>([]);
   const effectiveSelectedApiKeyId = selectedApiKeyId || apiKeys?.[0]?.id || "";
@@ -72,7 +72,7 @@ export default function CustomCliCard({
         defaultModel: effectiveDefaultModel,
         aliasMappings,
       }),
-    [aliasMappings, baseUrlWithV1, cliName, effectiveDefaultModel, keyToUse],
+    [aliasMappings, baseUrlWithV1, cliName, effectiveDefaultModel, keyToUse]
   );
 
   const jsonConfig = useMemo(
@@ -84,7 +84,7 @@ export default function CustomCliCard({
         defaultModel: effectiveDefaultModel,
         aliasMappings,
       }),
-    [aliasMappings, baseUrlWithV1, cliName, effectiveDefaultModel, keyToUse],
+    [aliasMappings, baseUrlWithV1, cliName, effectiveDefaultModel, keyToUse]
   );
 
   const handleCopy = async (text: string, field: string) => {
@@ -106,7 +106,7 @@ export default function CustomCliCard({
 
   const handleUpdateMapping = (id: string, field: "alias" | "model", value: string) => {
     setAliasMappings((prev) =>
-      prev.map((mapping) => (mapping.id === id ? { ...mapping, [field]: value } : mapping)),
+      prev.map((mapping) => (mapping.id === id ? { ...mapping, [field]: value } : mapping))
     );
   };
 
@@ -155,7 +155,7 @@ export default function CustomCliCard({
               <p className="mt-1 text-xs opacity-90">
                 {translateOrFallback(
                   "customCliBuilderDescription",
-                  "Generate env vars and JSON snippets for any CLI or SDK that accepts an OpenAI-compatible base URL, API key, and model ID.",
+                  "Generate env vars and JSON snippets for any CLI or SDK that accepts an OpenAI-compatible base URL, API key, and model ID."
                 )}
               </p>
             </div>
@@ -171,7 +171,7 @@ export default function CustomCliCard({
                 <p className="text-xs text-yellow-700/80 dark:text-yellow-300/80">
                   {translateOrFallback(
                     "customCliNoModels",
-                    "Connect at least one provider to populate the model selectors.",
+                    "Connect at least one provider to populate the model selectors."
                   )}
                 </p>
               </div>
@@ -215,7 +215,7 @@ export default function CustomCliCard({
                 <p className="mt-2 text-xs text-text-muted">
                   {translateOrFallback(
                     "customCliDefaultModelHelp",
-                    "Use any OmniRoute model ID or combo. Most OpenAI-compatible CLIs only need the /v1 base URL plus a model string.",
+                    "Use any OmniRoute model ID or combo. Most OpenAI-compatible CLIs only need the /v1 base URL plus a model string."
                   )}
                 </p>
               </div>
@@ -244,7 +244,7 @@ export default function CustomCliCard({
                 <p className="mt-2 text-xs text-text-muted">
                   {translateOrFallback(
                     "customCliKeyHelper",
-                    "For local installs OmniRoute can use sk_omniroute. In cloud mode, pick one of your management API keys.",
+                    "For local installs OmniRoute can use sk_omniroute. In cloud mode, pick one of your management API keys."
                   )}
                 </p>
               </div>
@@ -259,7 +259,7 @@ export default function CustomCliCard({
                   <p className="text-xs text-text-muted mt-1">
                     {translateOrFallback(
                       "customCliAliasMappingsHelp",
-                      "Optional helper aliases for wrapper scripts or config files that want stable shorthand names.",
+                      "Optional helper aliases for wrapper scripts or config files that want stable shorthand names."
                     )}
                   </p>
                 </div>
@@ -273,7 +273,7 @@ export default function CustomCliCard({
                 <div className="rounded-lg border border-dashed border-border p-4 text-xs text-text-muted">
                   {translateOrFallback(
                     "customCliNoMappings",
-                    "No alias mappings yet. Add one if your wrapper or team scripts use stable short names.",
+                    "No alias mappings yet. Add one if your wrapper or team scripts use stable short names."
                   )}
                 </div>
               ) : (
@@ -289,7 +289,7 @@ export default function CustomCliCard({
                         onChange={(e) => handleUpdateMapping(mapping.id, "alias", e.target.value)}
                         placeholder={translateOrFallback(
                           "customCliAliasPlaceholder",
-                          "e.g. review",
+                          "e.g. review"
                         )}
                         className="px-3 py-2 bg-bg-secondary rounded-lg text-sm border border-border focus:outline-none focus:ring-1 focus:ring-primary/50"
                       />
@@ -330,7 +330,7 @@ export default function CustomCliCard({
               {translateOrFallback(
                 "customCliEndpointHint",
                 "Point any OpenAI-compatible client to the OmniRoute /v1 base URL. The raw chat completions endpoint is {endpoint}. Use the JSON block when the tool wants a provider object, or the env script when it reads OPENAI_* variables.",
-                { endpoint: chatCompletionsEndpoint },
+                { endpoint: chatCompletionsEndpoint }
               )}
             </p>
           </div>

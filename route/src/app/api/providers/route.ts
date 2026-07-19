@@ -138,7 +138,7 @@ export async function POST(request: Request) {
               ? "CC Compatible node not found"
               : "Anthropic Compatible node not found",
           },
-          { status: 404 },
+          { status: 404 }
         );
       }
 
@@ -213,7 +213,7 @@ export async function POST(request: Request) {
       // not let it break the (already successful) POST response.
       console.log(
         `[providers] Auto-sync setup failed for ${newConnection.id}:`,
-        syncSetupError?.message || syncSetupError,
+        syncSetupError?.message || syncSetupError
       );
     }
 
@@ -224,7 +224,7 @@ export async function POST(request: Request) {
     delete result.apiKey;
     if (result.providerSpecificData) {
       result.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-        result.providerSpecificData,
+        result.providerSpecificData
       );
     }
 
@@ -302,7 +302,7 @@ export async function PATCH(request: Request) {
         updated: updatedIds.length,
         notFound: notFoundIds,
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error batch updating connections:", error);
@@ -326,14 +326,14 @@ export async function DELETE(request: Request) {
   if (!Array.isArray(body.ids) || body.ids.length === 0) {
     return NextResponse.json(
       { error: "ids must be a non-empty array of connection IDs" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
   if (body.ids.length > 100) {
     return NextResponse.json(
       { error: "Cannot delete more than 100 connections at once" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -354,7 +354,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json(
       { message: `Deleted ${deleted} connection(s)`, deleted },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.log("Error batch deleting connections:", error);

@@ -157,7 +157,7 @@ export async function updateStreak(apiKeyId: string): Promise<number> {
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     NAMESPACE,
     apiKeyId,
-    JSON.stringify(newData),
+    JSON.stringify(newData)
   );
 
   return newStreak;

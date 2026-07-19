@@ -73,7 +73,7 @@ export async function listSyncTokens() {
   ensureSyncTokensTable(db);
   const rows = db
     .prepare(
-      "SELECT * FROM sync_tokens ORDER BY datetime(created_at) DESC, name COLLATE NOCASE ASC",
+      "SELECT * FROM sync_tokens ORDER BY datetime(created_at) DESC, name COLLATE NOCASE ASC"
     )
     .all();
 
@@ -119,7 +119,7 @@ export async function createSyncTokenRecord(data: {
   db.prepare(
     `INSERT INTO sync_tokens (
       id, name, token_hash, sync_api_key_id, revoked_at, last_used_at, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     record.id,
     record.name,
@@ -128,7 +128,7 @@ export async function createSyncTokenRecord(data: {
     record.revokedAt,
     record.lastUsedAt,
     record.createdAt,
-    record.updatedAt,
+    record.updatedAt
   );
 
   backupDbFile("pre-write");
@@ -147,7 +147,7 @@ export async function revokeSyncToken(id: string) {
   db.prepare("UPDATE sync_tokens SET revoked_at = ?, updated_at = ? WHERE id = ?").run(
     now,
     now,
-    id,
+    id
   );
   backupDbFile("pre-write");
   return await getSyncTokenById(id);

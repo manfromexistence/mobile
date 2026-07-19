@@ -103,7 +103,7 @@ export default function AgentBridgePageClient({
         setActionError(err instanceof Error ? err.message : "Unknown error");
       }
     },
-    [refresh],
+    [refresh]
   );
 
   // ── Upstream CA ───────────────────────────────────────────────────────────
@@ -123,7 +123,7 @@ export default function AgentBridgePageClient({
         setActionError(err instanceof Error ? err.message : "Unknown error");
       }
     },
-    [refresh],
+    [refresh]
   );
 
   // ── Bypass list ───────────────────────────────────────────────────────────
@@ -143,7 +143,7 @@ export default function AgentBridgePageClient({
         setActionError(err instanceof Error ? err.message : "Unknown error");
       }
     },
-    [refresh],
+    [refresh]
   );
 
   // ── DNS toggle ────────────────────────────────────────────────────────────
@@ -163,7 +163,7 @@ export default function AgentBridgePageClient({
         setActionError(err instanceof Error ? err.message : "Unknown error");
       }
     },
-    [refresh],
+    [refresh]
   );
 
   // ── Mappings save ─────────────────────────────────────────────────────────
@@ -183,7 +183,7 @@ export default function AgentBridgePageClient({
         setActionError(err instanceof Error ? err.message : "Unknown error");
       }
     },
-    [refresh],
+    [refresh]
   );
 
   // ── Render ────────────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 function translateOrFallback(
   t: ReturnType<typeof useTranslations>,
   key: string,
-  fallback: string,
+  fallback: string
 ): string {
   return typeof t.has === "function" && t.has(key) ? t(key) : fallback;
 }
@@ -83,7 +83,7 @@ export default function FusionDefaultsFields({
           {translateOrFallback(
             t,
             "fusionDefaultsNote",
-            "Fusion fans out to all of a combo's models and a judge model synthesizes the final answer (defaults to the first panel model when unset). These are global defaults for new or unconfigured combos.",
+            "Fusion fans out to all of a combo's models and a judge model synthesizes the final answer (defaults to the first panel model when unset). These are global defaults for new or unconfigured combos."
           )}
         </p>
       </div>

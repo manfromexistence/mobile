@@ -136,7 +136,7 @@ export function useOpenExternal() {
         window.open(url, "_blank", "noopener,noreferrer");
       }
     },
-    [isElectron],
+    [isElectron]
   );
 
   return { openExternal };

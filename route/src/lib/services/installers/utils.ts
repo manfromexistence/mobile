@@ -19,7 +19,7 @@ export class InstallError extends Error {
   constructor(
     message: string,
     public readonly friendly: string,
-    public readonly httpStatus: number = 500,
+    public readonly httpStatus: number = 500
   ) {
     super(message);
     this.name = "InstallError";
@@ -28,7 +28,7 @@ export class InstallError extends Error {
 
 /** Classify raw npm/OS errors into user-friendly messages. */
 function classifyError(
-  err: NodeJS.ErrnoException & { stdout?: string; stderr?: string },
+  err: NodeJS.ErrnoException & { stdout?: string; stderr?: string }
 ): InstallError {
   const raw = sanitizeErrorMessage(err.message);
   const stderr = err.stderr ?? "";
@@ -37,14 +37,14 @@ function classifyError(
     return new InstallError(
       raw,
       "Sem permissão para instalar. Verifique as permissões da pasta de dados.",
-      403,
+      403
     );
   }
   if (err.code === "ENOENT" && err.message.includes("npm")) {
     return new InstallError(
       raw,
       "Node.js/npm não está disponível no PATH. Instale Node ≥22.22.2.",
-      500,
+      500
     );
   }
   if (err.code === "ENOSPC" || stderr.includes("ENOSPC")) {
@@ -66,7 +66,7 @@ function classifyError(
     return new InstallError(
       raw,
       "Falha de rede ao instalar. Verifique a conexão e tente novamente.",
-      503,
+      503
     );
   }
 
@@ -108,7 +108,7 @@ export interface NpmExecOptions {
  */
 export function buildNpmExecOptions(
   platform: NodeJS.Platform,
-  options: { cwd?: string; timeoutMs: number; prefix?: string },
+  options: { cwd?: string; timeoutMs: number; prefix?: string }
 ): NpmExecOptions {
   const env: NodeJS.ProcessEnv = { ...process.env };
   if (options.prefix) {
@@ -134,7 +134,7 @@ export function buildNpmExecOptions(
  */
 export function runNpm(
   args: string[],
-  options: { cwd?: string; timeoutMs?: number; prefix?: string } = {},
+  options: { cwd?: string; timeoutMs?: number; prefix?: string } = {}
 ): Promise<NpmRunResult> {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   // On Windows, npm is npm.cmd; on Unix it's npm.
@@ -155,13 +155,13 @@ export function runNpm(
             Object.assign(err, { stdout, stderr }) as NodeJS.ErrnoException & {
               stdout: string;
               stderr: string;
-            },
+            }
           );
           reject(classified);
         } else {
           resolve({ stdout, stderr });
         }
-      },
+      }
     );
   });
 }

@@ -83,7 +83,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     if (effectiveKind === "telegram" && metadata?.botToken && !isEncryptionEnabled()) {
       return NextResponse.json(
         { error: "Telegram webhooks require STORAGE_ENCRYPTION_KEY to be configured" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -93,7 +93,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       } catch (err: any) {
         return NextResponse.json(
           { error: err?.message || "Blocked private or invalid webhook URL" },
-          { status: 400 },
+          { status: 400 }
         );
       }
     }

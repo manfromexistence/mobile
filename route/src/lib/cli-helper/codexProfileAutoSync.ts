@@ -38,7 +38,7 @@ function forwardAuthHeaders(request: Request): Record<string, string> {
 
 export async function autoSyncCodexProfilesFromLiveCatalog(
   request: Request,
-  reason: string,
+  reason: string
 ): Promise<SyncResult> {
   if (!isAutoSyncEnabled()) {
     return { ok: false, skipped: true, reason: "disabled" };

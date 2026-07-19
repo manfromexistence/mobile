@@ -35,7 +35,7 @@ export async function validateMuseSparkWebProvider({ apiKey, providerSpecificDat
           "X-FB-Friendly-Name": META_AI_FRIENDLY_NAME,
           "X-FB-Request-Analytics-Tags": META_AI_REQUEST_ANALYTICS_TAGS,
         },
-        providerSpecificData,
+        providerSpecificData
       ),
       body: JSON.stringify(buildMetaAiValidationBody()),
     });
@@ -92,7 +92,7 @@ export async function validateAdaptaWebProvider({ apiKey, providerSpecificData =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
           Origin: "https://agent.adapta.one",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
 
@@ -130,9 +130,8 @@ export async function validateClaudeWebProvider({ apiKey, providerSpecificData =
       return { valid: false, error: "Paste your sessionKey cookie from claude.ai" };
     }
 
-    const { tlsFetchClaude, TlsClientUnavailableError } = await import(
-      "@omniroute/open-sse/services/claudeTlsClient.ts"
-    );
+    const { tlsFetchClaude, TlsClientUnavailableError } =
+      await import("@omniroute/open-sse/services/claudeTlsClient.ts");
 
     let response: { status: number; text: string | null };
     try {
@@ -154,7 +153,7 @@ export async function validateClaudeWebProvider({ apiKey, providerSpecificData =
               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
             "anthropic-client-platform": "web_claude_ai",
           },
-          providerSpecificData,
+          providerSpecificData
         ),
         timeoutMs: 30_000,
       });
@@ -216,7 +215,7 @@ export async function validateGeminiWebProvider({ apiKey, providerSpecificData =
           Origin: "https://gemini.google.com",
           Referer: "https://gemini.google.com/",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
 
@@ -269,9 +268,9 @@ export async function validateCopilotWebProvider({ apiKey, providerSpecificData 
             Origin: "https://copilot.microsoft.com",
             Referer: "https://copilot.microsoft.com/",
           },
-          providerSpecificData,
+          providerSpecificData
         ),
-      },
+      }
     );
 
     if (response.status === 401 || response.status === 403) {
@@ -310,7 +309,7 @@ function extractM365CredentialParts(raw: string, providerSpecificData: Record<st
       const url = new URL(text);
       parts.access_token ||= url.searchParams.get("access_token") || "";
       parts.chathubPath ||= decodeURIComponent(
-        url.pathname.split("/m365Copilot/Chathub/")[1] || "",
+        url.pathname.split("/m365Copilot/Chathub/")[1] || ""
       );
     } catch {
       // Fall through to the structured key/value parser result.
@@ -341,7 +340,7 @@ function extractM365CredentialParts(raw: string, providerSpecificData: Record<st
 export async function validateCopilotM365WebProvider({ apiKey, providerSpecificData = {} }: any) {
   const { accessToken, chathubPath } = extractM365CredentialParts(
     String(apiKey || ""),
-    providerSpecificData,
+    providerSpecificData
   );
 
   if (!accessToken) {
@@ -411,7 +410,7 @@ export async function validateT3WebProvider({ apiKey, providerSpecificData = {} 
           Accept: "text/html",
           Cookie: finalCookie,
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
 

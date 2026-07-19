@@ -38,7 +38,7 @@ export async function GET(request?: Request) {
 
     if (modeFilter === "on" || modeFilter === "off" || modeFilter === "auto") {
       allSkills = allSkills.filter(
-        (skill) => (skill.mode || (skill.enabled ? "on" : "off")) === modeFilter,
+        (skill) => (skill.mode || (skill.enabled ? "on" : "off")) === modeFilter
       );
     }
 

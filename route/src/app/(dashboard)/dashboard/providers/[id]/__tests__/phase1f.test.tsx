@@ -322,7 +322,7 @@ describe("useProviderModels — initial state", () => {
     // No fetch should have been triggered by the hook itself (the client
     // gates the effect on !isSearchProvider).
     const callsForModelMeta = fetchStub.mock.calls.filter((c: any[]) =>
-      String(c[0]).includes("provider-models"),
+      String(c[0]).includes("provider-models")
     );
     expect(callsForModelMeta.length).toBe(0);
   });

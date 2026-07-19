@@ -12,10 +12,10 @@ function getProviderKey(connections: any[]): string {
 
 export function useVisibleQuotaData(
   connections: any[],
-  quotaData: Record<string, any>,
+  quotaData: Record<string, any>
 ): Record<string, any> {
   const [hiddenModelsByProvider, setHiddenModelsByProvider] = useState<Record<string, string[]>>(
-    {},
+    {}
   );
   const providerKey = useMemo(() => getProviderKey(connections), [connections]);
 
@@ -29,7 +29,7 @@ export function useVisibleQuotaData(
       providers.map(async (provider) => {
         try {
           const response = await fetch(
-            `/api/provider-models?provider=${encodeURIComponent(provider)}`,
+            `/api/provider-models?provider=${encodeURIComponent(provider)}`
           );
           if (!response.ok) return [provider, []] as const;
           const data = await response.json();
@@ -37,7 +37,7 @@ export function useVisibleQuotaData(
         } catch {
           return [provider, []] as const;
         }
-      }),
+      })
     ).then((entries) => {
       if (alive) setHiddenModelsByProvider(Object.fromEntries(entries));
     });
@@ -57,7 +57,7 @@ export function useVisibleQuotaData(
         quotas: filterHiddenModelQuotas(
           conn.provider,
           data.quotas,
-          hiddenModelsByProvider[conn.provider],
+          hiddenModelsByProvider[conn.provider]
         ),
       };
     }

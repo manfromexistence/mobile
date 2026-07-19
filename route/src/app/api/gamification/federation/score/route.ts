@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
       { error: "Missing authorization" },
-      { status: 401, headers: CORS_HEADERS },
+      { status: 401, headers: CORS_HEADERS }
     );
   }
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   if (!server) {
     return NextResponse.json(
       { error: "Invalid or unauthorized token" },
-      { status: 403, headers: CORS_HEADERS },
+      { status: 403, headers: CORS_HEADERS }
     );
   }
 

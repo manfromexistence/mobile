@@ -20,7 +20,7 @@ export interface CompareViewProps {
 async function runFidelityCheck(
   rows: Row[],
   text: string,
-  opts: { provider: string; judgeModel: string; capUsd: number },
+  opts: { provider: string; judgeModel: string; capUsd: number }
 ): Promise<{ verdicts: Record<string, VerifyResult>; spent: number; capped: boolean } | null> {
   const items = await Promise.all(
     rows.map(async (r) => {
@@ -31,7 +31,7 @@ async function runFidelityCheck(
       });
       const d = await res.json();
       return { id: r.engine, original: d.original ?? "", compressed: d.compressed ?? "" };
-    }),
+    })
   );
   const vres = await fetch("/api/compression/compare/verify", {
     method: "POST",

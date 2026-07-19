@@ -157,7 +157,7 @@ export function useApiKeySave({
       setShowAddApiKeyModal,
       setSiliconFlowInitialBaseUrl,
       t,
-    ],
+    ]
   );
 
   return { handleSaveApiKey };

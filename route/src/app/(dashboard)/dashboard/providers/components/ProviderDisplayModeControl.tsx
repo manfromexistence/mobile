@@ -10,7 +10,7 @@ function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>,
+  values?: Record<string, unknown>
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -18,7 +18,7 @@ function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback,
+      fallback
     );
   }
   return fallback;
@@ -51,7 +51,7 @@ export default function ProviderDisplayModeControl({
       title: providerText(
         t,
         "providerDisplayModeAllDesc",
-        "Show every provider in grouped sections.",
+        "Show every provider in grouped sections."
       ),
     },
     {
@@ -62,7 +62,7 @@ export default function ProviderDisplayModeControl({
       title: providerText(
         t,
         "providerDisplayModeConfiguredDesc",
-        "Show providers with saved connections.",
+        "Show providers with saved connections."
       ),
     },
     {
@@ -72,7 +72,7 @@ export default function ProviderDisplayModeControl({
       title: providerText(
         t,
         "providerDisplayModeCompactDesc",
-        "Show configured and no-auth providers once in a single flat list.",
+        "Show configured and no-auth providers once in a single flat list."
       ),
     },
   ];

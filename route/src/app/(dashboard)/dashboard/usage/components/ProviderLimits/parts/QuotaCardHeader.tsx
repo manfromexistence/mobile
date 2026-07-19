@@ -47,7 +47,7 @@ export default function QuotaCardHeader({
   const accountName = pickDisplayValue(
     [connection.name, connection.displayName, connection.email],
     emailsVisible,
-    connection.provider,
+    connection.provider
   );
 
   // OAuth token expiry — informative only. Shown small/blue for connections that

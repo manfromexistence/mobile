@@ -95,7 +95,7 @@ export function upsertDiscoveryResult(result: DiscoveryResult): DiscoveryResult 
        feasibility = excluded.feasibility,
        risk_level = excluded.risk_level,
        status = excluded.status,
-       notes = excluded.notes`,
+       notes = excluded.notes`
   ).run({
     provider_id: result.providerId,
     method: result.method,
@@ -112,7 +112,7 @@ export function upsertDiscoveryResult(result: DiscoveryResult): DiscoveryResult 
   const row = db
     .prepare(
       `SELECT * FROM discovery_results
-       WHERE provider_id = ? AND method = ? AND ifnull(endpoint, '') = ifnull(?, '')`,
+       WHERE provider_id = ? AND method = ? AND ifnull(endpoint, '') = ifnull(?, '')`
     )
     .get(result.providerId, result.method, result.endpoint ?? null) as DiscoveryRow | undefined;
   // The row was just written, so it must exist.
@@ -128,7 +128,7 @@ export function getDiscoveryResults(providerId?: string): DiscoveryResult[] {
   const rows = providerId
     ? (db
         .prepare(
-          "SELECT * FROM discovery_results WHERE provider_id = ? ORDER BY discovered_at DESC, id DESC",
+          "SELECT * FROM discovery_results WHERE provider_id = ? ORDER BY discovered_at DESC, id DESC"
         )
         .all(providerId) as DiscoveryRow[])
     : (db
@@ -140,8 +140,7 @@ export function getDiscoveryResults(providerId?: string): DiscoveryResult[] {
 export function getDiscoveryResultById(id: number): DiscoveryResult | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM discovery_results WHERE id = ?").get(id) as
-    | DiscoveryRow
-    | undefined;
+    DiscoveryRow | undefined;
   return row ? rowToResult(row) : null;
 }
 
@@ -153,7 +152,7 @@ export function markVerified(id: number): DiscoveryResult | null {
   const db = getDbInstance();
   const info = db
     .prepare(
-      "UPDATE discovery_results SET status = 'verified', verified_at = datetime('now') WHERE id = ?",
+      "UPDATE discovery_results SET status = 'verified', verified_at = datetime('now') WHERE id = ?"
     )
     .run(id);
   if (info.changes === 0) return null;

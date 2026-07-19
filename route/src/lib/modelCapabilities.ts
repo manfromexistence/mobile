@@ -159,7 +159,7 @@ function heuristicReasoning(modelStr: string): boolean {
   if (!normalized) return true;
   const blocked = REASONING_UNSUPPORTED_PATTERNS.some(
     (pattern) =>
-      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern),
+      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern)
   );
   return !blocked;
 }
@@ -169,7 +169,7 @@ function heuristicMaxTokens(modelStr: string): boolean {
   if (!normalized) return true;
   const blocked = MAX_TOKENS_UNSUPPORTED_PATTERNS.some(
     (pattern) =>
-      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern),
+      normalized === pattern || normalized.endsWith(`/${pattern}`) || normalized.includes(pattern)
   );
   return !blocked;
 }
@@ -188,7 +188,7 @@ function getStaticSpec(modelId: string | null, rawModel: string | null): ModelSp
 function getAuthoritativeStaticContextWindow(
   provider: string | null,
   modelId: string | null,
-  rawModel: string | null,
+  rawModel: string | null
 ): number | null {
   for (const candidate of [modelId, rawModel]) {
     const providerContextWindow = getAuthoritativeProviderContextWindow(provider, candidate);
@@ -203,7 +203,7 @@ function getAuthoritativeStaticContextWindow(
 
 function getStaticSpecCanonicalModelId(modelId: string | null, rawModel: string | null) {
   const candidates = [modelId, rawModel].filter(
-    (candidate): candidate is string => typeof candidate === "string" && candidate.length > 0,
+    (candidate): candidate is string => typeof candidate === "string" && candidate.length > 0
   );
   for (const candidate of candidates) {
     const lower = candidate.toLowerCase();
@@ -230,7 +230,7 @@ function stripLatestAlias(modelId: string | null): string | null {
 function getSyncedCapabilityForResolved(
   provider: string | null,
   model: string | null,
-  rawModel: string | null,
+  rawModel: string | null
 ): SyncedCapabilities {
   if (!provider || !model) return null;
 
@@ -307,10 +307,10 @@ function resolveVisionCapability(
   synced: SyncedCapabilities,
   modalitiesInput: string[],
   modalitiesOutput: string[],
-  modelId?: string,
+  modelId?: string
 ): boolean | null {
   const allModalities = [...modalitiesInput, ...modalitiesOutput].map((entry) =>
-    String(entry).toLowerCase(),
+    String(entry).toLowerCase()
   );
 
   // Hard override FIRST: a wrong synced `attachment:true` (or image modality) must not
@@ -371,7 +371,7 @@ export function getExplicitModelOutputCap(input: CapabilityInput): number | null
   const synced = getSyncedCapabilityForResolved(
     resolved.provider,
     resolved.model,
-    resolved.rawModel,
+    resolved.rawModel
   );
   if (synced && typeof synced.limit_output === "number") return synced.limit_output;
 
@@ -389,7 +389,7 @@ export function getResolvedModelCapabilities(input: CapabilityInput): ResolvedMo
   const synced = getSyncedCapabilityForResolved(
     resolved.provider,
     resolved.model,
-    resolved.rawModel,
+    resolved.rawModel
   );
 
   const modalitiesInput = parseModalities(synced?.modalities_input);
@@ -398,7 +398,7 @@ export function getResolvedModelCapabilities(input: CapabilityInput): ResolvedMo
     toNonEmptyString(
       resolved.provider && resolved.model
         ? `${resolved.provider}/${resolved.model}`
-        : resolved.model || resolved.rawModel || resolved.lookupKey,
+        : resolved.model || resolved.rawModel || resolved.lookupKey
     ) || "";
   const reasoningDenied = !heuristicReasoning(lookupKey);
 
@@ -418,7 +418,7 @@ export function getResolvedModelCapabilities(input: CapabilityInput): ResolvedMo
   const authoritativeContextWindow = getAuthoritativeStaticContextWindow(
     resolved.provider,
     resolved.model,
-    resolved.rawModel,
+    resolved.rawModel
   );
   const contextWindow =
     authoritativeContextWindow ??
@@ -443,7 +443,7 @@ export function getResolvedModelCapabilities(input: CapabilityInput): ResolvedMo
       synced,
       modalitiesInput,
       modalitiesOutput,
-      lookupKey,
+      lookupKey
     ),
     supportsMaxTokens: heuristicMaxTokens(lookupKey),
     attachment: synced?.attachment ?? null,
@@ -512,7 +512,7 @@ export function capThinkingBudget(input: CapabilityInput, budget: number): numbe
 
 export function getModelContextLimit(
   providerOrInput: CapabilityInput,
-  modelId?: string,
+  modelId?: string
 ): number | null {
   const resolved =
     typeof providerOrInput === "string" && modelId !== undefined

@@ -23,7 +23,7 @@ export default function OpenRouterPresetInput({ value, onChange, t }: OpenRouter
       hint={providerText(
         t,
         "openRouterPresetHint",
-        "Sends this connection's preset as the OpenRouter top-level preset field.",
+        "Sends this connection's preset as the OpenRouter top-level preset field."
       )}
     />
   );
@@ -31,7 +31,7 @@ export default function OpenRouterPresetInput({ value, onChange, t }: OpenRouter
 
 export function useOpenRouterPresetControl(
   provider: string | null | undefined,
-  t: ProviderMessageTranslator,
+  t: ProviderMessageTranslator
 ) {
   const [value, setValue] = useState("");
   const isOpenRouter = provider === "openrouter";
@@ -40,7 +40,7 @@ export function useOpenRouterPresetControl(
       const preset = value.trim();
       if (isOpenRouter && preset) data.preset = preset;
     },
-    [isOpenRouter, value],
+    [isOpenRouter, value]
   );
   const getPatch = useCallback(() => {
     if (!isOpenRouter) return {};
@@ -49,7 +49,7 @@ export function useOpenRouterPresetControl(
   }, [isOpenRouter, value]);
   const input = useMemo(
     () => (isOpenRouter ? <OpenRouterPresetInput t={t} value={value} onChange={setValue} /> : null),
-    [isOpenRouter, t, value],
+    [isOpenRouter, t, value]
   );
   return { applyTo, getPatch, input, isOpenRouter, setValue };
 }

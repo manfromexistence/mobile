@@ -90,7 +90,7 @@ export async function getModelComboMappings(): Promise<ModelComboMapping[]> {
               m.created_at, m.updated_at
        FROM model_combo_mappings m
        LEFT JOIN combos c ON c.id = m.combo_id
-       ORDER BY m.priority DESC, m.created_at ASC`,
+       ORDER BY m.priority DESC, m.created_at ASC`
     )
     .all() as MappingRow[];
   return rows.map(rowToMapping);
@@ -108,7 +108,7 @@ export async function getModelComboMappingById(id: string): Promise<ModelComboMa
               m.created_at, m.updated_at
        FROM model_combo_mappings m
        LEFT JOIN combos c ON c.id = m.combo_id
-       WHERE m.id = ?`,
+       WHERE m.id = ?`
     )
     .get(id) as MappingRow | undefined;
   return row ? rowToMapping(row) : null;
@@ -131,7 +131,7 @@ export async function createModelComboMapping(data: {
   db.prepare(
     `INSERT INTO model_combo_mappings
      (id, pattern, combo_id, priority, enabled, description, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     data.pattern,
@@ -140,7 +140,7 @@ export async function createModelComboMapping(data: {
     data.enabled !== false ? 1 : 0,
     data.description || "",
     now,
-    now,
+    now
   );
 
   return {
@@ -166,7 +166,7 @@ export async function updateModelComboMapping(
     priority: number;
     enabled: boolean;
     description: string;
-  }>,
+  }>
 ): Promise<ModelComboMapping | null> {
   const existing = await getModelComboMappingById(id);
   if (!existing) return null;
@@ -185,7 +185,7 @@ export async function updateModelComboMapping(
     `UPDATE model_combo_mappings
      SET pattern = ?, combo_id = ?, priority = ?, enabled = ?,
          description = ?, updated_at = ?
-     WHERE id = ?`,
+     WHERE id = ?`
   ).run(
     updated.pattern,
     updated.combo_id,
@@ -193,7 +193,7 @@ export async function updateModelComboMapping(
     updated.enabled,
     updated.description,
     now,
-    id,
+    id
   );
 
   return getModelComboMappingById(id);
@@ -220,7 +220,7 @@ export async function deleteModelComboMapping(id: string): Promise<boolean> {
  * Uses glob-style pattern matching (* = any chars, ? = single char).
  */
 export async function resolveComboForModel(
-  modelStr: string,
+  modelStr: string
 ): Promise<Record<string, unknown> | null> {
   const db = getDbInstance();
 
@@ -231,7 +231,7 @@ export async function resolveComboForModel(
        FROM model_combo_mappings m
        JOIN combos c ON c.id = m.combo_id
        WHERE m.enabled = 1
-       ORDER BY m.priority DESC, m.created_at ASC`,
+       ORDER BY m.priority DESC, m.created_at ASC`
     )
     .all() as Array<{ pattern: string; combo_id: string; combo_data: string }>;
 

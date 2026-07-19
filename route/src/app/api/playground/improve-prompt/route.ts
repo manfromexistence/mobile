@@ -35,7 +35,7 @@ function errorResp(status: number, message: string, upstreamDetails?: unknown): 
     {
       status,
       headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-    },
+    }
   );
 }
 
@@ -92,7 +92,7 @@ export async function POST(request: Request): Promise<Response> {
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to reach upstream",
+      err instanceof Error ? err.message : "Failed to reach upstream"
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, `Improve-prompt failed: ${safeMsg}`);
   }
@@ -109,7 +109,7 @@ export async function POST(request: Request): Promise<Response> {
         ? upstreamResponse.status
         : HTTP_STATUS.BAD_GATEWAY,
       "Improve-prompt upstream request failed",
-      sanitizeErrorMessage(upstreamText),
+      sanitizeErrorMessage(upstreamText)
     );
   }
 
@@ -146,6 +146,6 @@ export async function POST(request: Request): Promise<Response> {
     {
       status: 200,
       headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-    },
+    }
   );
 }

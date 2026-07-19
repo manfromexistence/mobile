@@ -163,7 +163,7 @@ export default function BuildTab({ configState }: BuildTabProps) {
             toolCallId: tc.id,
             functionName: tc.function.name,
             draft: "",
-          })),
+          }))
         );
       } else {
         const content = assistantMsg.content ?? "";
@@ -266,8 +266,8 @@ export default function BuildTab({ configState }: BuildTabProps) {
                     onChange={(e) =>
                       setToolResultDrafts((prev) =>
                         prev.map((d) =>
-                          d.toolCallId === tc.id ? { ...d, draft: e.target.value } : d,
-                        ),
+                          d.toolCallId === tc.id ? { ...d, draft: e.target.value } : d
+                        )
                       )
                     }
                     rows={3}

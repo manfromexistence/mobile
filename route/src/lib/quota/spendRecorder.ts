@@ -27,14 +27,14 @@ interface MinimalLogger {
  */
 export function scheduleRecordConsumption(
   input: RecordConsumptionInput,
-  log?: MinimalLogger | null,
+  log?: MinimalLogger | null
 ): void {
   setImmediate(() => {
     recordConsumption(input).catch((err: unknown) => {
       if (log?.warn) {
         log.warn(
           { err: err instanceof Error ? err.message : String(err) },
-          "[quotaShare] recordConsumption failed (drift expected)",
+          "[quotaShare] recordConsumption failed (drift expected)"
         );
       }
     });
@@ -49,7 +49,7 @@ export function scheduleRecordConsumption(
  */
 export function buildConsumptionCost(
   usage: unknown,
-  estimatedCost: number,
+  estimatedCost: number
 ): { tokens: number; usd: number; requests: number } {
   const u = usage && typeof usage === "object" ? (usage as Record<string, unknown>) : null;
   const tokens = u
@@ -67,7 +67,7 @@ type CostResolver = (
   provider: string,
   model: string,
   usage: Record<string, number | undefined> | null | undefined,
-  options: { serviceTier?: string },
+  options: { serviceTier?: string }
 ) => Promise<number>;
 
 /**
@@ -94,7 +94,7 @@ export async function recordStreamingConsumption(
     calculateCost: CostResolver;
     schedule?: (input: RecordConsumptionInput, log?: MinimalLogger | null) => void;
     log?: MinimalLogger | null;
-  },
+  }
 ): Promise<void> {
   const { apiKeyId, connectionId, provider, model, streamUsage, streamStatus, serviceTier } =
     params;
@@ -110,7 +110,7 @@ export async function recordStreamingConsumption(
         resolvedProvider,
         model,
         streamUsage as Record<string, number | undefined>,
-        { serviceTier },
+        { serviceTier }
       );
     } catch {
       estimatedCost = 0;
@@ -126,6 +126,6 @@ export async function recordStreamingConsumption(
       model: model || undefined,
       cost: buildConsumptionCost(streamUsage, estimatedCost),
     },
-    deps.log,
+    deps.log
   );
 }

@@ -11,7 +11,7 @@ import type { ChaosPageConfig, ChaosPageMessage } from "./chaosPageTypes";
  */
 export function useChaosConfigPersistence(
   config: ChaosPageConfig,
-  setConfig: Dispatch<SetStateAction<ChaosPageConfig>>,
+  setConfig: Dispatch<SetStateAction<ChaosPageConfig>>
 ) {
   const t = useTranslations("chaosConfig");
   const [saving, setSaving] = useState(false);

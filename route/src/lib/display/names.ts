@@ -53,7 +53,7 @@ export function getAccountDisplayName(conn: ConnectionLike): string {
  */
 export function getProviderDisplayName(
   providerId: string | null | undefined,
-  providerNode?: ProviderNodeLike | null,
+  providerNode?: ProviderNodeLike | null
 ): string {
   if (providerNode?.name?.trim()) return providerNode.name.trim();
   if (providerNode?.prefix?.trim()) return providerNode.prefix.trim();
@@ -61,7 +61,7 @@ export function getProviderDisplayName(
 
   // Simplify dynamic compatible provider IDs
   const match = providerId.match(
-    /^(openai|anthropic)-compatible-(?:chat|responses)-[0-9a-f-]{10,}$/i,
+    /^(openai|anthropic)-compatible-(?:chat|responses)-[0-9a-f-]{10,}$/i
   );
   if (match) return `Compatible (${match[1]})`;
 

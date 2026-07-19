@@ -30,7 +30,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -65,7 +65,7 @@ export async function POST(request) {
           success: false,
           error: `No active connection found for provider: ${provider}. Available connections: ${connections.length}`,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -98,7 +98,7 @@ export async function POST(request) {
       const errorText = await response.text();
       const normalizedUpstreamError = toJsonErrorPayload(
         errorText,
-        `Provider error: ${response.status} ${response.statusText}`,
+        `Provider error: ${response.status} ${response.statusText}`
       );
       logTranslationEvent({
         provider,
@@ -118,7 +118,7 @@ export async function POST(request) {
             `Provider error: ${response.status} ${response.statusText}`,
           details: normalizedUpstreamError,
         },
-        { status: response.status },
+        { status: response.status }
       );
     }
 

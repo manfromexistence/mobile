@@ -38,7 +38,7 @@ export function parseJsoncOrNull<T = unknown>(content: string): T | null {
  */
 export async function readJsoncConfig<T = unknown>(
   path: string,
-  fallback: T | null = null,
+  fallback: T | null = null
 ): Promise<T | null> {
   let content: string;
   try {

@@ -64,7 +64,7 @@ function toValidationErrorResult(error: unknown) {
 function buildImageProviderValidationHeaders(
   imageProvider: any,
   apiKey: string,
-  providerSpecificData: any = {},
+  providerSpecificData: any = {}
 ) {
   const headers: Record<string, string> = {
     Accept: "application/json",
@@ -117,7 +117,7 @@ export async function validateImageProviderApiKey({
 
   try {
     const baseUrl = normalizeBaseUrl(
-      providerSpecificData?.baseUrl || validationConfig.baseUrl || imageProvider.baseUrl,
+      providerSpecificData?.baseUrl || validationConfig.baseUrl || imageProvider.baseUrl
     );
     const url = `${baseUrl}${validationConfig.path}`;
     const response = await validationRead(url, {

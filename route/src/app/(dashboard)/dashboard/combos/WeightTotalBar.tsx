@@ -74,7 +74,7 @@ export default function WeightTotalBar({ models }: WeightTotalBarProps) {
                     </span>
                   )}
                 </span>
-              ),
+              )
           )}
         </div>
         <span

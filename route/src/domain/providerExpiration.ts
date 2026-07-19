@@ -80,7 +80,7 @@ export function setExpiration(
   connectionName: string,
   expiresAt: string | null,
   expiryType: ExpiryType,
-  options?: { alertDays?: number; note?: string | null },
+  options?: { alertDays?: number; note?: string | null }
 ): ProviderExpiration {
   const alertDays = options?.alertDays ?? 7;
   const status = calculateStatus(expiresAt, alertDays);
@@ -207,7 +207,7 @@ export function removeExpiration(connectionId: string): boolean {
 export function detectExpirationFromResponse(
   provider: string,
   status: number,
-  headers: Record<string, string>,
+  headers: Record<string, string>
 ): { expiresAt: string; expiryType: ExpiryType } | null {
   // 401 with specific patterns → token expired
   if (status === 401) {

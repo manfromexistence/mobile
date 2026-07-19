@@ -43,7 +43,7 @@ function safeEqual(a: string | null | undefined, b: string | null | undefined): 
 export function buildOAuthConnectionCreatePayload(
   provider: string,
   tokenData: Record<string, any>,
-  expiresAt: string | null,
+  expiresAt: string | null
 ) {
   return {
     provider,
@@ -69,7 +69,7 @@ async function syncToCloudIfEnabled(): Promise<void> {
 export async function persistOAuthConnection(
   provider: string,
   tokenData: any,
-  connectionId?: string,
+  connectionId?: string
 ) {
   // Normalize: if name is missing, use email or displayName as fallback label.
   if (!tokenData.name && (tokenData.email || tokenData.displayName)) {
@@ -105,7 +105,7 @@ export async function persistOAuthConnection(
   }
   if (!connection) {
     connection = await createProviderConnection(
-      buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt),
+      buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt)
     );
   }
 

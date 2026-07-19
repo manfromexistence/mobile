@@ -68,7 +68,7 @@ function usedPercent(remainingPercentage: number | null): number | null {
 
 function isResetDrop(
   previousUsedPercentage: number | null,
-  currentUsedPercentage: number,
+  currentUsedPercentage: number
 ): boolean {
   if (previousUsedPercentage === null) return false;
   const droppedToResetFloor =
@@ -105,7 +105,7 @@ function isPrimaryWeeklyWindow(windowKey: string): boolean {
 
 function getLatestSnapshotObservation(
   connectionId: string,
-  windowKey: string,
+  windowKey: string
 ): QuotaObservation | null {
   const db = getDbInstance() as unknown as DbLike;
   try {
@@ -121,7 +121,7 @@ function getLatestSnapshotObservation(
           AND next_reset_at IS NOT NULL
         ORDER BY created_at DESC, id DESC
         LIMIT 1
-      `,
+      `
       )
       .get(connectionId, windowKey);
     if (!row) return null;
@@ -175,7 +175,7 @@ export function recordProviderQuotaResetEventIfChanged(input: ResetEventInput): 
          observed_at, previous_remaining_percentage, new_remaining_percentage,
          previous_used_percentage, new_used_percentage, raw_data)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `,
+    `
     ).run(
       input.provider,
       input.connectionId,
@@ -187,7 +187,7 @@ export function recordProviderQuotaResetEventIfChanged(input: ResetEventInput): 
       currentRemaining,
       previousUsed,
       currentUsed,
-      null,
+      null
     );
   } catch (error: unknown) {
     if (error instanceof Error && error.message.includes("no such table")) return;
@@ -198,7 +198,7 @@ export function recordProviderQuotaResetEventIfChanged(input: ResetEventInput): 
 function getRecordedQuotaWindowStartIso(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs = Date.now(),
+  nowMs = Date.now()
 ): string | null {
   if (!connectionId || !targetResetAtIso) return null;
   const targetDay = resetDay(targetResetAtIso);
@@ -221,7 +221,7 @@ function getRecordedQuotaWindowStartIso(
           AND LOWER(window_key) NOT LIKE '%sonnet%'
           AND observed_at <= @nowIso
         ORDER BY observed_at DESC, id DESC
-      `,
+      `
       )
       .all({ connectionId, nowIso });
 
@@ -240,7 +240,7 @@ function getRecordedQuotaWindowStartIso(
 function getObservedQuotaWindowStartIso(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs = Date.now(),
+  nowMs = Date.now()
 ): { windowStartIso: string; resetDrop: boolean } | null {
   if (!connectionId || !targetResetAtIso) return null;
   const targetDay = resetDay(targetResetAtIso);
@@ -263,7 +263,7 @@ function getObservedQuotaWindowStartIso(
           AND LOWER(window_key) NOT LIKE '%sonnet%'
           AND created_at <= @nowIso
         ORDER BY created_at ASC, id ASC
-      `,
+      `
       )
       .all({ connectionId, nowIso });
 
@@ -298,7 +298,7 @@ function getObservedQuotaWindowStartIso(
 export function getProviderQuotaWindowStart(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs = Date.now(),
+  nowMs = Date.now()
 ): ProviderQuotaWindowStart | null {
   const recordedIso = getRecordedQuotaWindowStartIso(connectionId, targetResetAtIso, nowMs);
   const observed = getObservedQuotaWindowStartIso(connectionId, targetResetAtIso, nowMs);
@@ -328,7 +328,7 @@ export function getProviderQuotaWindowStart(
 export function getProviderQuotaWindowStartIso(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs = Date.now(),
+  nowMs = Date.now()
 ): string | null {
   return getProviderQuotaWindowStart(connectionId, targetResetAtIso, nowMs)?.windowStartIso ?? null;
 }

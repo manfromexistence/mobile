@@ -65,7 +65,7 @@ export class CursorCloudAgent extends CloudAgentBase {
 
   async createTask(
     params: CreateTaskParams,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentTask> {
     const taskId = this.generateTaskId();
 
@@ -107,7 +107,7 @@ export class CursorCloudAgent extends CloudAgentBase {
   async getStatus(externalId: string, credentials: AgentCredentials): Promise<GetStatusResult> {
     const response = await fetch(
       `${this.resolveBaseUrl(credentials)}/agents/${encodeURIComponent(externalId)}`,
-      { headers: this.authHeaders(credentials) },
+      { headers: this.authHeaders(credentials) }
     );
 
     if (!response.ok) {
@@ -151,7 +151,7 @@ export class CursorCloudAgent extends CloudAgentBase {
   async sendMessage(
     externalId: string,
     message: string,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentActivity> {
     const response = await fetch(
       `${this.resolveBaseUrl(credentials)}/agents/${encodeURIComponent(externalId)}/followup`,
@@ -159,7 +159,7 @@ export class CursorCloudAgent extends CloudAgentBase {
         method: "POST",
         headers: this.authHeaders(credentials, true),
         body: JSON.stringify({ prompt: { text: message } }),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -176,7 +176,7 @@ export class CursorCloudAgent extends CloudAgentBase {
   }
 
   async listSources(
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<{ name: string; url: string; branch?: string }[]> {
     const response = await fetch(`${this.resolveBaseUrl(credentials)}/repositories`, {
       headers: this.authHeaders(credentials),
@@ -200,7 +200,7 @@ export class CursorCloudAgent extends CloudAgentBase {
       })
       .filter(
         (entry: { name: string; url: string } | null): entry is { name: string; url: string } =>
-          entry !== null,
+          entry !== null
       );
   }
 }

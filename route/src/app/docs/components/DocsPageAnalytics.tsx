@@ -63,7 +63,7 @@ export function DocsPageAnalytics({ slug, title, section }: PageAnalyticsProps) 
 }
 
 export function getPopularPages(
-  limit = 5,
+  limit = 5
 ): { slug: string; title: string; section: string; views: number }[] {
   if (typeof window === "undefined") return [];
 

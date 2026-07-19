@@ -13,7 +13,7 @@ export async function OPTIONS() {
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ name: string }> },
+  { params }: { params: Promise<{ name: string }> }
 ) {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
@@ -23,7 +23,7 @@ export async function POST(
     await pluginManager.activate(name);
     return NextResponse.json(
       { success: true, message: `Plugin '${name}' activated` },
-      { headers: CORS_HEADERS },
+      { headers: CORS_HEADERS }
     );
   } catch (err: unknown) {
     console.error("[plugins] Failed to activate plugin:", err);

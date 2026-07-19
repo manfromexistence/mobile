@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   // ── Log locally regardless ──
   console.log(
-    `[issues/report] title="${title}" errorCode=${errorCode ?? "—"} provider=${provider ?? "—"} accountId=${accountId ?? "—"}`,
+    `[issues/report] title="${title}" errorCode=${errorCode ?? "—"} provider=${provider ?? "—"} accountId=${accountId ?? "—"}`
   );
 
   if (!repo || !token) {
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
         githubIssueCreated: false,
         reason: !repo ? "GITHUB_ISSUES_REPO not configured" : "GITHUB_ISSUES_TOKEN not configured",
       },
-      { status: 202 },
+      { status: 202 }
     );
   }
 
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
       console.error(`[issues/report] GitHub API error ${ghRes.status}: ${errText}`);
       return NextResponse.json(
         { logged: true, githubIssueCreated: false, githubError: ghRes.status },
-        { status: 207 },
+        { status: 207 }
       );
     }
 
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
     console.error("[issues/report] GitHub fetch failed:", err);
     return NextResponse.json(
       { logged: true, githubIssueCreated: false, error: "GitHub request failed" },
-      { status: 207 },
+      { status: 207 }
     );
   }
 }

@@ -109,7 +109,7 @@ function isDeepEqual(a: unknown, b: unknown): boolean {
 function computeSettingsDiff(
   before: Record<string, unknown>,
   after: Record<string, unknown>,
-  candidateKeys: string[],
+  candidateKeys: string[]
 ): Record<string, { before: unknown; after: unknown }> {
   const diff: Record<string, { before: unknown; after: unknown }> = {};
   for (const key of candidateKeys) {
@@ -124,7 +124,7 @@ function computeSettingsDiff(
 function attemptedKeysOf(body: Record<string, unknown> | null | undefined): string[] {
   if (!body || typeof body !== "object") return [];
   return Object.keys(body).filter(
-    (k) => k !== "currentPassword" && k !== "newPassword" && k !== "password",
+    (k) => k !== "currentPassword" && k !== "newPassword" && k !== "password"
   );
 }
 
@@ -133,7 +133,7 @@ function emitSettingsFailureAudit(
   request: Request,
   actor: string,
   reason: string,
-  attemptedKeys: string[],
+  attemptedKeys: string[]
 ) {
   try {
     const { ipAddress, requestId } = getAuditRequestContext(request);
@@ -189,7 +189,7 @@ export async function GET(request: Request) {
           ? { cliproxyapi_model_mapping: cliproxyapiModelMapping }
           : {}),
       },
-      { headers: SETTINGS_RESPONSE_HEADERS },
+      { headers: SETTINGS_RESPONSE_HEADERS }
     );
   } catch (error) {
     console.log("Error getting settings:", error);
@@ -212,7 +212,7 @@ export async function PATCH(request: Request) {
     emitSettingsFailureAudit(request, actor, "INVALID_JSON", []);
     return NextResponse.json(
       { error: { code: "INVALID_JSON", message: "Request body is not valid JSON" } },
-      { status: 400 },
+      { status: 400 }
     );
   }
   const attemptedKeys = attemptedKeysOf(rawBody);
@@ -225,13 +225,13 @@ export async function PATCH(request: Request) {
       // names the correct error code; otherwise fall back to the generic
       // validation-failure label.
       const isBypassPrefixRejection = (validation.error.details || []).some(
-        (d) => typeof d.message === "string" && d.message.includes("BYPASS_PREFIX_NOT_ALLOWED"),
+        (d) => typeof d.message === "string" && d.message.includes("BYPASS_PREFIX_NOT_ALLOWED")
       );
       emitSettingsFailureAudit(
         request,
         actor,
         isBypassPrefixRejection ? "BYPASS_PREFIX_NOT_ALLOWED" : "VALIDATION_FAILED",
-        attemptedKeys,
+        attemptedKeys
       );
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
@@ -277,7 +277,7 @@ export async function PATCH(request: Request) {
                 keys: touchedSecurityKeys,
               },
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         const isValid = await verifyManagementPassword(body.currentPassword, storedPasswordHash);
@@ -290,7 +290,7 @@ export async function PATCH(request: Request) {
                 message: "Invalid current password",
               },
             },
-            { status: 401 },
+            { status: 401 }
           );
         }
       }
@@ -319,7 +319,7 @@ export async function PATCH(request: Request) {
         emitSettingsFailureAudit(request, actor, "CLIPROXY_URL_INVALID", attemptedKeys);
         return NextResponse.json(
           { error: `Invalid CLIProxyAPI URL: ${urlValidation.error}` },
-          { status: 400 },
+          { status: 400 }
         );
       }
       // Invalidate the executor's URL cache so it picks up the new URL immediately
@@ -343,7 +343,7 @@ export async function PATCH(request: Request) {
         ...new Set(
           activeConnections
             .map((c: Record<string, unknown>) => c.provider as string)
-            .filter((id: string) => !EMBEDDED_SERVICE_IDS.has(id)),
+            .filter((id: string) => !EMBEDDED_SERVICE_IDS.has(id))
         ),
       ];
 

@@ -263,7 +263,7 @@ function toolsGeminiToXai(tools: GeminiTool[]): XaiTool[] | undefined {
  */
 export function geminiRequestToXaiResponses(
   req: GeminiRequest,
-  model: string | null = null,
+  model: string | null = null
 ): XaiResponsesRequest {
   if (!req || typeof req !== "object") return req as unknown as XaiResponsesRequest;
   const input: XaiInputItem[] = [];
@@ -322,7 +322,7 @@ export function geminiRequestToXaiResponses(
  */
 export function xaiCompletedToGeminiJson(
   completed: XaiCompleted,
-  origReq: GeminiRequest | null = null,
+  origReq: GeminiRequest | null = null
 ): object {
   const parts: unknown[] = [];
   const finishReason = "STOP";

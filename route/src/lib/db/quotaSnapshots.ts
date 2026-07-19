@@ -24,7 +24,7 @@ export function saveQuotaSnapshot(snapshot: Omit<QuotaSnapshotRow, "id" | "creat
       `INSERT INTO quota_snapshots
        (provider, connection_id, window_key, remaining_percentage, is_exhausted,
         next_reset_at, window_duration_ms, raw_data, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       snapshot.provider,
       snapshot.connection_id,
@@ -34,12 +34,12 @@ export function saveQuotaSnapshot(snapshot: Omit<QuotaSnapshotRow, "id" | "creat
       snapshot.next_reset_at,
       snapshot.window_duration_ms,
       snapshot.raw_data,
-      now,
+      now
     );
   } catch (err: any) {
     if (err?.message?.includes("no such table")) {
       console.warn(
-        "[QuotaSnapshots] Skipping save: quota_snapshots table not found. Awaiting migration.",
+        "[QuotaSnapshots] Skipping save: quota_snapshots table not found. Awaiting migration."
       );
       return;
     }
@@ -93,7 +93,7 @@ export function getLatestQuotaSnapshotsForConnection(connectionId: string): Quot
         `SELECT * FROM quota_snapshots
          WHERE connection_id = ?
          ORDER BY created_at DESC
-         LIMIT 200`,
+         LIMIT 200`
       )
       .all(connectionId);
     const latestByWindow = new Map<string, QuotaSnapshotRow>();

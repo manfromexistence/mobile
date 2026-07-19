@@ -45,7 +45,7 @@ export function evalCapacity(active: number, cap: number): CapacityResult {
           "X-RateLimit-Limit": String(cap),
           "X-RateLimit-Remaining": "0",
         },
-      },
+      }
     ),
   };
 }

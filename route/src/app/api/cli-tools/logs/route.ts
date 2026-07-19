@@ -152,7 +152,7 @@ export async function GET(request: NextRequest) {
     const message = err instanceof Error ? err.message : String(err);
     return NextResponse.json(
       { error: sanitizeErrorMessage(message) || "Failed to read logs" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

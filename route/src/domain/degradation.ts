@@ -79,7 +79,7 @@ export async function withDegradation<T>(
     defaultCapability?: string;
     /** Log function for degradation events */
     onDegrade?: (status: DegradationStatus) => void;
-  },
+  }
 ): Promise<DegradedResult<T>> {
   const now = new Date().toISOString();
 
@@ -143,7 +143,7 @@ export function withDegradationSync<T>(
     reducedCapability?: string;
     defaultCapability?: string;
     onDegrade?: (status: DegradationStatus) => void;
-  },
+  }
 ): DegradedResult<T> {
   const now = new Date().toISOString();
 

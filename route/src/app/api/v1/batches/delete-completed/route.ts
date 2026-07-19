@@ -15,7 +15,7 @@ export async function DELETE(request: Request) {
   if (!scope.isSessionAuth && !scope.apiKeyId) {
     return NextResponse.json(
       { error: { message: "Authentication required", type: "invalid_request_error" } },
-      { status: 401, headers: CORS_HEADERS },
+      { status: 401, headers: CORS_HEADERS }
     );
   }
 
@@ -23,6 +23,6 @@ export async function DELETE(request: Request) {
 
   return NextResponse.json(
     { deleted: true, deletedBatches: result.deletedBatches, deletedFiles: result.deletedFiles },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

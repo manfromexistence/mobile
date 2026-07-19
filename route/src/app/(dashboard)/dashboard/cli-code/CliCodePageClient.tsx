@@ -14,14 +14,14 @@ import CliProfileAutoSyncToggles from "./components/CliProfileAutoSyncToggles";
 // ── Static catalogue slice ────────────────────────────────────────────────────
 
 const CODE_TOOLS: [string, CliCatalogEntry][] = Object.entries(CLI_TOOLS).filter(
-  ([, tool]) => tool.category === "code" && tool.baseUrlSupport !== "none",
+  ([, tool]) => tool.category === "code" && tool.baseUrlSupport !== "none"
 ) as [string, CliCatalogEntry][];
 
 // Cardinality guard (D15) — non-blocking, log only
 if (CODE_TOOLS.length !== EXPECTED_CODE_COUNT) {
   console.warn(
     `[CliCodePage] Expected ${EXPECTED_CODE_COUNT} code tools, found ${CODE_TOOLS.length}. ` +
-      "Check F1 catalog edits.",
+      "Check F1 catalog edits."
   );
 }
 
@@ -60,7 +60,7 @@ export default function CliCodePageClient({ machineId: _machineId }: CliCodePage
     let cancelled = false;
     fetch("/api/providers")
       .then<ProvidersResponse>((res) =>
-        res.ok ? res.json() : Promise.resolve({ connections: [] }),
+        res.ok ? res.json() : Promise.resolve({ connections: [] })
       )
       .then((data) => {
         if (cancelled) return;

@@ -69,7 +69,7 @@ export function useResizablePanels(): [ResizablePanelsState, ResizablePanelsActi
       window.addEventListener("mousemove", onMouseMoveRef.current);
       window.addEventListener("mouseup", onMouseUpRef.current);
     },
-    [collapsed, listWidth],
+    [collapsed, listWidth]
   );
 
   const toggleCollapse = useCallback(() => {

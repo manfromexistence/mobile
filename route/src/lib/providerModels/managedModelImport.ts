@@ -83,7 +83,7 @@ function getModelId(model: JsonRecord): string | null {
 function summarizeImportedChanges(
   previousModels: JsonRecord[],
   nextModels: JsonRecord[],
-  importedIds: Set<string>,
+  importedIds: Set<string>
 ) {
   let added = 0;
   let updated = 0;
@@ -100,8 +100,8 @@ function summarizeImportedChanges(
           new Set(
             model.supportedEndpoints
               .map((endpoint) => toNonEmptyString(endpoint))
-              .filter((endpoint): endpoint is string => Boolean(endpoint)),
-          ),
+              .filter((endpoint): endpoint is string => Boolean(endpoint))
+          )
         ).sort()
       : ["chat"];
     return {
@@ -146,10 +146,10 @@ function summarizeImportedChanges(
 
 function collectAddedImportedModels(
   previousModels: JsonRecord[],
-  importedModels: ManagedImportedModel[],
+  importedModels: ManagedImportedModel[]
 ): ManagedImportedModel[] {
   const previousIds = new Set(
-    previousModels.map((model) => toNonEmptyString(model.id)).filter(Boolean),
+    previousModels.map((model) => toNonEmptyString(model.id)).filter(Boolean)
   );
   return importedModels.filter((model) => !previousIds.has(model.id));
 }
@@ -234,7 +234,7 @@ export async function importManagedModels({
       description?: string;
       supportsThinking?: boolean;
     }>,
-    { allowEmpty: true },
+    { allowEmpty: true }
   )) as JsonRecord[];
   preserveRemovedCustomModelCompat(providerId, removedCustomModels);
 
@@ -243,14 +243,14 @@ export async function importManagedModels({
     syncedAvailableModels = await replaceSyncedAvailableModelsForConnection(
       providerId,
       connectionId,
-      discoveredModels,
+      discoveredModels
     );
   }
 
   // Prune stale/inactive connection caches for this provider
   const activeConnections = await getProviderConnections({ provider: providerId, isActive: true });
   const allowedConnectionIds = Array.from(
-    new Set([...activeConnections.map((c) => String(c.id)), connectionId]),
+    new Set([...activeConnections.map((c) => String(c.id)), connectionId])
   );
   await pruneStaleSyncedAvailableModelsForProvider(providerId, allowedConnectionIds);
 
@@ -321,7 +321,7 @@ export async function importManagedModels({
     const aliasSync = await syncManagedAvailableModelAliases(
       providerId,
       aliasModelIds.map((model) => model.id).filter((id) => !getModelIsHidden(providerId, id)),
-      { pruneMissing: mode === "sync" },
+      { pruneMissing: mode === "sync" }
     );
     syncedAliases = aliasSync.assignedAliases.length;
   }
@@ -329,11 +329,11 @@ export async function importManagedModels({
   const importedChanges = summarizeImportedChanges(
     previousSyncedAvailableModels as JsonRecord[],
     discoveredModels as JsonRecord[],
-    importedIds,
+    importedIds
   );
   const importedModels = collectAddedImportedModels(
     previousSyncedAvailableModels as JsonRecord[],
-    candidateImportedModels,
+    candidateImportedModels
   );
 
   return {

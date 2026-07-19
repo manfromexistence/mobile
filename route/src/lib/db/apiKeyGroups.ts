@@ -71,7 +71,7 @@ export function createKeyGroup(name: string, description = ""): KeyGroup {
   const now = new Date().toISOString();
 
   db.prepare(
-    "INSERT INTO key_groups (id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO key_groups (id, name, description, created_at, updated_at) VALUES (?, ?, ?, ?, ?)"
   ).run(id, name, description, now, now);
 
   return getKeyGroup(id)!;
@@ -79,7 +79,7 @@ export function createKeyGroup(name: string, description = ""): KeyGroup {
 
 export function updateKeyGroup(
   id: string,
-  updates: { name?: string; description?: string; isActive?: boolean },
+  updates: { name?: string; description?: string; isActive?: boolean }
 ): KeyGroup | undefined {
   const existing = getKeyGroup(id);
   if (!existing) return undefined;
@@ -121,7 +121,7 @@ export function getGroupPermissions(groupId: string): GroupModelPermission[] {
   const db = getDbInstance() as any;
   const rows = db
     .prepare(
-      "SELECT * FROM group_model_permissions WHERE group_id = ? ORDER BY access_type ASC, model_pattern ASC",
+      "SELECT * FROM group_model_permissions WHERE group_id = ? ORDER BY access_type ASC, model_pattern ASC"
     )
     .all(groupId) as any[];
   return rows.map(rowToPermission);
@@ -131,14 +131,14 @@ export function addGroupPermission(
   groupId: string,
   modelPattern: string,
   accessType: "allow" | "deny",
-  provider?: string,
+  provider?: string
 ): GroupModelPermission {
   const db = getDbInstance() as any;
   const id = randomUUID();
   const now = new Date().toISOString();
 
   db.prepare(
-    "INSERT INTO group_model_permissions (id, group_id, model_pattern, provider, access_type, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO group_model_permissions (id, group_id, model_pattern, provider, access_type, created_at) VALUES (?, ?, ?, ?, ?, ?)"
   ).run(id, groupId, modelPattern, provider || null, accessType, now);
 
   return getGroupPermissions(groupId).find((p) => p.id === id)!;
@@ -174,7 +174,7 @@ export function getKeyGroupsForApiKey(keyId: string): KeyGroup[] {
     INNER JOIN key_group_members m ON g.id = m.group_id
     WHERE m.key_id = ? AND g.is_active = 1
     ORDER BY g.name ASC
-  `,
+  `
     )
     .all(keyId) as any[];
   return rows.map(rowToGroup);
@@ -185,7 +185,7 @@ export function addKeyToGroup(keyId: string, groupId: string): boolean {
   try {
     db.prepare("INSERT OR IGNORE INTO key_group_members (key_id, group_id) VALUES (?, ?)").run(
       keyId,
-      groupId,
+      groupId
     );
     return true;
   } catch {
@@ -224,7 +224,7 @@ export interface ModelAccessCheck {
 export function checkKeyModelAccess(
   keyId: string,
   model: string,
-  provider?: string,
+  provider?: string
 ): ModelAccessCheck {
   const groups = getKeyGroupsForApiKey(keyId);
   if (groups.length === 0) {
@@ -242,7 +242,7 @@ export function checkKeyModelAccess(
     SELECT * FROM group_model_permissions
     WHERE group_id IN (${placeholders})
     ORDER BY access_type ASC
-  `,
+  `
     )
     .all(...groupIds) as any[];
 
@@ -253,7 +253,7 @@ export function checkKeyModelAccess(
     (p) =>
       p.accessType === "deny" &&
       matchesModelPattern(p.modelPattern, model) &&
-      (!p.provider || p.provider === provider),
+      (!p.provider || p.provider === provider)
   );
 
   if (denyRules.length > 0) {
@@ -265,7 +265,7 @@ export function checkKeyModelAccess(
     (p) =>
       p.accessType === "allow" &&
       matchesModelPattern(p.modelPattern, model) &&
-      (!p.provider || p.provider === provider),
+      (!p.provider || p.provider === provider)
   );
 
   if (allowRules.length > 0) {

@@ -117,7 +117,7 @@ export async function POST(request: Request) {
     console.error("[API] POST /api/middleware/hooks error:", error);
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to create hook" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

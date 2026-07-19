@@ -22,7 +22,7 @@ function getMachineIdRaw(): string {
       const output = execFileSync(
         regPath,
         ["QUERY", "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography", "/v", "MachineGuid"],
-        { encoding: "utf8", timeout: 5000 },
+        { encoding: "utf8", timeout: 5000 }
       );
       const id = output
         .split("REG_SZ")[1]

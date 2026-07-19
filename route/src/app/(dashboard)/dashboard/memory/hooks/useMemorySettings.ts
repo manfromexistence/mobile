@@ -61,7 +61,7 @@ export function useMemorySettings(): UseMemorySettingsResult {
         return false;
       }
     },
-    [fetchOnce],
+    [fetchOnce]
   );
 
   return { settings, isLoading, isError, mutate: fetchOnce, save };

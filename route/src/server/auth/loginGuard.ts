@@ -58,7 +58,7 @@ function clientKey(rawIp: string | null | undefined): string {
 
 export function checkLoginGuard(
   rawIp: string | null | undefined,
-  options: { enabled: boolean },
+  options: { enabled: boolean }
 ): GuardDecision {
   if (!options.enabled) return { allowed: true };
   const state = attempts.get(clientKey(rawIp));
@@ -75,7 +75,7 @@ export function checkLoginGuard(
 
 export function recordLoginFailure(
   rawIp: string | null | undefined,
-  options: { enabled: boolean },
+  options: { enabled: boolean }
 ): GuardDecision {
   if (!options.enabled) return { allowed: true };
   const key = clientKey(rawIp);

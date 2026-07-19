@@ -187,7 +187,7 @@ export function parseCliRegistry(): ParsedCliRegistry {
   } catch (err) {
     throw new Error(
       `cliRegistryParser: could not read ${commandsDir}. ` +
-        `Run from project root. Underlying error: ${err instanceof Error ? err.message : String(err)}`,
+        `Run from project root. Underlying error: ${err instanceof Error ? err.message : String(err)}`
     );
   }
 

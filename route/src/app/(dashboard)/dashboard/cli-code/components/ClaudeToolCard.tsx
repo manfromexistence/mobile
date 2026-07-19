@@ -193,7 +193,7 @@ export default function ClaudeToolCard({
       if (res.ok) {
         setMessage({ type: "success", text: t("settingsReset") });
         tool.defaultModels.forEach((model) =>
-          onModelMappingChange(model.alias, model.defaultValue || ""),
+          onModelMappingChange(model.alias, model.defaultValue || "")
         );
         setSelectedApiKey("");
       } else {

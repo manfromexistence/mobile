@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   if (contentLength > ZIP_BODY_LIMIT) {
     return NextResponse.json(
       { error: "ZIP file exceeds the 10 MB size limit", code: "file_too_large" },
-      { status: 413 },
+      { status: 413 }
     );
   }
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (arrayBuffer.byteLength > ZIP_BODY_LIMIT) {
       return NextResponse.json(
         { error: "ZIP file exceeds the 10 MB size limit", code: "file_too_large" },
-        { status: 413 },
+        { status: 413 }
       );
     }
     buffer = Buffer.from(arrayBuffer);
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to extract ZIP", code: "extract_failed" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 }

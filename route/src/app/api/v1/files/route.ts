@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     if (!file || !purpose) {
       return NextResponse.json(
         { error: { message: "Missing file or purpose", type: "invalid_request_error" } },
-        { status: 400, headers: CORS_HEADERS },
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
             type: "invalid_request_error",
           },
         },
-        { status: 400, headers: CORS_HEADERS },
+        { status: 400, headers: CORS_HEADERS }
       );
     }
 
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
     console.error("[FILES] Upload failed:", error);
     return NextResponse.json(
       { error: { message: "Upload failed", type: "server_error" } },
-      { status: 500, headers: CORS_HEADERS },
+      { status: 500, headers: CORS_HEADERS }
     );
   }
 }
@@ -105,6 +105,6 @@ export async function GET(request: Request) {
       has_more: hasMore,
       total_count: totalCount,
     },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

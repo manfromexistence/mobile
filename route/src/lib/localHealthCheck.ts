@@ -162,7 +162,7 @@ export async function sweep(): Promise<void> {
       const raw = await getProviderNodes();
       nodes = (Array.isArray(raw) ? raw : []).filter(
         (n: Record<string, unknown>) =>
-          typeof n.baseUrl === "string" && isLocalhostUrl(n.baseUrl as string),
+          typeof n.baseUrl === "string" && isLocalhostUrl(n.baseUrl as string)
       ) as Array<{ id: string; prefix: string; baseUrl: string }>;
     } catch (err) {
       console.error(LOG_PREFIX, "Failed to load provider_nodes:", err);
@@ -189,7 +189,7 @@ export async function sweep(): Promise<void> {
           const emoji = status.isHealthy ? "✅" : "❌";
           console.log(
             LOG_PREFIX,
-            `${emoji} ${status.prefix} is now ${status.isHealthy ? "healthy" : "unhealthy"}${status.lastError ? ` (${status.lastError})` : ""} [${status.responseTimeMs}ms]`,
+            `${emoji} ${status.prefix} is now ${status.isHealthy ? "healthy" : "unhealthy"}${status.lastError ? ` (${status.lastError})` : ""} [${status.responseTimeMs}ms]`
           );
         }
 
@@ -245,7 +245,7 @@ export function initLocalHealthCheck(): void {
 
   console.log(
     LOG_PREFIX,
-    `Starting local provider health check (initial delay ${INITIAL_DELAY_MS / 1000}s)`,
+    `Starting local provider health check (initial delay ${INITIAL_DELAY_MS / 1000}s)`
   );
 
   state.sweepTimer = setTimeout(() => {

@@ -21,7 +21,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   if (!plugin) {
     return NextResponse.json(
       { error: `Plugin '${name}' not found` },
-      { status: 404, headers: CORS_HEADERS },
+      { status: 404, headers: CORS_HEADERS }
     );
   }
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         activatedAt: plugin.activatedAt,
       },
     },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }
 
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ name: string }> },
+  { params }: { params: Promise<{ name: string }> }
 ) {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
@@ -69,7 +69,7 @@ export async function DELETE(
     await pluginManager.uninstall(name);
     return NextResponse.json(
       { success: true, message: `Plugin '${name}' uninstalled` },
-      { headers: CORS_HEADERS },
+      { headers: CORS_HEADERS }
     );
   } catch (err: unknown) {
     console.error("[plugins] Failed to uninstall plugin:", err);

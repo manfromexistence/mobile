@@ -128,8 +128,7 @@ async function checkAndUnlockBadge(apiKeyId: string, badgeId: string): Promise<v
     const badgeRow = getDbInstance()
       .prepare("SELECT name, description, icon, rarity FROM badge_definitions WHERE id = ?")
       .get(badgeId) as
-      | { name: string; description: string | null; icon: string | null; rarity: string }
-      | undefined;
+      { name: string; description: string | null; icon: string | null; rarity: string } | undefined;
 
     // Record notification for SSE toast
     const { recordBadgeUnlock } = await import("./notifications");
@@ -154,7 +153,7 @@ async function checkActionCountBadges(apiKeyId: string, action: string): Promise
   // Count total actions of this type
   const row = db
     .prepare(
-      "SELECT COALESCE(COUNT(*), 0) AS count FROM xp_audit_log WHERE api_key_id = ? AND action = ?",
+      "SELECT COALESCE(COUNT(*), 0) AS count FROM xp_audit_log WHERE api_key_id = ? AND action = ?"
     )
     .get(apiKeyId, action) as { count: number };
 

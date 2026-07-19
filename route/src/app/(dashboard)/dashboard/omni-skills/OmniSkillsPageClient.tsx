@@ -37,7 +37,7 @@ export function OmniSkillsPageClient(): JSX.Element {
   const [execTotalPages, setExecTotalPages] = useState(1);
 
   const [activeTab, setActiveTab] = useState<"skills" | "executions" | "sandbox" | "marketplace">(
-    "skills",
+    "skills"
   );
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [installJson, setInstallJson] = useState("");
@@ -65,7 +65,7 @@ export function OmniSkillsPageClient(): JSX.Element {
     setPopularDefaults(
       Array.isArray((res as { popularDefaults?: string[] }).popularDefaults)
         ? (res as { popularDefaults: string[] }).popularDefaults
-        : [],
+        : []
     );
   };
 
@@ -89,7 +89,7 @@ export function OmniSkillsPageClient(): JSX.Element {
         setPopularDefaults(
           Array.isArray((skillsData as { popularDefaults?: string[] }).popularDefaults)
             ? (skillsData as { popularDefaults: string[] }).popularDefaults
-            : [],
+            : []
         );
 
         setExecutions((executionsData as { data?: Execution[] }).data || []);

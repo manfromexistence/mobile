@@ -67,8 +67,7 @@ function t(key: string): string {
 function getButton(text: string): HTMLButtonElement | null {
   return (
     (Array.from(document.querySelectorAll("button")).find((b) => b.textContent?.includes(text)) as
-      | HTMLButtonElement
-      | undefined) ?? null
+      HTMLButtonElement | undefined) ?? null
   );
 }
 
@@ -126,7 +125,7 @@ describe("Step1ChooseIntegration", () => {
     renderIntoBody(<Step1ChooseIntegration selected="telegram" onSelect={onSelect} t={t} />);
 
     const slackButton = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("Slack"),
+      b.textContent?.includes("Slack")
     );
     expect(slackButton).toBeTruthy();
     act(() => slackButton!.click());
@@ -138,7 +137,7 @@ describe("Step1ChooseIntegration", () => {
     renderIntoBody(<Step1ChooseIntegration selected="slack" onSelect={onSelect} t={t} />);
 
     const emailButton = Array.from(document.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Email") && b.disabled,
+      (b) => b.textContent?.includes("Email") && b.disabled
     );
     expect(emailButton).toBeTruthy();
     act(() => emailButton!.click());
@@ -174,7 +173,7 @@ describe("Step3EventsAndTest — test ping", () => {
         onChangeEnabled={vi.fn()}
         onChangeDescription={vi.fn()}
         t={t}
-      />,
+      />
     );
 
     const sendBtn = getButton("Send Test");
@@ -183,7 +182,7 @@ describe("Step3EventsAndTest — test ping", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       "/api/webhooks/wh-test-123/test",
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({ method: "POST" })
     );
 
     // Status + latency line should appear
@@ -209,7 +208,7 @@ describe("Step3EventsAndTest — test ping", () => {
         onChangeEnabled={vi.fn()}
         onChangeDescription={vi.fn()}
         t={t}
-      />,
+      />
     );
 
     const sendBtn = getButton("Send Test");
@@ -241,13 +240,13 @@ describe("AddWebhookWizard — step 2→3 creates webhook with correct kind", ()
     // Now in step 2 (Slack config), fill in the URL using the native setter
     // so React's synthetic onChange fires properly on a controlled input.
     const input = document.querySelector(
-      'input[placeholder="https://hooks.slack.com/services/…"]',
+      'input[placeholder="https://hooks.slack.com/services/…"]'
     ) as HTMLInputElement | null;
     expect(input).toBeTruthy();
     await act(async () => {
       const nativeSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value",
+        "value"
       )?.set;
       nativeSetter?.call(input, "https://hooks.slack.com/services/T00/B00/xxx");
       input!.dispatchEvent(new Event("input", { bubbles: true }));
@@ -261,7 +260,7 @@ describe("AddWebhookWizard — step 2→3 creates webhook with correct kind", ()
     // Verify the POST was called with kind: "slack"
     const calls = mockFetch.mock.calls;
     const postCall = calls.find(
-      ([url, opts]) => url === "/api/webhooks" && opts?.method === "POST",
+      ([url, opts]) => url === "/api/webhooks" && opts?.method === "POST"
     );
     expect(postCall).toBeTruthy();
     const body = JSON.parse(postCall![1].body as string);

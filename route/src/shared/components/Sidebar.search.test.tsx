@@ -45,7 +45,7 @@ describe("Sidebar search/filter (#4013)", () => {
       vi.fn(async (url: string) => {
         if (String(url).includes("/api/settings")) return jsonResponse({});
         return jsonResponse({});
-      }),
+      })
     );
   });
 

@@ -97,7 +97,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
             details: [{ field: "models", message: "baseUrl and at least one model are required" }],
           },
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 

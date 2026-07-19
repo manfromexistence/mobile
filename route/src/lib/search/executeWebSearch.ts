@@ -113,7 +113,7 @@ function assertValidSearchInput(input: ExecuteWebSearchInput) {
 }
 
 export async function executeWebSearch(
-  input: ExecuteWebSearchInput,
+  input: ExecuteWebSearchInput
 ): Promise<ExecuteWebSearchResult> {
   assertValidSearchInput(input);
 
@@ -128,7 +128,7 @@ export async function executeWebSearch(
     if (!supportsSearchType(explicitProvider, searchType)) {
       throw new WebSearchExecutionError(
         `Search provider ${input.provider} does not support search_type: ${searchType}`,
-        400,
+        400
       );
     }
   }
@@ -141,7 +141,7 @@ export async function executeWebSearch(
         : `No search providers available. Add an API key for a search provider (${getAllSearchProviders()
             .map((provider) => provider.id)
             .join(", ")}) in the dashboard.`,
-      400,
+      400
     );
   }
 
@@ -166,7 +166,7 @@ export async function executeWebSearch(
         providerConfig.authType === "none"
           ? `Search provider ${providerConfig.id} is not configured. Set its base URL in the dashboard or pass provider_options.baseUrl.`
           : `No credentials configured for search provider: ${providerConfig.id}. Add an API key for "${providerConfig.id}" in the dashboard.`,
-        400,
+        400
       );
     }
   } else {
@@ -193,9 +193,9 @@ export async function executeWebSearch(
     if (!credentials) {
       throw new WebSearchExecutionError(
         `No credentials configured for any search provider. Add an API key for a search provider (${Object.keys(
-          SEARCH_PROVIDERS,
+          SEARCH_PROVIDERS
         ).join(", ")}) in the dashboard.`,
-        400,
+        400
       );
     }
 
@@ -227,7 +227,7 @@ export async function executeWebSearch(
       filters: input.filters,
       offset: input.offset,
       time_range: input.time_range,
-    },
+    }
   );
   const ttl = providerConfig.cacheTTLMs ?? SEARCH_CACHE_DEFAULT_TTL_MS;
 

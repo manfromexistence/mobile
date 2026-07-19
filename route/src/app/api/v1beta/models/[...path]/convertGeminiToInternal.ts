@@ -158,7 +158,7 @@ function convertContent(content: GeminiContent): InternalMessage | null {
 export function convertGeminiToInternal(
   geminiBody: GeminiGenerateBody,
   model: string,
-  stream: boolean,
+  stream: boolean
 ): InternalChatBody {
   const messages: InternalMessage[] = [];
 

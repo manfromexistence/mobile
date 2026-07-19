@@ -32,7 +32,7 @@ export type QdrantConfig = {
  * Reference: Qdrant scalar/binary quantization + rescore docs.
  */
 export function buildQuantizationConfig(
-  quantization: QdrantQuantization,
+  quantization: QdrantQuantization
 ): Record<string, unknown> | undefined {
   switch (quantization) {
     case "int8":
@@ -51,7 +51,7 @@ export function buildQuantizationConfig(
  * (preserves recall). Returns `undefined` for `none` (no `params` sent).
  */
 export function searchQuantizationParams(
-  quantization: QdrantQuantization,
+  quantization: QdrantQuantization
 ): Record<string, unknown> | undefined {
   if (quantization === "none") return undefined;
   return { quantization: { rescore: true } };
@@ -326,7 +326,7 @@ export async function upsertSemanticMemoryPoint(input: {
             },
           ],
         }),
-      },
+      }
     );
 
     const latencyMs = Date.now() - start;
@@ -347,7 +347,7 @@ export async function upsertSemanticMemoryPoint(input: {
 export async function searchSemanticMemory(
   query: string,
   topK = 5,
-  scope?: { apiKeyId?: string; sessionId?: string | null },
+  scope?: { apiKeyId?: string; sessionId?: string | null }
 ): Promise<{
   ok: boolean;
   latencyMs: number;
@@ -383,7 +383,7 @@ export async function searchSemanticMemory(
           },
           with_payload: true,
         }),
-      },
+      }
     );
 
     const latencyMs = Date.now() - start;
@@ -412,7 +412,7 @@ export async function searchSemanticMemory(
 }
 
 export async function deleteSemanticMemoryPoint(
-  id: string,
+  id: string
 ): Promise<{ ok: boolean; latencyMs: number; error?: string }> {
   const cfg = await getQdrantConfig();
   if (!cfg.enabled || !cfg.host) return { ok: false, latencyMs: 0, error: "not_configured" };
@@ -424,7 +424,7 @@ export async function deleteSemanticMemoryPoint(
       {
         method: "POST",
         body: JSON.stringify({ points: [id] }),
-      },
+      }
     );
     const latencyMs = Date.now() - start;
     if (!res.ok) {
@@ -473,7 +473,7 @@ export async function cleanupSemanticMemoryPoints(input: {
       {
         method: "POST",
         body: JSON.stringify({ filter, exact: true }),
-      },
+      }
     );
     if (!countRes.ok) {
       const text = await countRes.text().catch(() => "");
@@ -502,7 +502,7 @@ export async function cleanupSemanticMemoryPoints(input: {
         body: JSON.stringify({
           filter,
         }),
-      },
+      }
     );
     if (!delRes.ok) {
       const text = await delRes.text().catch(() => "");

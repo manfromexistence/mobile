@@ -73,7 +73,7 @@ describe("MemoryCards", () => {
           misses={0}
           hitRate="0%"
           tokensSaved={0}
-        />,
+        />
       );
       expect(screen.getAllByText("0").length).toBeGreaterThan(0);
     });

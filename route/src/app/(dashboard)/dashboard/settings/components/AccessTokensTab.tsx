@@ -84,7 +84,7 @@ export default function AccessTokensTab() {
       await load();
     } catch (e) {
       setError(
-        e instanceof Error ? e.message : L("accessTokensCreateError", "Could not create token."),
+        e instanceof Error ? e.message : L("accessTokensCreateError", "Could not create token.")
       );
     } finally {
       setCreating(false);
@@ -128,7 +128,7 @@ export default function AccessTokensTab() {
           <p className="mt-1 text-sm text-text-muted">
             {L(
               "accessTokensDescription",
-              "Scoped tokens that let the omniroute CLI manage this server remotely. Distinct from inference API keys. The secret is shown once.",
+              "Scoped tokens that let the omniroute CLI manage this server remotely. Distinct from inference API keys. The secret is shown once."
             )}
           </p>
         </div>
@@ -277,7 +277,7 @@ export default function AccessTokensTab() {
         title={L("accessTokensRevokeTitle", "Revoke access token")}
         message={L(
           "accessTokensRevokeConfirm",
-          "This immediately invalidates the token. Any machine using it loses access.",
+          "This immediately invalidates the token. Any machine using it loses access."
         )}
         confirmText={L("accessTokensRevoke", "Revoke")}
         variant="danger"

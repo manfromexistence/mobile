@@ -149,7 +149,7 @@ export function useModelImportHandlers({
         ...models.map((m: any) => m.id),
       ]);
       const newModels = fetchedModels.filter(
-        (model: any) => !existingIds.has(model.id || model.name || model.model),
+        (model: any) => !existingIds.has(model.id || model.name || model.model)
       );
 
       if (newModels.length === 0) {
@@ -260,7 +260,7 @@ export function useModelImportHandlers({
 
   const handleCompatibleImportWithProgress = async (
     connectionId: string,
-    mode: "import" | "sync" = "import",
+    mode: "import" | "sync" = "import"
   ) => {
     setShowImportModal(true);
     setImportProgress({
@@ -348,7 +348,7 @@ export function useModelImportHandlers({
         logs: [
           t("foundModelsStartingImport", { count: importedModels.length }),
           ...importedModels.map((model: any) =>
-            t("importingModelById", { modelId: model.id || model.name || model.model }),
+            t("importingModelById", { modelId: model.id || model.name || model.model })
           ),
           importedCount > 0
             ? t("importDoneCount", { count: importedCount })
@@ -387,7 +387,7 @@ export function useModelImportHandlers({
       });
       await fetchConnections();
       notify[newValue ? "success" : "info"](
-        newValue ? t("autoSyncEnabled") : t("autoSyncDisabled"),
+        newValue ? t("autoSyncEnabled") : t("autoSyncDisabled")
       );
     } catch (error) {
       console.log("Error toggling auto-sync:", error);

@@ -44,7 +44,7 @@ export const denoDeploySchema = z.object({
     .max(200)
     .regex(
       /^[A-Za-z0-9_-]+$/,
-      "Deno Deploy token must contain only alphanumeric, underscore, or hyphen",
+      "Deno Deploy token must contain only alphanumeric, underscore, or hyphen"
     ),
   orgDomain: z
     .string()
@@ -72,7 +72,7 @@ export const vercelDeploySchema = z.object({
     .max(200)
     .regex(
       /^[A-Za-z0-9_-]+$/,
-      "Vercel token must contain only alphanumeric, underscore, or hyphen",
+      "Vercel token must contain only alphanumeric, underscore, or hyphen"
     ),
   projectName: z
     .string()
@@ -98,7 +98,7 @@ export const cloudflareDeploySchema = z.object({
     .max(200)
     .regex(
       /^[A-Za-z0-9_-]+$/,
-      "Cloudflare API token must contain only alphanumeric, underscore, or hyphen",
+      "Cloudflare API token must contain only alphanumeric, underscore, or hyphen"
     ),
   projectName: z
     .string()

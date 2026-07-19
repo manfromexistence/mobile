@@ -157,7 +157,7 @@ export function upsertTokenLimit(input: UpsertTokenLimitInput): TokenLimit {
                    reset_interval = excluded.reset_interval,
                    reset_time     = excluded.reset_time,
                    enabled        = excluded.enabled,
-                   updated_at     = datetime('now')`,
+                   updated_at     = datetime('now')`
   ).run({
     id,
     apiKeyId: input.apiKeyId,
@@ -171,7 +171,7 @@ export function upsertTokenLimit(input: UpsertTokenLimitInput): TokenLimit {
 
   const row = db
     .prepare(
-      "SELECT * FROM api_key_token_limits WHERE api_key_id = ? AND scope_type = ? AND scope_value = ?",
+      "SELECT * FROM api_key_token_limits WHERE api_key_id = ? AND scope_type = ? AND scope_value = ?"
     )
     .get(input.apiKeyId, scopeType, scopeValue);
   return rowToTokenLimit(row);
@@ -185,7 +185,7 @@ export function listTokenLimits(apiKeyId: string): TokenLimit[] {
     .prepare(
       `SELECT * FROM api_key_token_limits
        WHERE api_key_id = ?
-       ORDER BY CASE scope_type WHEN 'model' THEN 0 WHEN 'provider' THEN 1 ELSE 2 END, scope_value`,
+       ORDER BY CASE scope_type WHEN 'model' THEN 0 WHEN 'provider' THEN 1 ELSE 2 END, scope_value`
     )
     .all(apiKeyId)
     .map(rowToTokenLimit);
@@ -199,7 +199,7 @@ export function listTokenLimits(apiKeyId: string): TokenLimit[] {
 export function getTokenLimitsForRequest(
   apiKeyId: string,
   provider: string,
-  model: string,
+  model: string
 ): TokenLimit[] {
   ensureSchema();
   const db = getDbInstance();
@@ -212,7 +212,7 @@ export function getTokenLimitsForRequest(
            (scope_type = 'global')
            OR (scope_type = 'model' AND scope_value = @model)
            OR (scope_type = 'provider' AND scope_value = @provider)
-         )`,
+         )`
     )
     .all({ apiKeyId, model: model || "", provider: provider || "" } as JsonRecord)
     .map(rowToTokenLimit);
@@ -257,7 +257,7 @@ export function getWindowUsage(limit: TokenLimit, now = Date.now()): number {
   const { windowStart } = resetWindowIfElapsed(limit, now);
   const row = db
     .prepare(
-      "SELECT tokens_used FROM api_key_token_counters WHERE limit_id = ? AND window_start = ?",
+      "SELECT tokens_used FROM api_key_token_counters WHERE limit_id = ? AND window_start = ?"
     )
     .get(limit.id, windowStart);
   return toNumber(asRecord(row).tokens_used);
@@ -271,7 +271,7 @@ export function getWindowUsage(limit: TokenLimit, now = Date.now()): number {
 export function incrementWindowTokens(
   limitId: string,
   windowStart: string,
-  tokens: number,
+  tokens: number
 ): number {
   ensureSchema();
   const db = getDbInstance();
@@ -283,7 +283,7 @@ export function incrementWindowTokens(
        ON CONFLICT(limit_id, window_start)
        DO UPDATE SET tokens_used = tokens_used + excluded.tokens_used,
                      updated_at  = datetime('now')
-       RETURNING tokens_used`,
+       RETURNING tokens_used`
     )
     .get({ limitId, windowStart, tokens: delta });
   return toNumber(asRecord(row).tokens_used);
@@ -295,6 +295,6 @@ export function logTokenLimitReset(limitId: string, prevTokens: number, windowSt
   const db = getDbInstance();
   db.prepare(
     `INSERT INTO api_key_token_limit_reset_logs (limit_id, reset_at, prev_tokens, window_start)
-     VALUES (?, datetime('now'), ?, ?)`,
+     VALUES (?, datetime('now'), ?, ?)`
   ).run(limitId, Math.max(0, Math.floor(toNumber(prevTokens))), windowStart);
 }

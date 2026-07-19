@@ -50,7 +50,7 @@ function secondsInputToOptionalMs(value: string, maxSeconds = 86400): number | u
 function translateOrFallback(
   t: ReturnType<typeof useTranslations>,
   key: string,
-  fallback: string,
+  fallback: string
 ): string {
   return typeof t.has === "function" && t.has(key) ? t(key) : fallback;
 }
@@ -60,8 +60,8 @@ function sanitizeComboRuntimeConfig(config?: Record<string, any> | null) {
   return Object.fromEntries(
     Object.entries(config).filter(
       ([key, value]) =>
-        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key),
-    ),
+        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key)
+    )
   );
 }
 
@@ -71,7 +71,7 @@ function sanitizeProviderOverrides(overrides?: Record<string, any> | null) {
     Object.entries(overrides).map(([providerId, config]) => [
       providerId,
       sanitizeComboRuntimeConfig(config),
-    ]),
+    ])
   );
 }
 
@@ -106,7 +106,7 @@ export default function ComboDefaultsTab() {
   const [codexSessionAffinityTtlMs, setCodexSessionAffinityTtlMs] = useState(0);
   const [providerOverrides, setProviderOverrides] = useState<any>({});
   const [availableProviders, setAvailableProviders] = useState<{ id: string; provider: string }[]>(
-    [],
+    []
   );
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -124,7 +124,7 @@ export default function ComboDefaultsTab() {
     label: translateOrFallback(
       t,
       strategy.labelKey,
-      STRATEGY_LABEL_FALLBACKS[strategy.value] || strategy.value,
+      STRATEGY_LABEL_FALLBACKS[strategy.value] || strategy.value
     ),
     icon: strategy.icon,
   }));
@@ -181,7 +181,7 @@ export default function ComboDefaultsTab() {
         setCodexSessionAffinityTtlMs(
           Number.isFinite(Number(settingsData.codexSessionAffinityTtlMs))
             ? Number(settingsData.codexSessionAffinityTtlMs)
-            : 0,
+            : 0
         );
       })
       .catch((err) => console.error("Failed to fetch combo defaults:", err));
@@ -292,7 +292,7 @@ export default function ComboDefaultsTab() {
 
   // Filtered provider list — excludes already-added ones, filtered by search query
   const filteredProviders = availableProviders.filter(
-    (p) => !providerOverrides[p.provider] && matchesSearch(p.provider, searchQuery),
+    (p) => !providerOverrides[p.provider] && matchesSearch(p.provider, searchQuery)
   );
 
   const handleDropdownKeyDown = (e: React.KeyboardEvent) => {
@@ -348,14 +348,14 @@ export default function ComboDefaultsTab() {
           {translateOrFallback(
             t,
             "routingAdvancedGuideHint1",
-            "This strategy is synced to both new combo defaults and global account fallback routing.",
+            "This strategy is synced to both new combo defaults and global account fallback routing."
           )}
         </p>
         <p className="text-xs text-text-muted">
           {translateOrFallback(
             t,
             "routingAdvancedGuideHint2",
-            "Use Fill First for predictable account priority, Round Robin plus Sticky Limit for account batches, and P2C for latency resilience.",
+            "Use Fill First for predictable account priority, Round Robin plus Sticky Limit for account batches, and P2C for latency resilience."
           )}
         </p>
       </div>
@@ -396,7 +396,7 @@ export default function ComboDefaultsTab() {
                   "px-2 py-1 rounded text-xs font-medium transition-all flex items-center justify-center gap-0.5",
                   comboDefaults.strategy === s.value
                     ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
-                    : "text-text-muted hover:text-text-main",
+                    : "text-text-muted hover:text-text-main"
                 )}
               >
                 <span className="material-symbols-outlined text-[14px]">{s.icon}</span>
@@ -473,7 +473,7 @@ export default function ComboDefaultsTab() {
           {translateOrFallback(
             t,
             "targetTimeoutHint",
-            "Combo targets inherit the current request timeout by default. Set a lower value here only when you want faster fallback.",
+            "Combo targets inherit the current request timeout by default. Set a lower value here only when you want faster fallback."
           )}
         </p>
 
@@ -486,7 +486,7 @@ export default function ComboDefaultsTab() {
               {translateOrFallback(
                 t,
                 "codexSessionAffinityDesc",
-                "Keeps one Codex conversation on the same account for this many seconds. 0 disables it.",
+                "Keeps one Codex conversation on the same account for this many seconds. 0 disables it."
               )}
             </p>
           </div>
@@ -511,7 +511,7 @@ export default function ComboDefaultsTab() {
               {translateOrFallback(
                 t,
                 "resetAwareQuotaCacheDesc",
-                "Caches quota telemetry for reset-aware ordering only. Quota preflight still protects requests. 0/0 keeps live fetching.",
+                "Caches quota telemetry for reset-aware ordering only. Quota preflight still protects requests. 0/0 keeps live fetching."
               )}
             </p>
           </div>
@@ -650,7 +650,7 @@ export default function ComboDefaultsTab() {
                 {translateOrFallback(
                   t,
                   "contextRelayProviderNote",
-                  "Context Relay currently generates handoffs for Codex accounts and uses these values as global defaults for new or unconfigured combos.",
+                  "Context Relay currently generates handoffs for Codex accounts and uses these values as global defaults for new or unconfigured combos."
                 )}
               </p>
             </div>
@@ -684,7 +684,7 @@ export default function ComboDefaultsTab() {
                 {translateOrFallback(
                   t,
                   "reasoningTokenBufferDesc",
-                  "Allow combo routing to add max_tokens headroom only for known reasoning models when the full buffer fits inside a known output cap.",
+                  "Allow combo routing to add max_tokens headroom only for known reasoning models when the full buffer fits inside a known output cap."
                 )}
               </p>
             </div>
@@ -707,7 +707,7 @@ export default function ComboDefaultsTab() {
                 {translateOrFallback(
                   t,
                   "zeroLatencyOptimizationsDesc",
-                  "Opt in to hedging, predictive TTFT skips, and proactive fallback compression. Leave off to prevent these latency features from racing targets or compressing fallback requests.",
+                  "Opt in to hedging, predictive TTFT skips, and proactive fallback compression. Leave off to prevent these latency features from racing targets or compressing fallback requests."
                 )}
               </p>
             </div>
@@ -730,7 +730,7 @@ export default function ComboDefaultsTab() {
                 {translateOrFallback(
                   t,
                   "disableSessionStickinessDesc",
-                  "Round-robin and random combos rotate to a different connection on every request instead of pinning a whole conversation to one connection by the first-message hash. Leave off to preserve prompt-cache hits for multi-turn chats. Per-combo overrides take precedence.",
+                  "Round-robin and random combos rotate to a different connection on every request instead of pinning a whole conversation to one connection by the first-message hash. Leave off to preserve prompt-cache hits for multi-turn chats. Per-combo overrides take precedence."
                 )}
               </p>
             </div>
@@ -802,7 +802,7 @@ export default function ComboDefaultsTab() {
                   </span>
                 </button>
               </div>
-            ),
+            )
           )}
 
           <div className="relative" ref={dropdownRef}>

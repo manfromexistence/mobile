@@ -41,7 +41,7 @@ export function useProviderBreakerHealth(pollMs = DEFAULT_POLL_MS): ResilienceHe
       inFlightRef.current = controller;
       const timeoutId = setTimeout(
         () => controller.abort("Provider breaker health timeout"),
-        POLL_TIMEOUT_MS,
+        POLL_TIMEOUT_MS
       );
 
       try {

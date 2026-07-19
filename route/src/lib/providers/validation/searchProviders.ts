@@ -10,7 +10,7 @@ export async function validateSearchProvider(
   url: string,
   init: RequestInit,
   providerSpecificData: any = {},
-  isLocal: boolean = false,
+  isLocal: boolean = false
 ): Promise<{ valid: boolean; error: string | null; unsupported: false }> {
   try {
     const response = await safeOutboundFetch(url, {
@@ -84,7 +84,7 @@ export const SEARCH_VALIDATOR_CONFIGS: Record<
     }
     return {
       url: `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(apiKey)}&cx=${encodeURIComponent(
-        cx,
+        cx
       )}&q=test&num=1`,
       init: {
         method: "GET",
@@ -107,7 +107,7 @@ export const SEARCH_VALIDATOR_CONFIGS: Record<
   }),
   "searchapi-search": (apiKey) => ({
     url: `https://www.searchapi.io/api/v1/search?engine=google&q=test&api_key=${encodeURIComponent(
-      apiKey,
+      apiKey
     )}`,
     init: {
       method: "GET",

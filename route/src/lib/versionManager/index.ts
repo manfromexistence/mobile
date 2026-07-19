@@ -17,7 +17,7 @@ export type { HealthResult } from "./healthMonitor.ts";
 
 export async function installTool(
   tool: string,
-  version?: string,
+  version?: string
 ): Promise<{
   installedVersion: string;
   binaryPath: string;
@@ -45,7 +45,7 @@ export async function startTool(tool: string): Promise<{
 
   if (!binaryPath) {
     throw new Error(
-      `No binary found for ${tool}. Run installTool('${tool}') or set binaryPath in version manager.`,
+      `No binary found for ${tool}. Run installTool('${tool}') or set binaryPath in version manager.`
     );
   }
 
@@ -86,7 +86,7 @@ export async function restartTool(tool: string): Promise<{
     binaryPath,
     info?.port || undefined,
     undefined,
-    info?.pid || undefined,
+    info?.pid || undefined
   );
 
   const url = `http://127.0.0.1:${port}`;
@@ -128,7 +128,7 @@ export async function unpinVersion(tool: string): Promise<void> {
 }
 
 export async function getToolHealth(
-  tool: string,
+  tool: string
 ): Promise<Awaited<ReturnType<typeof checkHealth>> | null> {
   const info = await getVersionManagerTool(tool);
   if (!info?.port || info.status !== "running") return null;

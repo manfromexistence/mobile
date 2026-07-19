@@ -130,7 +130,7 @@ async function sweep(): Promise<void> {
       batch.map(async (proxy) => {
         const outcome = await testOneProxy(proxy);
         return { id: proxy.id, outcome };
-      }),
+      })
     );
 
     for (const result of results) {
@@ -172,7 +172,7 @@ async function sweep(): Promise<void> {
   }
 
   console.log(
-    `${LOG_PREFIX} Sweep complete: ${tested} tested, ${alive} alive, ${inconclusive} inconclusive, ${removed} auto-removed`,
+    `${LOG_PREFIX} Sweep complete: ${tested} tested, ${alive} alive, ${inconclusive} inconclusive, ${removed} auto-removed`
   );
 }
 

@@ -210,8 +210,8 @@
   --shadow-elevated: var(--shadow-elevated);
 
   /* Font - macOS system fonts */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui,
-    sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, sans-serif;
   /* Monospace stack (parity with the site) — code blocks, IDs, endpoints, terminals */
   --font-mono: ui-monospace, "JetBrains Mono", "Fira Code", "SF Mono", monospace;
 
@@ -267,7 +267,8 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
 }
@@ -357,7 +358,11 @@ body.electron-macos {
   font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
   user-select: none;
 }
 
@@ -368,7 +373,11 @@ button .material-symbols-outlined,
 }
 
 .material-symbols-outlined.fill-1 {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }
 
 /* Animations */
@@ -402,11 +411,15 @@ button .material-symbols-outlined,
 @keyframes border-glow {
   0%,
   100% {
-    box-shadow: 0 0 5px rgba(229, 77, 94, 0.3), 0 0 10px rgba(229, 77, 94, 0.2);
+    box-shadow:
+      0 0 5px rgba(229, 77, 94, 0.3),
+      0 0 10px rgba(229, 77, 94, 0.2);
     border-color: rgba(229, 77, 94, 0.5);
   }
   50% {
-    box-shadow: 0 0 10px rgba(229, 77, 94, 0.5), 0 0 20px rgba(229, 77, 94, 0.3);
+    box-shadow:
+      0 0 10px rgba(229, 77, 94, 0.5),
+      0 0 20px rgba(229, 77, 94, 0.3);
     border-color: rgba(229, 77, 94, 0.8);
   }
 }

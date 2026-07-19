@@ -21,7 +21,7 @@ export function saveTierConfig(config: TierConfig): void {
   const db = getDbInstance();
   const serialized = JSON.stringify(config);
   db.prepare(
-    `INSERT OR REPLACE INTO ${TABLE} (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))`,
+    `INSERT OR REPLACE INTO ${TABLE} (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))`
   ).run(serialized);
 }
 
@@ -53,8 +53,7 @@ function previewCorruptedValue(value: unknown): string {
 export function loadTierConfigFromDb(): TierConfig | null {
   const db = getDbInstance();
   const row = db.prepare(`SELECT value FROM ${TABLE} WHERE key = 'tier_config'`).get() as
-    | { value: string }
-    | undefined;
+    { value: string } | undefined;
   if (!row) return null;
 
   const raw = row.value;
@@ -64,7 +63,7 @@ export function loadTierConfigFromDb(): TierConfig | null {
   } catch (err) {
     log.warn(
       { err: err instanceof Error ? err.message : String(err), value: previewCorruptedValue(raw) },
-      "tier_config JSON.parse failed; falling back to DEFAULT_TIER_CONFIG",
+      "tier_config JSON.parse failed; falling back to DEFAULT_TIER_CONFIG"
     );
     return null;
   }
@@ -77,7 +76,7 @@ export function loadTierConfigFromDb(): TierConfig | null {
         err: err instanceof Error ? err.message : String(err),
         value: previewCorruptedValue(raw),
       },
-      "tier_config Zod validation failed; falling back to DEFAULT_TIER_CONFIG",
+      "tier_config Zod validation failed; falling back to DEFAULT_TIER_CONFIG"
     );
     return null;
   }

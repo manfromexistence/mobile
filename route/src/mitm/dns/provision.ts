@@ -43,7 +43,7 @@ export interface DnsProvisionDeps {
  */
 export async function provisionDnsEntries(
   sudoPassword: string,
-  deps: DnsProvisionDeps = {},
+  deps: DnsProvisionDeps = {}
 ): Promise<void> {
   const addDefaultDns = deps.addDefaultDns ?? addDNSEntry;
   const addHostsDns = deps.addHostsDns ?? addDNSEntries;

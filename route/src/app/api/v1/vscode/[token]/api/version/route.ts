@@ -15,6 +15,6 @@ export async function GET() {
       headers: {
         ...CORS_HEADERS,
       },
-    },
+    }
   );
 }

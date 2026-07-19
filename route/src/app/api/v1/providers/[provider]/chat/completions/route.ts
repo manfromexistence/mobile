@@ -63,7 +63,7 @@ export async function POST(request, { params }) {
     const isNotObject = !rawBody || typeof rawBody !== "object" || Array.isArray(rawBody);
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      isNotObject ? "Request body must be a JSON object" : "model must be a string",
+      isNotObject ? "Request body must be a JSON object" : "model must be a string"
     );
   }
 
@@ -83,7 +83,7 @@ export async function POST(request, { params }) {
     ) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `Model "${body.model}" does not belong to provider "${rawProvider}". Expected prefix: ${providerAlias}/`,
+        `Model "${body.model}" does not belong to provider "${rawProvider}". Expected prefix: ${providerAlias}/`
       );
     }
 

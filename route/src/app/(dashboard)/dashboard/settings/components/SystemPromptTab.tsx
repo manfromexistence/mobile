@@ -54,7 +54,7 @@ export default function SystemPromptTab() {
     setDebounceTimer(
       setTimeout(() => {
         save({ [field]: text });
-      }, 800),
+      }, 800)
     );
   };
 

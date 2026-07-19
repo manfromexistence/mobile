@@ -291,7 +291,7 @@ export function loadHooksFromConfig(rows: HookConfig[]): void {
  */
 export async function runHooks(
   context: PreRequestHookContext,
-  comboId?: string,
+  comboId?: string
 ): Promise<{
   context: PreRequestHookContext;
   response?: { status: number; body: Record<string, unknown> };
@@ -302,7 +302,7 @@ export async function runHooks(
       (h) =>
         h.enabled &&
         (h.scope.type === "global" ||
-          (h.scope.type === "combo" && comboId && h.scope.comboId === comboId)),
+          (h.scope.type === "combo" && comboId && h.scope.comboId === comboId))
     )
     .sort((a, b) => a.priority - b.priority);
 

@@ -17,8 +17,7 @@ const SHUTDOWN_TIMEOUT_MS = parseInt(process.env.SHUTDOWN_TIMEOUT_MS || "30000",
 
 declare global {
   var __omnirouteShutdown:
-    | { init: boolean; shuttingDown: boolean; activeRequests: number }
-    | undefined;
+    { init: boolean; shuttingDown: boolean; activeRequests: number } | undefined;
 }
 
 function getShutdownState() {
@@ -77,7 +76,7 @@ async function waitForDrain(): Promise<void> {
 
       if (Date.now() - start > SHUTDOWN_TIMEOUT_MS) {
         console.warn(
-          `[Shutdown] Timeout after ${SHUTDOWN_TIMEOUT_MS}ms with ${state.activeRequests} active requests. Forcing exit.`,
+          `[Shutdown] Timeout after ${SHUTDOWN_TIMEOUT_MS}ms with ${state.activeRequests} active requests. Forcing exit.`
         );
         resolve();
         return;
@@ -106,7 +105,7 @@ async function cleanup(): Promise<void> {
     const flushResult = await flushSpendBatchWriter();
     if (flushResult.flushedEntries > 0) {
       console.log(
-        `[Shutdown] Spend batch writer flushed ${flushResult.flushedEntries} pending entry(ies).`,
+        `[Shutdown] Spend batch writer flushed ${flushResult.flushedEntries} pending entry(ies).`
       );
     }
     if (closeAuditDb()) {

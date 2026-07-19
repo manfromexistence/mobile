@@ -30,13 +30,13 @@ export function createErrorResponse(payload: ApiErrorPayload): Response {
       },
       requestId,
     },
-    { status: payload.status },
+    { status: payload.status }
   );
 }
 
 export function createErrorResponseFromUnknown(
   error: unknown,
-  fallbackMessage = "Unexpected server error",
+  fallbackMessage = "Unexpected server error"
 ): Response {
   const anyError = error as {
     message?: string;

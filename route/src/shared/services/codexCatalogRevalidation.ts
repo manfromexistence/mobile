@@ -52,7 +52,7 @@ function readInstalledPackageVersion(runtimeRoot: string): string | null {
 /** Resolve a stable, source-qualified app identity for upgrade detection. */
 export function resolveCodexCatalogAppVersion(
   env: NodeJS.ProcessEnv = process.env,
-  options: AppVersionOptions = {},
+  options: AppVersionOptions = {}
 ): string | null {
   for (const value of [env.OMNIROUTE_BUILD_SHA, env.BUILD_SHA]) {
     if (typeof value === "string" && value.trim()) return `build:${value.trim()}`;
@@ -92,7 +92,7 @@ export function resolveCodexCatalogAppVersion(
  */
 export function resolveBootRevalidationReason(
   previousVersion: string | null | undefined,
-  appVersion: string,
+  appVersion: string
 ): CodexCatalogRevalidationReason | null {
   if (!previousVersion || !String(previousVersion).trim()) return "first-start";
   if (String(previousVersion).trim() !== appVersion) return "upgrade";
@@ -168,9 +168,8 @@ export async function waitForLoopbackHttpReady(options?: {
 }): Promise<void> {
   const maxWaitMs = options?.maxWaitMs ?? 15_000;
   const pollMs = options?.pollMs ?? 50;
-  const { fetchModelSyncInternal, resolveModelSyncInternalBaseUrl } = await import(
-    "./modelSyncScheduler"
-  );
+  const { fetchModelSyncInternal, resolveModelSyncInternalBaseUrl } =
+    await import("./modelSyncScheduler");
   const baseUrl = resolveModelSyncInternalBaseUrl(options?.apiBaseUrl);
   const deadline = Date.now() + maxWaitMs;
   let lastErr: unknown;
@@ -182,7 +181,7 @@ export async function waitForLoopbackHttpReady(options?: {
         {
           redirect: "error",
           signal: AbortSignal.timeout(1_500),
-        },
+        }
       );
       if (res.status >= 200 && res.status < 600) return;
     } catch (err) {
@@ -194,12 +193,12 @@ export async function waitForLoopbackHttpReady(options?: {
   throw new Error(
     `loopback not ready within ${maxWaitMs}ms: ${
       lastErr instanceof Error ? lastErr.message : String(lastErr)
-    }`,
+    }`
   );
 }
 
 export async function liveResyncCodexConnections(
-  apiBaseUrl?: string,
+  apiBaseUrl?: string
 ): Promise<{ attempted: number; succeeded: number }> {
   const connections = await listActiveCodexConnectionIds();
   if (connections.length === 0) {
@@ -220,13 +219,13 @@ export async function liveResyncCodexConnections(
             "Content-Type": "application/json",
             ...buildModelSyncInternalHeaders(),
           },
-        },
+        }
       );
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
       return true;
-    }),
+    })
   );
 
   const succeeded = results.filter((r) => r.status === "fulfilled").length;
@@ -293,7 +292,7 @@ type CodexCatalogRevalidationRequest = {
 };
 
 export function createCodexCatalogRevalidationCoordinator(
-  run: (options: CodexCatalogRevalidationRequest) => Promise<void>,
+  run: (options: CodexCatalogRevalidationRequest) => Promise<void>
 ): (options: CodexCatalogRevalidationRequest) => Promise<void> {
   let activeRun: Promise<void> | null = null;
   let activeReason: CodexCatalogRevalidationReason | null = null;
@@ -339,7 +338,7 @@ export function createCodexCatalogRevalidationCoordinator(
  * Operator-facing success log is a single line.
  */
 async function performCodexCatalogRevalidation(
-  options: CodexCatalogRevalidationRequest,
+  options: CodexCatalogRevalidationRequest
 ): Promise<void> {
   const appVersion = resolveCodexCatalogAppVersion();
   const { resolveModelSyncInternalBaseUrl } = await import("./modelSyncScheduler");
@@ -356,7 +355,7 @@ async function performCodexCatalogRevalidation(
 }
 
 const requestCodexCatalogRevalidation = createCodexCatalogRevalidationCoordinator(
-  performCodexCatalogRevalidation,
+  performCodexCatalogRevalidation
 );
 
 export function revalidateCodexCatalogs(options: CodexCatalogRevalidationRequest): Promise<void> {

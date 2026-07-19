@@ -195,7 +195,7 @@ function buildProviderHealth(provider: string, snapshots: QuotaSnapshotRow[]): P
 function buildConnectionHealth(
   provider: string,
   connectionId: string,
-  snapshots: QuotaSnapshotRow[],
+  snapshots: QuotaSnapshotRow[]
 ): ProviderHealth | null {
   if (snapshots.length === 0) return null;
 
@@ -239,7 +239,7 @@ function buildConnectionHealth(
 function buildUsageSkew(
   comboName: string,
   comboModels: string[],
-  since: string,
+  since: string
 ): ComboHealthMetrics["usageSkew"] {
   const db = getDbInstance();
   const rows = db
@@ -251,7 +251,7 @@ function buildUsageSkew(
        FROM call_logs
        WHERE combo_name = ?
          AND timestamp >= ?
-       GROUP BY model`,
+       GROUP BY model`
     )
     .all(comboName, since) as ModelUsageRow[];
 
@@ -272,11 +272,11 @@ function buildUsageSkew(
   const modelDistributionEntries = Array.from(usageByModel.entries());
   const totalRequests = modelDistributionEntries.reduce(
     (accumulator, [, usage]) => accumulator + usage.requests,
-    0,
+    0
   );
   const totalTokens = modelDistributionEntries.reduce(
     (accumulator, [, usage]) => accumulator + usage.tokens,
-    0,
+    0
   );
 
   return {
@@ -287,7 +287,7 @@ function buildUsageSkew(
     })),
     giniCoefficient: roundNumber(
       calculateGini(modelDistributionEntries.map(([, usage]) => usage.requests)),
-      4,
+      4
     ),
   };
 }
@@ -302,7 +302,7 @@ function buildPerformance(comboName: string, since: string): ComboHealthMetrics[
          AVG(duration) as avgLatencyMs
        FROM call_logs
        WHERE combo_name = ?
-         AND timestamp >= ?`,
+         AND timestamp >= ?`
     )
     .get(comboName, since) as PerformanceRow | undefined;
 
@@ -319,14 +319,14 @@ function buildPerformance(comboName: string, since: string): ComboHealthMetrics[
 
 function buildQuotaHealth(providers: string[], since: string): ComboHealthMetrics["quotaHealth"] {
   const providerHealth = providers.map((provider) =>
-    buildProviderHealth(provider, getQuotaSnapshots({ provider, since })),
+    buildProviderHealth(provider, getQuotaSnapshots({ provider, since }))
   );
 
   const worstRemainingPct =
     providerHealth.length > 0
       ? providerHealth.reduce(
           (lowest, entry) => Math.min(lowest, entry.remainingPct),
-          providerHealth[0].remainingPct,
+          providerHealth[0].remainingPct
         )
       : 0;
 
@@ -338,7 +338,7 @@ function buildQuotaHealth(providers: string[], since: string): ComboHealthMetric
 
 function getHistoricalTargetMetrics(
   comboName: string,
-  since: string,
+  since: string
 ): Map<string, HistoricalTargetMetricView> {
   const db = getDbInstance();
   const rows = db
@@ -392,7 +392,7 @@ function getHistoricalTargetMetrics(
          aggregate_metrics.lastUsedAt
        FROM aggregate_metrics
        LEFT JOIN latest_metrics ON latest_metrics.executionKey = aggregate_metrics.executionKey
-       ORDER BY aggregate_metrics.executionKey ASC`,
+       ORDER BY aggregate_metrics.executionKey ASC`
     )
     .all(comboName, since) as HistoricalTargetAggregateRow[];
 
@@ -420,7 +420,7 @@ function getHistoricalTargetMetrics(
 function buildTargetHealth(
   comboName: string,
   targets: ResolvedComboTargetView[],
-  since: string,
+  since: string
 ): NonNullable<ComboHealthMetrics["targetHealth"]> {
   const comboMetrics = getComboMetrics(comboName);
   const historicalMetrics = getHistoricalTargetMetrics(comboName, since);
@@ -448,7 +448,7 @@ function buildTargetHealth(
           provider: target.provider,
           connectionId: target.connectionId,
           since,
-        }),
+        })
       );
       if (connectionHealth) {
         quotaRemainingPct = connectionHealth.remainingPct;
@@ -492,7 +492,7 @@ function buildTargetHealth(
 function buildComboHealth(
   combo: ComboRecord,
   since: string,
-  allCombos: ComboRecord[],
+  allCombos: ComboRecord[]
 ): ComboHealthMetrics | null {
   const comboId = typeof combo.id === "string" ? combo.id : "";
   const comboName = typeof combo.name === "string" ? combo.name : "";

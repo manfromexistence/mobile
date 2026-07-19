@@ -13,7 +13,7 @@ export class DevinAgent extends CloudAgentBase {
 
   async createTask(
     params: CreateTaskParams,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentTask> {
     const taskId = this.generateTaskId();
 
@@ -77,7 +77,7 @@ export class DevinAgent extends CloudAgentBase {
         type: "message" as const,
         content: (msg.content as string) || "",
         timestamp: (msg.created_at as string) || new Date().toISOString(),
-      }),
+      })
     );
 
     let result;
@@ -105,7 +105,7 @@ export class DevinAgent extends CloudAgentBase {
   async sendMessage(
     externalId: string,
     message: string,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentActivity> {
     const response = await fetch(`${this.baseUrl}/sessions/${externalId}/message`, {
       method: "POST",
@@ -130,7 +130,7 @@ export class DevinAgent extends CloudAgentBase {
   }
 
   async listSources(
-    _credentials: AgentCredentials,
+    _credentials: AgentCredentials
   ): Promise<{ name: string; url: string; branch?: string }[]> {
     return [];
   }

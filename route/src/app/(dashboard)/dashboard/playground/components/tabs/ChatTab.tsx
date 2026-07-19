@@ -59,7 +59,7 @@ export default function ChatTab({ configState, onMetricsUpdate }: ChatTabProps) 
         .map((m) => ({
           role: m.role,
           content: m.content,
-        })),
+        }))
     );
     return out;
   }
@@ -88,8 +88,8 @@ export default function ChatTab({ configState, onMetricsUpdate }: ChatTabProps) 
       body,
       buildReasoningRequestFields(
         { effort: p.effort, thinking: p.thinking },
-        configState.reasoning ?? { show: false, effortOptions: [] },
-      ),
+        configState.reasoning ?? { show: false, effortOptions: [] }
+      )
     );
 
     return body;

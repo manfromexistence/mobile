@@ -36,7 +36,7 @@ export abstract class CloudAgentBase {
 
   abstract createTask(
     params: CreateTaskParams,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentTask>;
 
   abstract getStatus(externalId: string, credentials: AgentCredentials): Promise<GetStatusResult>;
@@ -46,11 +46,11 @@ export abstract class CloudAgentBase {
   abstract sendMessage(
     externalId: string,
     message: string,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentActivity>;
 
   abstract listSources(
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<{ name: string; url: string; branch?: string }[]>;
 
   protected mapStatus(status: string): CloudAgentStatus {

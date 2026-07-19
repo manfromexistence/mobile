@@ -43,7 +43,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) {
     return new Response(
       JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
-      { status: 400, headers: { "content-type": "application/json" } },
+      { status: 400, headers: { "content-type": "application/json" } }
     );
   }
 
@@ -65,7 +65,7 @@ export async function POST(request: Request): Promise<Response> {
       const msg = sanitizeErrorMessage(err);
       return new Response(
         JSON.stringify(buildErrorBody(500, msg || "Failed to revert system proxy")),
-        { status: 500, headers: { "content-type": "application/json" } },
+        { status: 500, headers: { "content-type": "application/json" } }
       );
     }
   }
@@ -85,7 +85,7 @@ export async function POST(request: Request): Promise<Response> {
     const msg = sanitizeErrorMessage(err);
     return new Response(
       JSON.stringify(buildErrorBody(500, msg || "Failed to apply system proxy")),
-      { status: 500, headers: { "content-type": "application/json" } },
+      { status: 500, headers: { "content-type": "application/json" } }
     );
   }
 }

@@ -69,7 +69,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
   const [bulkPasteText, setBulkPasteText] = useState("");
   const [bulkSubmitting, setBulkSubmitting] = useState(false);
   const [bulkErrors, setBulkErrors] = useState<{ index: number; name: string; message: string }[]>(
-    [],
+    []
   );
   const [bulkResult, setBulkResult] = useState<{
     success: number;
@@ -90,7 +90,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
         notify.error(
           typeof t.has === "function" && t.has("claudeImportInvalidJson")
             ? t("claudeImportInvalidJson")
-            : "Could not parse the file as JSON",
+            : "Could not parse the file as JSON"
         );
       }
     };
@@ -111,7 +111,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
           notify.error(
             typeof t.has === "function" && t.has("claudeImportInvalidJson")
               ? t("claudeImportInvalidJson")
-              : "Could not parse the pasted content as JSON",
+              : "Could not parse the pasted content as JSON"
           );
           return;
         }
@@ -145,20 +145,20 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
           notify.error(
             typeof t.has === "function" && t.has("claudeImportDuplicate")
               ? t("claudeImportDuplicate")
-              : 'Account already exists — enable "Replace existing" to overwrite',
+              : 'Account already exists — enable "Replace existing" to overwrite'
           );
         } else if (data.code === "identity_unverified") {
           notify.error(
             typeof t.has === "function" && t.has("claudeImportIdentityUnverified")
               ? t("claudeImportIdentityUnverified")
-              : 'Bootstrap could not verify the account. Enable "Replace existing" or provide an email.',
+              : 'Bootstrap could not verify the account. Enable "Replace existing" or provide an email.'
           );
         } else {
           notify.error(
             data.error ||
               (typeof t.has === "function" && t.has("claudeImportFailed")
                 ? t("claudeImportFailed")
-                : "Failed to import Claude auth"),
+                : "Failed to import Claude auth")
           );
         }
         return;
@@ -167,14 +167,14 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
       notify.success(
         typeof t.has === "function" && t.has("claudeImportSuccess")
           ? t("claudeImportSuccess")
-          : "Claude connection imported successfully",
+          : "Claude connection imported successfully"
       );
       onSuccess();
     } catch {
       notify.error(
         typeof t.has === "function" && t.has("claudeImportFailed")
           ? t("claudeImportFailed")
-          : "Failed to import Claude auth",
+          : "Failed to import Claude auth"
       );
     } finally {
       setSubmitting(false);
@@ -229,7 +229,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
             json: item,
             parseError: null,
             email: null,
-          })),
+          }))
         );
       } else {
         setBulkEntries([{ name: "entry 1", json: arr, parseError: null, email: null }]);
@@ -257,7 +257,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
           data.error ||
             (typeof t.has === "function" && t.has("claudeImportBulkZipError")
               ? t("claudeImportBulkZipError")
-              : "Failed to extract ZIP"),
+              : "Failed to extract ZIP")
         );
         return;
       }
@@ -267,14 +267,14 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
           json: e.json,
           parseError: e.parseError,
           email: null,
-        }),
+        })
       );
       setBulkEntries(entries);
     } catch {
       notify.error(
         typeof t.has === "function" && t.has("claudeImportBulkZipError")
           ? t("claudeImportBulkZipError")
-          : "Failed to extract ZIP",
+          : "Failed to extract ZIP"
       );
     } finally {
       setZipExtracting(false);
@@ -310,7 +310,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
           data.error ||
             (typeof t.has === "function" && t.has("claudeImportBulkFailed")
               ? t("claudeImportBulkFailed")
-              : "Some entries failed to import"),
+              : "Some entries failed to import")
         );
         return;
       }
@@ -320,7 +320,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
         notify.success(
           typeof t.has === "function" && t.has("claudeImportBulkSuccess")
             ? t("claudeImportBulkSuccess", { count: data.success })
-            : `Imported ${data.success} Claude connections`,
+            : `Imported ${data.success} Claude connections`
         );
         if (data.failed === 0) onSuccess();
       }
@@ -328,7 +328,7 @@ export function ImportClaudeAuthModal({ onClose, onSuccess }: ImportClaudeAuthMo
       notify.error(
         typeof t.has === "function" && t.has("claudeImportBulkFailed")
           ? t("claudeImportBulkFailed")
-          : "Some entries failed to import",
+          : "Some entries failed to import"
       );
     } finally {
       setBulkSubmitting(false);

@@ -59,7 +59,7 @@ export function useProxyBatchOperations(load: () => Promise<void>) {
         setBatchDeleting(false);
       }
     },
-    [selectedIds, load],
+    [selectedIds, load]
   );
 
   // #6246: bulk enable/disable — the only automated path that writes proxy
@@ -87,7 +87,7 @@ export function useProxyBatchOperations(load: () => Promise<void>) {
         setBatchActivating(false);
       }
     },
-    [selectedIds, load],
+    [selectedIds, load]
   );
 
   const handleAutoTestAll = useCallback(
@@ -105,7 +105,7 @@ export function useProxyBatchOperations(load: () => Promise<void>) {
             } | null
           >
         >
-      >,
+      >
     ) => {
       setAutoTesting(true);
       try {
@@ -146,7 +146,7 @@ export function useProxyBatchOperations(load: () => Promise<void>) {
         setAutoTesting(false);
       }
     },
-    [load],
+    [load]
   );
 
   return {

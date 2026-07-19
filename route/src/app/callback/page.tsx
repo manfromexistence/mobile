@@ -90,7 +90,7 @@ export default function CallbackPage() {
     try {
       localStorage.setItem(
         "oauth_callback",
-        JSON.stringify({ ...callbackData, timestamp: Date.now() }),
+        JSON.stringify({ ...callbackData, timestamp: Date.now() })
       );
       sent = true;
     } catch (e) {

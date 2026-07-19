@@ -40,7 +40,7 @@ export function isLocalOpenAIStyleProvider(provider: string): boolean {
 
 export function mergeLocalCatalogModels<T extends LocalCatalogModel, U extends LocalCatalogModel>(
   registryCatalogModels: T[],
-  specialtyCatalogModels: U[],
+  specialtyCatalogModels: U[]
 ): Array<T | U> {
   if (registryCatalogModels.length === 0) return specialtyCatalogModels;
 
@@ -52,7 +52,7 @@ export function mergeLocalCatalogModels<T extends LocalCatalogModel, U extends L
 }
 
 export function buildOptionalBearerHeaders(
-  token: string | null | undefined,
+  token: string | null | undefined
 ): Record<string, string> {
   return {
     "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export function buildOptionalBearerHeaders(
 
 export function buildNamedOpenAiStyleHeaders(
   provider: string,
-  token: string | null | undefined,
+  token: string | null | undefined
 ): Record<string, string> {
   const headers = buildOptionalBearerHeaders(token);
 

@@ -47,7 +47,7 @@ function pathMatchesExactRoute(pathname: string, routePath: string): boolean {
 function isPublicCloudApiRoute(pathname: string, method: string): boolean {
   const normalizedMethod = String(method).toUpperCase();
   return PUBLIC_CLOUD_API_ROUTES.some(
-    ({ path, methods }) => pathMatchesExactRoute(pathname, path) && methods.has(normalizedMethod),
+    ({ path, methods }) => pathMatchesExactRoute(pathname, path) && methods.has(normalizedMethod)
   );
 }
 

@@ -31,7 +31,7 @@ export type ValidationResult<TData> = ValidationSuccess<TData> | ValidationFailu
  */
 export function validateBody<TSchema extends z.ZodTypeAny>(
   schema: TSchema,
-  body: unknown,
+  body: unknown
 ): ValidationResult<z.infer<TSchema>> {
   const result = schema.safeParse(body);
   if (result.success) {
@@ -51,7 +51,7 @@ export function validateBody<TSchema extends z.ZodTypeAny>(
 }
 
 export function isValidationFailure<TData>(
-  validation: ValidationResult<TData>,
+  validation: ValidationResult<TData>
 ): validation is ValidationFailure {
   return validation.success === false;
 }
@@ -64,8 +64,7 @@ export function isValidationFailure<TData>(
  * do `if (!r.success) return r.response;` without knowing the envelope shape.
  */
 export type ValidatedJsonBodyResult<TData> =
-  | { success: true; data: TData }
-  | { success: false; response: NextResponse };
+  { success: true; data: TData } | { success: false; response: NextResponse };
 
 /**
  * Parse a request body as JSON and validate it against a Zod schema in one
@@ -85,7 +84,7 @@ export type ValidatedJsonBodyResult<TData> =
  */
 export async function validatedJsonBody<TSchema extends z.ZodTypeAny>(
   request: Request,
-  schema: TSchema,
+  schema: TSchema
 ): Promise<ValidatedJsonBodyResult<z.infer<TSchema>>> {
   let raw: unknown;
   try {
@@ -100,7 +99,7 @@ export async function validatedJsonBody<TSchema extends z.ZodTypeAny>(
             details: [{ field: "body", message: "Invalid JSON body" }],
           },
         },
-        { status: 400 },
+        { status: 400 }
       ),
     };
   }

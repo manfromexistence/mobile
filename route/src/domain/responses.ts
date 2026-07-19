@@ -47,7 +47,7 @@ export function apiErrorResponse(status: number, code: string, message: string, 
     {
       status,
       headers: { "Content-Type": "application/json" },
-    },
+    }
   );
 }
 
@@ -124,7 +124,7 @@ export function tooManyRequests(retryAfterSec = 60) {
         "Content-Type": "application/json",
         "Retry-After": String(retryAfterSec),
       },
-    },
+    }
   );
 }
 

@@ -58,7 +58,7 @@ export function buildDefaultRateLimits(rawValue?: string): RateLimitRule[] {
 }
 
 const ENV_DEFAULT_RATE_LIMITS: RateLimitRule[] = buildDefaultRateLimits(
-  process.env.DEFAULT_RATE_LIMIT_PER_DAY,
+  process.env.DEFAULT_RATE_LIMIT_PER_DAY
 );
 
 interface AccessSchedule {
@@ -205,7 +205,7 @@ function policyErrorResponse(
   message: string,
   anthropicMessage = message,
   anthropicErrorType = "permission_error",
-  anthropicStatusCode = statusCode,
+  anthropicStatusCode = statusCode
 ): Response {
   if (!isAnthropicMessagesRequest(request)) {
     return errorResponse(statusCode, message);
@@ -223,7 +223,7 @@ function policyErrorResponse(
     {
       status: anthropicStatusCode,
       headers: { "Content-Type": "application/json" },
-    },
+    }
   );
 }
 
@@ -244,7 +244,7 @@ async function resolveRequestedComboName(modelStr: string): Promise<string | nul
 
 async function isComboAllowedForKey(
   allowedCombos: string[],
-  modelStr: string,
+  modelStr: string
 ): Promise<{ allowed: boolean; comboName: string | null }> {
   const comboName = await resolveRequestedComboName(modelStr);
   if (!comboName) return { allowed: true, comboName: null };
@@ -308,7 +308,7 @@ export async function resolvePlaygroundTestKey(request: Request): Promise<string
 
 export async function enforceApiKeyPolicy(
   request: Request,
-  modelStr: string | null,
+  modelStr: string | null
 ): Promise<ApiKeyPolicyResult> {
   // A real bearer key wins; otherwise an authenticated dashboard playground may
   // test a specific key's policy by id (resolved server-side, secret never sent).
@@ -352,7 +352,7 @@ export async function enforceApiKeyPolicy(
       apiKeyInfo,
       rejection: errorResponse(
         HTTP_STATUS.FORBIDDEN,
-        "This API key is banned due to policy violations",
+        "This API key is banned due to policy violations"
       ),
     };
   }
@@ -378,7 +378,7 @@ export async function enforceApiKeyPolicy(
         apiKeyInfo,
         rejection: errorResponse(
           HTTP_STATUS.FORBIDDEN,
-          `Access denied outside allowed hours (${from}–${until} ${tz})`,
+          `Access denied outside allowed hours (${from}–${until} ${tz})`
         ),
       };
     }
@@ -403,7 +403,7 @@ export async function enforceApiKeyPolicy(
         apiKeyInfo,
         rejection: errorResponse(
           HTTP_STATUS.SERVICE_UNAVAILABLE,
-          "API key usage limit unavailable",
+          "API key usage limit unavailable"
         ),
       };
     }
@@ -420,7 +420,7 @@ export async function enforceApiKeyPolicy(
           apiKeyInfo,
           rejection: errorResponse(
             HTTP_STATUS.FORBIDDEN,
-            `Endpoint category "${category}" is not allowed for this API key`,
+            `Endpoint category "${category}" is not allowed for this API key`
           ),
         };
       }
@@ -443,7 +443,7 @@ export async function enforceApiKeyPolicy(
   ) {
     const notAllocatedBody = buildErrorBody(
       HTTP_STATUS.FORBIDDEN,
-      `Model "${modelStr}" requires a quota-pool allocation; this API key is not allocated to any quota pool`,
+      `Model "${modelStr}" requires a quota-pool allocation; this API key is not allocated to any quota pool`
     );
     notAllocatedBody.error.code = "QUOTA_NOT_ALLOCATED";
     return {
@@ -504,7 +504,7 @@ export async function enforceApiKeyPolicy(
         apiKeyInfo,
         rejection: errorResponse(
           HTTP_STATUS.SERVICE_UNAVAILABLE,
-          "API key quota policy unavailable",
+          "API key quota policy unavailable"
         ),
       };
     }
@@ -529,7 +529,7 @@ export async function enforceApiKeyPolicy(
           apiKeyInfo,
           rejection: errorResponse(
             HTTP_STATUS.FORBIDDEN,
-            `Combo "${comboAccess.comboName || modelStr}" is not allowed for this API key`,
+            `Combo "${comboAccess.comboName || modelStr}" is not allowed for this API key`
           ),
         };
       }
@@ -540,7 +540,7 @@ export async function enforceApiKeyPolicy(
         apiKeyInfo,
         rejection: errorResponse(
           HTTP_STATUS.SERVICE_UNAVAILABLE,
-          "API key combo policy unavailable",
+          "API key combo policy unavailable"
         ),
       };
     }
@@ -577,7 +577,7 @@ export async function enforceApiKeyPolicy(
           `Model "${modelStr}" is not allowed for this API key`,
           `Model "${modelStr}" is not enabled or quota is insufficient. Choose another allowed model.`,
           "invalid_request_error",
-          HTTP_STATUS.BAD_REQUEST,
+          HTTP_STATUS.BAD_REQUEST
         ),
       };
     }
@@ -593,7 +593,7 @@ export async function enforceApiKeyPolicy(
           apiKeyInfo,
           rejection: errorResponse(
             HTTP_STATUS.RATE_LIMITED,
-            budgetOk.reason || "Budget limit exceeded",
+            budgetOk.reason || "Budget limit exceeded"
           ),
         };
       }
@@ -620,7 +620,7 @@ export async function enforceApiKeyPolicy(
           apiKeyInfo,
           rejection: errorResponse(
             HTTP_STATUS.RATE_LIMITED,
-            `Token limit exceeded for ${scopeLabel}: ${breach.tokensUsed}/${breach.limitValue} tokens used in the current window. Please try again later.`,
+            `Token limit exceeded for ${scopeLabel}: ${breach.tokensUsed}/${breach.limitValue} tokens used in the current window. Please try again later.`
           ),
         };
       }
@@ -664,7 +664,7 @@ export async function enforceApiKeyPolicy(
           apiKeyInfo,
           rejection: errorResponse(
             HTTP_STATUS.RATE_LIMITED,
-            `Request limit exceeded${failedWindowStr}. Please try again later.`,
+            `Request limit exceeded${failedWindowStr}. Please try again later.`
           ),
         };
       }

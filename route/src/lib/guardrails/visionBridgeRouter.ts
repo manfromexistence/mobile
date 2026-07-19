@@ -140,7 +140,7 @@ function getVisionCapableModels(): VisionModelCandidate[] {
  */
 function selectBestModel(
   candidates: VisionModelCandidate[],
-  config: VisionBridgeRouterConfig,
+  config: VisionBridgeRouterConfig
 ): VisionModelCandidate | null {
   const filtered = candidates.filter((c) => {
     // Exclude explicitly excluded models
@@ -216,7 +216,7 @@ export function getBestVisionModel(config: Partial<VisionBridgeRouterConfig> = {
  */
 export function getFallbackModels(
   excludeModel: string,
-  config: Partial<VisionBridgeRouterConfig> = {},
+  config: Partial<VisionBridgeRouterConfig> = {}
 ): string[] {
   const fullConfig = { ...DEFAULT_ROUTER_CONFIG, ...config };
   const candidates = getVisionCapableModels();
@@ -225,7 +225,7 @@ export function getFallbackModels(
     (c) =>
       c.fullName !== excludeModel &&
       !fullConfig.excludedModels.includes(c.fullName) &&
-      c.successRate >= 0.5,
+      c.successRate >= 0.5
   );
 
   // Sort by score

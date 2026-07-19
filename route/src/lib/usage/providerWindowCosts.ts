@@ -118,7 +118,7 @@ function parseResetAt(value: unknown, nowMs: number): number | null {
 function getProviderWindowStart(
   connectionId: string | null,
   resetMs: number,
-  nowMs: number,
+  nowMs: number
 ): { startMs: number; source: ProviderWindowCostBreakdown["windowStartSource"] } | null {
   if (!connectionId) return null;
   const resetIso = new Date(resetMs).toISOString();
@@ -164,7 +164,7 @@ function scoreWeeklyQuota(name: string): number {
 function selectWeeklyWindow(
   provider: string,
   connectionId: string | null,
-  nowMs: number,
+  nowMs: number
 ): {
   startMs: number;
   resetMs: number | null;
@@ -219,7 +219,7 @@ function selectWeeklyWindow(
     const providerWindowStart = getProviderWindowStart(
       selected.connectionId,
       selected.resetMs,
-      nowMs,
+      nowMs
     );
     return {
       startMs: providerWindowStart?.startMs ?? selected.resetMs - WEEK_MS,
@@ -269,15 +269,15 @@ function uniqueApiKeyIds(rows: UsageCostRow[]): string[] {
     new Set(
       rows
         .map((row) => (typeof row.apiKeyId === "string" ? row.apiKeyId : ""))
-        .filter((value) => value.length > 0),
-    ),
+        .filter((value) => value.length > 0)
+    )
   );
 }
 
 function appendNamedPlaceholders(
   params: Record<string, unknown>,
   prefix: string,
-  values: string[],
+  values: string[]
 ): string {
   return values
     .map((value, index) => {
@@ -291,7 +291,7 @@ function appendNamedPlaceholders(
 function getRecordedCostsByApiKey(
   apiKeyIds: string[],
   sinceMs: number,
-  untilMs: number,
+  untilMs: number
 ): Map<string, RecordedCostRow[]> {
   if (apiKeyIds.length === 0) return new Map();
 
@@ -314,7 +314,7 @@ function getRecordedCostsByApiKey(
           AND timestamp >= @sinceMs
           AND timestamp <= @untilMs
         ORDER BY api_key_id ASC, timestamp ASC, rowid ASC
-      `,
+      `
       )
       .all(params);
 
@@ -336,7 +336,7 @@ function getRecordedCostsByApiKey(
 function findClosestRecordedCost(
   candidates: RecordedCostRow[] | undefined,
   timestampMs: number,
-  usedRecordedRows: Set<number>,
+  usedRecordedRows: Set<number>
 ): RecordedCostRow | null {
   if (!candidates?.length || !Number.isFinite(timestampMs)) return null;
 
@@ -363,13 +363,13 @@ function findClosestRecordedCost(
 async function getUsageRowCostUsd(
   row: UsageCostRow,
   recordedCostsByApiKey: Map<string, RecordedCostRow[]>,
-  usedRecordedRows: Set<number>,
+  usedRecordedRows: Set<number>
 ): Promise<number> {
   const usageTimestampMs = Date.parse(row.timestamp ?? "");
   const recordedCost = findClosestRecordedCost(
     row.apiKeyId ? recordedCostsByApiKey.get(row.apiKeyId) : undefined,
     usageTimestampMs,
-    usedRecordedRows,
+    usedRecordedRows
   );
   if (recordedCost) return Math.max(0, toNumber(recordedCost.cost));
 
@@ -383,7 +383,7 @@ async function getUsageRowCostUsd(
       cacheCreation: toNumber(row.cacheCreationTokens),
       reasoning: toNumber(row.reasoningTokens),
     },
-    { serviceTier: row.serviceTier },
+    { serviceTier: row.serviceTier }
   );
 }
 
@@ -443,7 +443,7 @@ export async function getProviderWindowCostBreakdown({
       FROM usage_history
       WHERE ${where.join(" AND ")}
       ORDER BY timestamp ASC, id ASC
-      `,
+      `
     )
     .all(params);
 
@@ -451,7 +451,7 @@ export async function getProviderWindowCostBreakdown({
   const recordedCostsByApiKey = getRecordedCostsByApiKey(
     uniqueApiKeyIds(usageRows),
     window.startMs,
-    nowMs,
+    nowMs
   );
   const usedRecordedRows = new Set<number>();
   const byApiKey = new Map<string, ProviderWindowCostAggregateRow>();
@@ -466,7 +466,7 @@ export async function getProviderWindowCostBreakdown({
       apiKeyId ||
       "Unattributed";
     const costUsd = roundUsd(
-      await getUsageRowCostUsd(row, recordedCostsByApiKey, usedRecordedRows),
+      await getUsageRowCostUsd(row, recordedCostsByApiKey, usedRecordedRows)
     );
 
     let aggregate = byApiKey.get(apiKeyKey);

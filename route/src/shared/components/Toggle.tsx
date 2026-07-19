@@ -59,7 +59,7 @@ export default function Toggle({
       className={cn(
         "flex items-center gap-3",
         disabled && "opacity-50 cursor-not-allowed",
-        className,
+        className
       )}
     >
       <button
@@ -77,7 +77,7 @@ export default function Toggle({
           "focus:outline-none focus:ring-1 focus:ring-accent/30",
           checked ? "border-primary bg-primary" : "border-border bg-surface-2 dark:bg-white/20",
           sizes[size].track,
-          disabled && "cursor-not-allowed",
+          disabled && "cursor-not-allowed"
         )}
       >
         <span
@@ -87,7 +87,7 @@ export default function Toggle({
             "transform transition duration-200 ease-in-out",
             checked ? sizes[size].translate : "translate-x-0.5",
             sizes[size].thumb,
-            "mt-0.5",
+            "mt-0.5"
           )}
         />
       </button>

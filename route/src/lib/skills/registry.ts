@@ -83,7 +83,7 @@ class SkillRegistry {
 
     db.prepare(
       `INSERT INTO skills (id, api_key_id, name, version, description, schema, handler, enabled, mode, source_provider, tags, install_count, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       id,
       skillData.apiKeyId,
@@ -98,7 +98,7 @@ class SkillRegistry {
       JSON.stringify(skillData.tags || []),
       typeof skillData.installCount === "number" ? Math.max(0, skillData.installCount) : 0,
       now.toISOString(),
-      now.toISOString(),
+      now.toISOString()
     );
 
     const skill: Skill = {
@@ -133,7 +133,7 @@ class SkillRegistry {
         (candidate) =>
           candidate.name === name &&
           candidate.version === version &&
-          (!apiKeyId || candidate.apiKeyId === apiKeyId),
+          (!apiKeyId || candidate.apiKeyId === apiKeyId)
       );
       if (skill && (!apiKeyId || skill.apiKeyId === apiKeyId)) {
         db.prepare("DELETE FROM skills WHERE id = ?").run(skill.id);
@@ -149,7 +149,7 @@ class SkillRegistry {
 
       if (deleted.changes > 0) {
         this.removeCachedSkills(
-          (skill) => skill.name === name && (!apiKeyId || skill.apiKeyId === apiKeyId),
+          (skill) => skill.name === name && (!apiKeyId || skill.apiKeyId === apiKeyId)
         );
         this.invalidateCache();
         return true;
@@ -375,7 +375,7 @@ class SkillRegistry {
     const now = new Date();
     const updated = db
       .prepare(
-        "UPDATE skills SET enabled = ?, mode = ?, updated_at = ? WHERE id = ? AND api_key_id = ?",
+        "UPDATE skills SET enabled = ?, mode = ?, updated_at = ? WHERE id = ? AND api_key_id = ?"
       )
       .run(enabled ? 1 : 0, enabled ? "on" : "off", now.toISOString(), id, apiKeyId);
 

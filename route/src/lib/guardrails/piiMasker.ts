@@ -26,7 +26,7 @@ function sanitizeStringValue(text: string) {
 
 function applyToContentValue(
   value: unknown,
-  detections: PiiDetection[],
+  detections: PiiDetection[]
 ): { modified: boolean; value: unknown } {
   if (typeof value === "string") {
     const result = sanitizeStringValue(value);

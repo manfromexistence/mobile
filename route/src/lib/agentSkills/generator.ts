@@ -86,7 +86,7 @@ function buildApiBody(skill: AgentSkill, sources: BuildSources): string {
   lines.push("## Authentication\n");
   lines.push(
     "All requests require a valid Bearer token or session cookie. " +
-      "Obtain a token via `POST /api/auth/login` or configure `REQUIRE_API_KEY=false` for local development.",
+      "Obtain a token via `POST /api/auth/login` or configure `REQUIRE_API_KEY=false` for local development."
   );
   lines.push("");
 
@@ -122,7 +122,7 @@ function buildApiBody(skill: AgentSkill, sources: BuildSources): string {
   lines.push("## Payloads\n");
   lines.push(
     "See the full OpenAPI specification at `GET /api/openapi/spec` or " +
-      "`docs/openapi.yaml` for detailed request/response schemas.",
+      "`docs/openapi.yaml` for detailed request/response schemas."
   );
   lines.push("");
 
@@ -189,7 +189,7 @@ function buildCliBody(skill: AgentSkill, sources: BuildSources): string {
 export function buildSkillMarkdown(
   skillId: string,
   sources: BuildSources,
-  existingContent?: string,
+  existingContent?: string
 ): { frontmatter: { name: string; description: string }; body: string } {
   const skill = getCatalog().find((s) => s.id === skillId);
   if (!skill) {

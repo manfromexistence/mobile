@@ -39,10 +39,10 @@ function ensureCacheMetricsTable() {
         key TEXT PRIMARY KEY,
         value INTEGER NOT NULL DEFAULT 0,
         updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-      )`,
+      )`
     ).run();
     db.prepare(
-      `INSERT OR IGNORE INTO cache_metrics (key, value) VALUES ('hits', 0), ('misses', 0), ('tokens_saved', 0)`,
+      `INSERT OR IGNORE INTO cache_metrics (key, value) VALUES ('hits', 0), ('misses', 0), ('tokens_saved', 0)`
     ).run();
   } catch {
     // DB not available
@@ -53,7 +53,7 @@ function incrementMetric(metric: "hits" | "misses" | "tokens_saved", amount = 1)
   try {
     const db = getDbInstance();
     db.prepare(
-      `UPDATE cache_metrics SET value = value + ?, updated_at = datetime('now') WHERE key = ?`,
+      `UPDATE cache_metrics SET value = value + ?, updated_at = datetime('now') WHERE key = ?`
     ).run(amount, metric);
   } catch {
     // DB not available — fall back to in-memory
@@ -72,7 +72,7 @@ function getMetricValue(metric: string): number {
 
 function getHeaderValue(
   headers: { get?: (name: string) => string | null } | Record<string, unknown> | null | undefined,
-  name: string,
+  name: string
 ): string | null {
   if (!headers) return null;
 
@@ -121,7 +121,7 @@ export function generateSignature(
   conversation,
   temperature = 0,
   topP = 1,
-  apiKeyId?: string,
+  apiKeyId?: string
 ) {
   const payload = JSON.stringify({
     model,
@@ -187,7 +187,7 @@ export function getCachedResponse(signature) {
     const db = getDbInstance();
     const row = db
       .prepare(
-        "SELECT response, tokens_saved FROM semantic_cache WHERE signature = ? AND expires_at > datetime('now')",
+        "SELECT response, tokens_saved FROM semantic_cache WHERE signature = ? AND expires_at > datetime('now')"
       )
       .get(signature);
 
@@ -207,7 +207,7 @@ export function getCachedResponse(signature) {
       });
       // Update hit count in DB
       db.prepare("UPDATE semantic_cache SET hit_count = hit_count + 1 WHERE signature = ?").run(
-        signature,
+        signature
       );
 
       incrementMetric("hits");
@@ -246,7 +246,7 @@ export function setCachedResponse(signature, model, response, tokensSaved = 0, t
 
     db.prepare(
       `INSERT OR REPLACE INTO semantic_cache (id, signature, model, prompt_hash, response, tokens_saved, hit_count, created_at, expires_at)
-       VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?)`
     ).run(id, signature, model, promptHash, JSON.stringify(response), tokensSaved, now, expiresAt);
   } catch {
     // DB write failed — cache still in memory

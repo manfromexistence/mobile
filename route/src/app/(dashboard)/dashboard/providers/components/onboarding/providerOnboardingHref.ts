@@ -25,7 +25,7 @@ export type HrefConnection = Pick<OnboardingConnection, "id"> & {
  * entirely rather than linking to a 404.
  */
 export function buildProviderDetailsHref(
-  connection: HrefConnection | null | undefined,
+  connection: HrefConnection | null | undefined
 ): string | null {
   const id = connection?.id?.trim();
   if (!id) return null;

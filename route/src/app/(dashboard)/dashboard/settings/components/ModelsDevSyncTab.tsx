@@ -34,7 +34,7 @@ export default function ModelsDevSyncTab() {
   const [intervalHours, setIntervalHours] = useState(24);
   const [draftIntervalHours, setDraftIntervalHours] = useState(24);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
-    null,
+    null
   );
 
   const fetchStatus = useCallback(async () => {

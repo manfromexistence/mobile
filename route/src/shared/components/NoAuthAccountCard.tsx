@@ -73,7 +73,7 @@ function getEntryForFingerprint(proxies: AccountProxyConfig[], fp: string) {
  */
 function getDisplayProxy(
   entry: AccountProxyConfig | null,
-  savedProxies: SavedProxy[],
+  savedProxies: SavedProxy[]
 ): InlineProxy | null {
   if (!entry) return null;
   if (entry.proxyId) {
@@ -116,7 +116,7 @@ export default function NoAuthAccountCard({
       if (res.ok) {
         const data = await res.json();
         const filtered = (data.connections || []).filter(
-          (c: Connection) => c.provider === providerId,
+          (c: Connection) => c.provider === providerId
         );
         setConnections(filtered);
       }
@@ -372,7 +372,7 @@ export default function NoAuthAccountCard({
             {allAccountIds.map((id, i) => {
               const proxy = getDisplayProxy(
                 getEntryForFingerprint(accountProxies, id),
-                savedProxies,
+                savedProxies
               );
               return (
                 <div

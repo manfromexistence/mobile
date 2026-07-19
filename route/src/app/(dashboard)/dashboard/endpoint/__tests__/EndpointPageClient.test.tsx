@@ -203,7 +203,7 @@ describe("EndpointPageClient", () => {
             hideEndpointTailscaleFunnel: true,
             hideEndpointNgrokTunnel: true,
             machineId: "machine-12345678",
-          }),
+          })
         );
       }
       if (path === "/v1/models") {
@@ -229,7 +229,7 @@ describe("EndpointPageClient", () => {
                 isActive: true,
               },
             ],
-          }),
+          })
         );
       }
       if (path === "/api/settings/compression") {
@@ -239,7 +239,7 @@ describe("EndpointPageClient", () => {
             cavemanConfig: { enabled: true, intensity: "full" },
             cavemanOutputMode: { enabled: false, intensity: "full" },
             rtkConfig: { enabled: true, intensity: "standard" },
-          }),
+          })
         );
       }
       throw new Error(`Unexpected request: ${path}`);
@@ -269,7 +269,7 @@ describe("EndpointPageClient", () => {
             type: "embedding",
           },
         ],
-      }),
+      })
     );
 
     await waitForText("2 models across");
@@ -299,7 +299,7 @@ describe("EndpointPageClient", () => {
           hideEndpointCloudflaredTunnel: false,
           hideEndpointTailscaleFunnel: false,
           hideEndpointNgrokTunnel: false,
-        }),
+        })
       );
       await settingsDeferred.promise;
     });
@@ -320,7 +320,7 @@ describe("EndpointPageClient", () => {
             hideEndpointCloudflaredTunnel: true,
             hideEndpointTailscaleFunnel: true,
             hideEndpointNgrokTunnel: true,
-          }),
+          })
         );
       }
       if (path === "/v1/models") {

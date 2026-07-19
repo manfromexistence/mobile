@@ -93,11 +93,11 @@ function rowToMemory(row: MemoryRow): Memory {
 function findExistingMemory(
   db: ReturnType<typeof getDbInstance>,
   apiKeyId: string,
-  key: string,
+  key: string
 ): MemoryRow | undefined {
   if (!key) return undefined;
   const stmt = db.prepare(
-    "SELECT * FROM memories WHERE api_key_id = ? AND key = ? ORDER BY created_at DESC LIMIT 1",
+    "SELECT * FROM memories WHERE api_key_id = ? AND key = ? ORDER BY created_at DESC LIMIT 1"
   );
   return stmt.get(apiKeyId, key) as MemoryRow | undefined;
 }
@@ -160,7 +160,7 @@ function scheduleVectorUpsert(id: string, content: string): void {
  * Create a new memory entry (UPSERT: updates existing if same apiKeyId + key)
  */
 export async function createMemory(
-  memory: Omit<Memory, "id" | "createdAt" | "updatedAt" | "accessCount" | "lastAccessedAt">,
+  memory: Omit<Memory, "id" | "createdAt" | "updatedAt" | "accessCount" | "lastAccessedAt">
 ): Promise<Memory> {
   const db = getDbInstance();
   const now = new Date().toISOString();
@@ -172,7 +172,7 @@ export async function createMemory(
     // UPDATE existing record
     const updatedMetadata = { ...parseJSON(existing.metadata), ...memory.metadata };
     const stmt = db.prepare(
-      "UPDATE memories SET content = ?, metadata = ?, updated_at = ?, session_id = ?, type = ?, expires_at = ? WHERE id = ?",
+      "UPDATE memories SET content = ?, metadata = ?, updated_at = ?, session_id = ?, type = ?, expires_at = ? WHERE id = ?"
     );
     stmt.run(
       memory.content,
@@ -181,7 +181,7 @@ export async function createMemory(
       memory.sessionId,
       memory.type,
       memory.expiresAt ?? null,
-      existing.id,
+      existing.id
     );
 
     const updatedMemory: Memory = {
@@ -242,7 +242,7 @@ export async function createMemory(
   const id = crypto.randomUUID();
   const stmt = db.prepare(
     "INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at) " +
-      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   );
 
   stmt.run(
@@ -255,7 +255,7 @@ export async function createMemory(
     JSON.stringify(memory.metadata ?? {}),
     now,
     now,
-    memory.expiresAt?.toISOString() ?? null,
+    memory.expiresAt?.toISOString() ?? null
   );
 
   const createdMemory: Memory = {
@@ -341,7 +341,7 @@ export async function getMemory(id: string): Promise<Memory | null> {
  */
 export async function updateMemory(
   id: string,
-  updates: Partial<Omit<Memory, "id" | "createdAt">>,
+  updates: Partial<Omit<Memory, "id" | "createdAt">>
 ): Promise<boolean> {
   if (!id || typeof id !== "string") return false;
 
@@ -350,8 +350,7 @@ export async function updateMemory(
 
   // Fetch current state to detect content/key change (needed for vector re-gen)
   const currentRow = db.prepare("SELECT content, key FROM memories WHERE id = ?").get(id) as
-    | { content: string; key: string | null }
-    | undefined;
+    { content: string; key: string | null } | undefined;
 
   // Build dynamic update query
   const fields: string[] = [];
@@ -422,7 +421,7 @@ export async function deleteMemory(id: string): Promise<boolean> {
       log.warn("memory.vec.delete.fail", {
         id,
         error: sanitizeErrorMessage(e instanceof Error ? e.message : String(e)),
-      }),
+      })
     );
   }
 
@@ -431,7 +430,7 @@ export async function deleteMemory(id: string): Promise<boolean> {
     log.warn("memory.qdrant.delete.fail", {
       id,
       error: sanitizeErrorMessage(e instanceof Error ? e.message : String(e)),
-    }),
+    })
   );
 
   // 3. Delete from SQLite
@@ -549,7 +548,7 @@ export function getMemoryTokensUsed(apiKeyId?: string): number {
   const db = getDbInstance();
   const stmt = db.prepare(
     "SELECT COALESCE(SUM((LENGTH(content) + 3) / 4), 0) as tokensUsed FROM memories" +
-      (apiKeyId ? " WHERE api_key_id = ?" : ""),
+      (apiKeyId ? " WHERE api_key_id = ?" : "")
   );
   const row = stmt.get(...(apiKeyId ? [apiKeyId] : [])) as { tokensUsed: number } | undefined;
   return row?.tokensUsed ?? 0;
@@ -571,7 +570,7 @@ export function recordMemoryAccess(ids: string[]): void {
     const placeholders = unique.map(() => "?").join(", ");
     const stmt = db.prepare(
       `UPDATE memories SET access_count = access_count + 1, last_accessed_at = ? ` +
-        `WHERE id IN (${placeholders})`,
+        `WHERE id IN (${placeholders})`
     );
     stmt.run(new Date().toISOString(), ...unique);
     for (const id of unique) invalidateMemoryCache(id);
@@ -585,10 +584,7 @@ export function recordMemoryAccess(ids: string[]): void {
  * predicates read (no content/metadata), ordered oldest-first and bounded by `limit`, so a
  * sweep never materializes whole memories or scans unboundedly.
  */
-export function listMemoriesForDecay(filters: {
-  apiKeyId?: string;
-  limit: number;
-}): {
+export function listMemoriesForDecay(filters: { apiKeyId?: string; limit: number }): {
   id: string;
   type: MemoryType;
   accessCount: number;
@@ -601,7 +597,7 @@ export function listMemoriesForDecay(filters: {
   params.push(Math.max(1, Math.floor(filters.limit)));
   const stmt = db.prepare(
     `SELECT id, type, access_count, created_at, last_accessed_at FROM memories${where} ` +
-      `ORDER BY created_at ASC LIMIT ?`,
+      `ORDER BY created_at ASC LIMIT ?`
   );
   const rows = stmt.all(...params) as {
     id: string;

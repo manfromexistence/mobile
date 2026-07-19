@@ -200,7 +200,7 @@ export function meanPool(
   matrix: Float32Array,
   dim: number,
   vocabSize: number,
-  unkIdx: number,
+  unkIdx: number
 ): Float32Array {
   const result = new Float32Array(dim);
   let validCount = 0;

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
           success: false,
           error: "A vacuum is already in progress",
         },
-        { status: 409 },
+        { status: 409 }
       );
     } else {
       return NextResponse.json(
@@ -36,14 +36,14 @@ export async function POST(request: NextRequest) {
           error: result.error || "VACUUM failed",
           duration: result.durationMs,
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
   } catch (error: any) {
     console.error("[API] VACUUM endpoint error:", error);
     return NextResponse.json(
       { error: "Failed to run VACUUM", details: error.message },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

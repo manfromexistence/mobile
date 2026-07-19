@@ -39,7 +39,7 @@ const MAX_BULK_LINES = 200;
 
 export function parseBulkApiKeys(
   text: string,
-  options: ParseBulkApiKeysOptions = {},
+  options: ParseBulkApiKeysOptions = {}
 ): BulkApiKeyParseResult {
   const lines = text.split(/\r?\n/);
   const entries: BulkApiKeyEntry[] = [];
@@ -48,7 +48,7 @@ export function parseBulkApiKeys(
 
   if (lines.length > MAX_BULK_LINES) {
     warnings.push(
-      `Input has ${lines.length} lines; only the first ${MAX_BULK_LINES} will be processed.`,
+      `Input has ${lines.length} lines; only the first ${MAX_BULK_LINES} will be processed.`
     );
   }
 

@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid query parameters", details: parsed.error.flatten().fieldErrors },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: CORS_HEADERS }
     );
   }
 

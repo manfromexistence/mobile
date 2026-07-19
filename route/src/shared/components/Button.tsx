@@ -50,7 +50,7 @@ export default function Button({
         variants[variant],
         sizes[size],
         fullWidth && "w-full",
-        className,
+        className
       )}
       disabled={disabled || loading}
       aria-busy={loading || undefined}

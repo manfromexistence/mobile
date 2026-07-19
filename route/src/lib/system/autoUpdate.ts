@@ -10,7 +10,7 @@ const execFileAsync = promisify(execFile);
 /** @internal — exported for testability. */
 export function resolveProjectRoot(
   fallback: string,
-  startDir: string = typeof __dirname !== "undefined" ? __dirname : process.cwd(),
+  startDir: string = typeof __dirname !== "undefined" ? __dirname : process.cwd()
 ): string {
   const markers = ["package.json", ".git"] as const;
   let dir = path.resolve(startDir);
@@ -92,7 +92,7 @@ export function isUnderNodeModules(dir: string): boolean {
  */
 export function resolveAutoUpdateMode(
   rawMode: AutoUpdateMode,
-  detection: { isGitRepo: boolean; currentDir: string },
+  detection: { isGitRepo: boolean; currentDir: string }
 ): AutoUpdateMode {
   if (rawMode !== "npm") return rawMode;
   if (detection.isGitRepo) return "source";
@@ -143,7 +143,7 @@ export function getAutoUpdateConfig(env: NodeJS.ProcessEnv = process.env): AutoU
 }
 
 export async function detectComposeCommand(
-  execFileImpl: ExecFileLike = execFileAsync,
+  execFileImpl: ExecFileLike = execFileAsync
 ): Promise<ComposeCommand | null> {
   try {
     await execFileImpl("docker", ["compose", "version"], { timeout: 10_000 });
@@ -163,7 +163,7 @@ export async function detectComposeCommand(
 export async function validateAutoUpdateRuntime(
   config: AutoUpdateConfig,
   execFileImpl: ExecFileLike = execFileAsync,
-  existsImpl: (targetPath: string) => Promise<boolean> = pathExists,
+  existsImpl: (targetPath: string) => Promise<boolean> = pathExists
 ): Promise<AutoUpdateValidation> {
   if (config.mode === "source") {
     const gitDir = path.join(PROJECT_ROOT, ".git");
@@ -246,7 +246,7 @@ export async function validateAutoUpdateRuntime(
 export async function ensureGitTagExists(
   targetTag: string,
   execFileImpl: ExecFileLike = execFileAsync,
-  cwd = PROJECT_ROOT,
+  cwd = PROJECT_ROOT
 ): Promise<void> {
   try {
     await execFileImpl("git", ["rev-parse", "-q", "--verify", `refs/tags/${targetTag}`], {

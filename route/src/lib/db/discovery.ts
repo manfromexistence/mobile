@@ -43,7 +43,7 @@ export function insertDiscoveryResult(result: DiscoveryResult): number {
     result.riskLevel ?? "none",
     result.status ?? "pending",
     result.notes ?? null,
-    now,
+    now
   );
   log.info("discovery_result.inserted", {
     id: info.lastInsertRowid,
@@ -65,8 +65,7 @@ export function listDiscoveryResults(status?: string): DiscoveryResult[] {
 export function getDiscoveryResultById(id: number): DiscoveryResult | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM discovery_results WHERE id = ?").get(id) as
-    | Record<string, unknown>
-    | undefined;
+    Record<string, unknown> | undefined;
   return row ? rowToResult(row) : null;
 }
 
@@ -75,7 +74,7 @@ export function updateDiscoveryStatus(id: number, status: string, notes?: string
   const now = new Date().toISOString();
   const result = db
     .prepare(
-      "UPDATE discovery_results SET status = ?, notes = COALESCE(?, notes), verified_at = CASE WHEN ? = 'verified' THEN ? ELSE verified_at END, updated_at = ? WHERE id = ?",
+      "UPDATE discovery_results SET status = ?, notes = COALESCE(?, notes), verified_at = CASE WHEN ? = 'verified' THEN ? ELSE verified_at END, updated_at = ? WHERE id = ?"
     )
     .run(status, notes ?? null, status, now, now, id);
   return result.changes > 0;

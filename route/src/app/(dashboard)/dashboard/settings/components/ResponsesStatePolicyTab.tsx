@@ -19,7 +19,7 @@ function normalizeMode(value: unknown): ResponsesPreviousResponseIdMode {
 
 export default function ResponsesStatePolicyTab() {
   const [mode, setMode] = useState<ResponsesPreviousResponseIdMode>(
-    DEFAULT_RESPONSES_PREVIOUS_RESPONSE_ID_MODE,
+    DEFAULT_RESPONSES_PREVIOUS_RESPONSE_ID_MODE
   );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

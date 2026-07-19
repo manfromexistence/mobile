@@ -84,8 +84,8 @@ export function normalizeDiscoveredModels(models: unknown): SyncedAvailableModel
           new Set(
             record.supportedEndpoints
               .map((endpoint) => toNonEmptyString(endpoint))
-              .filter((endpoint): endpoint is string => Boolean(endpoint)),
-          ),
+              .filter((endpoint): endpoint is string => Boolean(endpoint))
+          )
         ).sort()
       : undefined;
 
@@ -99,11 +99,11 @@ export function normalizeDiscoveredModels(models: unknown): SyncedAvailableModel
       record.inputTokenLimit,
       record.context_length,
       record.contextLength,
-      topProvider.context_length,
+      topProvider.context_length
     );
     const outputTokenLimit = firstPositiveNumber(
       record.outputTokenLimit,
-      topProvider.max_completion_tokens,
+      topProvider.max_completion_tokens
     );
 
     // #4264: capture image-input (vision) capability at sync time. OpenRouter (and
@@ -135,7 +135,7 @@ export function normalizeDiscoveredModels(models: unknown): SyncedAvailableModel
 
 export async function getCachedDiscoveredModels(
   providerId: string,
-  connectionId: string,
+  connectionId: string
 ): Promise<SyncedAvailableModel[]> {
   return getSyncedAvailableModelsForConnection(providerId, connectionId);
 }
@@ -143,7 +143,7 @@ export async function getCachedDiscoveredModels(
 export async function persistDiscoveredModels(
   providerId: string,
   connectionId: string,
-  models: unknown,
+  models: unknown
 ): Promise<SyncedAvailableModel[]> {
   const normalized = normalizeDiscoveredModels(models);
   await replaceSyncedAvailableModelsForConnection(providerId, connectionId, normalized);

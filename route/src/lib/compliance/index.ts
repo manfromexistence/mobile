@@ -152,7 +152,7 @@ function sanitizeAuditValue(value: unknown): unknown {
       Object.entries(value as Record<string, unknown>).map(([key, nestedValue]) => [
         key,
         isSensitiveAuditKey(key) ? "[redacted]" : sanitizeAuditValue(nestedValue),
-      ]),
+      ])
     );
   }
 
@@ -377,7 +377,7 @@ export function logAuditEvent(entry: {
       entry.resourceType || null,
       entry.status || null,
       entry.requestId || null,
-      serializeAuditValue(metadataSource),
+      serializeAuditValue(metadataSource)
     );
   } catch {
     // Silently fail — audit logging should never break the main flow
@@ -420,8 +420,7 @@ export function countAuditLog(filter: AuditLogFilter = {}) {
   ensureAuditLogSchema(db);
   const { where, params } = buildAuditLogQuery(filter);
   const row = db.prepare(`SELECT COUNT(*) as count FROM audit_log ${where}`).get(...params) as
-    | { count?: number }
-    | undefined;
+    { count?: number } | undefined;
   return Number(row?.count || 0);
 }
 
@@ -586,7 +585,7 @@ export async function cleanupExpiredLogs() {
           .prepare(
             `DELETE FROM proxy_logs WHERE id IN (
               SELECT id FROM proxy_logs ORDER BY timestamp ASC LIMIT ?
-            )`,
+            )`
           )
           .run(toDelete);
         trimmedProxyLogs += trimmed.changes;

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) },
+      { status: 500, headers: getCloudAgentCorsHeaders(request) }
     );
   }
 }
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         { error: "Validation failed", details: validation.error.issues },
-        { status: 400, headers: getCloudAgentCorsHeaders(request) },
+        { status: 400, headers: getCloudAgentCorsHeaders(request) }
       );
     }
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
           baseUrl: baseUrl ?? null,
         },
       },
-      { status: 201, headers: getCloudAgentCorsHeaders(request) },
+      { status: 201, headers: getCloudAgentCorsHeaders(request) }
     );
   } catch (error) {
     logger.error({ err: error }, "Failed to save cloud agent credentials");
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) },
+      { status: 500, headers: getCloudAgentCorsHeaders(request) }
     );
   }
 }

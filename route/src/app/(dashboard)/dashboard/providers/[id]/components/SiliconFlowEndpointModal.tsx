@@ -45,7 +45,7 @@ export default function SiliconFlowEndpointModal({
                   {providerText(
                     t,
                     endpoint.id === "siliconflow" ? "endpointGlobal" : "endpointChina",
-                    endpoint.label,
+                    endpoint.label
                   )}
                 </h3>
                 <p className="text-sm text-text-muted font-mono">{endpoint.baseUrl}</p>

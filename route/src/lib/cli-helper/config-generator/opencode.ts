@@ -103,7 +103,7 @@ export interface CatalogFetchResult {
 export async function fetchOmniRouteCatalog(
   baseUrl: string,
   apiKey: string,
-  timeoutMs = 5_000,
+  timeoutMs = 5_000
 ): Promise<CatalogFetchResult> {
   const cleanBase = baseUrl.replace(/\/+$/, "");
   const baseURL = cleanBase.endsWith("/v1") ? cleanBase : `${cleanBase}/v1`;
@@ -188,7 +188,7 @@ function resolveContextLength(entry: CatalogModelEntry): number | undefined {
 function buildModelEntry(
   id: string,
   catalog: CatalogModelEntry | undefined,
-  existing: ExistingModelEntry | undefined,
+  existing: ExistingModelEntry | undefined
 ): ExistingModelEntry {
   // Carry over user-set "name" first; fall back to id when absent.
   const name = (typeof existing?.name === "string" && existing.name.trim()) || id;
@@ -339,7 +339,7 @@ export async function generateOpencodeConfig(options: GenerateOpencodeOptions): 
     throw new Error(
       "fetchCatalog=false is not supported. The catalog is the single source " +
         "of truth for context windows — without it, opencode.json would carry " +
-        "fabricated or stale values.",
+        "fabricated or stale values."
     );
   }
 

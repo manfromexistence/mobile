@@ -35,7 +35,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.friendly }, { status: error.httpStatus });
     }
     const message = sanitizeErrorMessage(
-      error instanceof Error ? error.message : "Installation failed",
+      error instanceof Error ? error.message : "Installation failed"
     );
     console.error("[version-manager] install error:", message);
     return NextResponse.json({ error: message }, { status: 500 });

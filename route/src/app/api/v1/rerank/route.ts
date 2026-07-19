@@ -139,7 +139,7 @@ async function postHandler(request, context) {
       if (!credentials) {
         return errorResponse(
           HTTP_STATUS.BAD_REQUEST,
-          `No credentials for local provider: ${prefix}`,
+          `No credentials for local provider: ${prefix}`
         );
       }
       if (isAllRateLimitedCredentials(credentials)) {
@@ -167,7 +167,7 @@ async function postHandler(request, context) {
           const errData = await res.json().catch(() => ({}));
           return errorResponse(
             res.status,
-            errData.message || errData.detail || `Provider returned HTTP ${res.status}`,
+            errData.message || errData.detail || `Provider returned HTTP ${res.status}`
           );
         }
 
@@ -183,7 +183,7 @@ async function postHandler(request, context) {
 
   return errorResponse(
     HTTP_STATUS.BAD_REQUEST,
-    `Invalid rerank model: ${body.model}. Use format: provider/model`,
+    `Invalid rerank model: ${body.model}. Use format: provider/model`
   );
 }
 

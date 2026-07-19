@@ -19,9 +19,8 @@ export async function GET(request: Request) {
   if (authError) return authError;
 
   try {
-    const { createVirtualAutoCombo } = await import(
-      "@omniroute/open-sse/services/autoCombo/virtualFactory"
-    );
+    const { createVirtualAutoCombo } =
+      await import("@omniroute/open-sse/services/autoCombo/virtualFactory");
 
     const combos = [];
     for (const { variant, name } of ALL_VARIANTS) {

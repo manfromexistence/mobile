@@ -57,7 +57,7 @@ export interface QuotaStore {
    */
   poolUsageWithDimensions(
     poolId: string,
-    planDimensions: Array<{ unit: string; window: string; limit: number }>,
+    planDimensions: Array<{ unit: string; window: string; limit: number }>
   ): Promise<PoolUsageSnapshot>;
   clear(apiKeyId: string, dim: DimensionKey): Promise<void>;
 }

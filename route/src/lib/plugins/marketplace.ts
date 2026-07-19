@@ -29,7 +29,7 @@ const defaultLookup: MarketplaceLookupFn = (hostname) =>
  */
 export async function isSafeMarketplaceUrl(
   urlStr: string,
-  lookupFn: MarketplaceLookupFn = defaultLookup,
+  lookupFn: MarketplaceLookupFn = defaultLookup
 ): Promise<boolean> {
   let parsed: URL;
   try {
@@ -160,7 +160,7 @@ export async function listMarketplacePlugins(): Promise<MarketplaceEntry[]> {
           (entry: unknown) =>
             entry &&
             typeof entry === "object" &&
-            typeof (entry as Record<string, unknown>).name === "string",
+            typeof (entry as Record<string, unknown>).name === "string"
         ) as MarketplaceEntry[];
       }
       if (
@@ -172,7 +172,7 @@ export async function listMarketplacePlugins(): Promise<MarketplaceEntry[]> {
           (entry: unknown) =>
             entry &&
             typeof entry === "object" &&
-            typeof (entry as Record<string, unknown>).name === "string",
+            typeof (entry as Record<string, unknown>).name === "string"
         ) as MarketplaceEntry[];
       }
       console.warn("Custom marketplace returned unrecognized format");
@@ -193,7 +193,7 @@ export async function searchMarketplace(query: string): Promise<MarketplaceEntry
     (p) =>
       p.name.includes(q) ||
       p.description.toLowerCase().includes(q) ||
-      p.tags.some((t) => t.includes(q)),
+      p.tags.some((t) => t.includes(q))
   );
 }
 

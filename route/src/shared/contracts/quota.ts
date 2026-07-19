@@ -90,7 +90,7 @@ export function sanitizeQuotaProvider(input: unknown): QuotaProviderEntry {
 
 export function normalizeQuotaResponse(
   raw: unknown,
-  filters: { provider?: string | null; connectionId?: string | null } = {},
+  filters: { provider?: string | null; connectionId?: string | null } = {}
 ): QuotaResponse {
   const source = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
   const providersRaw = Array.isArray(source.providers)

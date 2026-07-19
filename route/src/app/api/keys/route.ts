@@ -120,7 +120,7 @@ export async function POST(request) {
         chaosModeEnabled: chaosModeEnabled === true,
         streamDefaultMode: "legacy",
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error) {
     log.error("keys", "Error creating key", error);

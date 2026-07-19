@@ -108,7 +108,7 @@ export function AgentSkillsPageClient(): JSX.Element {
         setLoadingPreview(false);
       }
     },
-    [markdownCache],
+    [markdownCache]
   );
 
   // ── Debounced preview load (200ms) ───────────────────────────────────────

@@ -33,7 +33,7 @@ async function getOrLoadPipeline(): Promise<PipelineFn> {
       pipeline: (
         task: string,
         model: string,
-        opts?: Record<string, unknown>,
+        opts?: Record<string, unknown>
       ) => Promise<PipelineFn>;
     };
     const pipe = await pipeline("feature-extraction", TRANSFORMERS_MODEL, { dtype: "q8" });

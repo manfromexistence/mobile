@@ -31,7 +31,7 @@ export function parseCsvEnv(value: string | undefined | null): Set<string> {
     (value ?? "")
       .split(",")
       .map((s) => s.trim())
-      .filter(Boolean),
+      .filter(Boolean)
   );
 }
 
@@ -91,7 +91,7 @@ export function originHostMatches(origin: string, allowedHosts: Set<string>): bo
 export function isOriginAllowed(
   origin: string | undefined,
   env: NodeJS.ProcessEnv = process.env,
-  options: { allowedOrigins?: Set<string>; allowedHosts?: Set<string> } = {},
+  options: { allowedOrigins?: Set<string>; allowedHosts?: Set<string> } = {}
 ): boolean {
   const allowedOrigins = options.allowedOrigins ?? buildAllowedOrigins(env);
   const allowedHosts = options.allowedHosts ?? buildAllowedHosts(env);

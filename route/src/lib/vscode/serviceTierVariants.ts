@@ -41,7 +41,7 @@ export function isVscodeServiceTierVariantModelId(modelId: string | null | undef
 
 export function getVscodeServiceTierVariantModelId(
   baseModelId: string,
-  serviceTier: ServiceTierId,
+  serviceTier: ServiceTierId
 ): string {
   if (serviceTier === "standard") {
     return baseModelId;
@@ -101,7 +101,7 @@ function cloneModelIdentifiers<T extends VscodeServiceTierModelLike>(model: T, m
 }
 
 export function expandVscodeServiceTierModels<T extends VscodeServiceTierModelLike>(
-  models: T[],
+  models: T[]
 ): T[] {
   const expanded: T[] = [];
 
@@ -125,8 +125,8 @@ export function expandVscodeServiceTierModels<T extends VscodeServiceTierModelLi
       expanded.push(
         cloneModelIdentifiers(
           baseModel as T,
-          getVscodeServiceTierVariantModelId(baseModelId, serviceTier),
-        ),
+          getVscodeServiceTierVariantModelId(baseModelId, serviceTier)
+        )
       );
     }
   }
@@ -145,7 +145,7 @@ export function getVscodeServiceTierVariantSuffix(serviceTier: ServiceTierId | u
 }
 
 export function resolveVscodeServiceTierRequest(
-  body: Record<string, unknown>,
+  body: Record<string, unknown>
 ): Record<string, unknown> {
   const rawModelId = typeof body.model === "string" ? body.model.trim() : "";
   if (!rawModelId) {

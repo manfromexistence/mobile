@@ -40,7 +40,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -83,7 +83,7 @@ export async function POST(request) {
             : "Anthropic";
         return NextResponse.json(
           { error: `${typeName} Compatible node not found` },
-          { status: 404 },
+          { status: 404 }
         );
       }
       providerSpecificData = {
@@ -109,7 +109,7 @@ export async function POST(request) {
         provider,
         apiKey,
         providerSpecificData,
-      }),
+      })
     );
 
     if (result.unsupported) {
@@ -118,7 +118,7 @@ export async function POST(request) {
       // "Invalid" block — providers like lmarena / piapi have no live validator.
       return NextResponse.json(
         { error: "Provider validation not supported", unsupported: true },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -142,7 +142,7 @@ export async function POST(request) {
       }
       return NextResponse.json(
         { error: result.error || "Validation failed" },
-        { status: result.statusCode },
+        { status: result.statusCode }
       );
     }
 

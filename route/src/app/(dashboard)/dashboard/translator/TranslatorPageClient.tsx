@@ -51,7 +51,7 @@ function TranslatorPageClientInner() {
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   // Build PipelineStep[] from session.result so PipelineView reflects real state

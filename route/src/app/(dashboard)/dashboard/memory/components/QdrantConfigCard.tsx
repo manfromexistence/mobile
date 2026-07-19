@@ -34,7 +34,7 @@ export default function QdrantConfigCard() {
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"" | "saved" | "error">("");
   const [health, setHealth] = useState<{ ok: boolean; latencyMs: number; error?: string } | null>(
-    null,
+    null
   );
   const [checking, setChecking] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,7 +103,7 @@ export default function QdrantConfigCard() {
         setSaving(false);
       }
     },
-    [qdrant],
+    [qdrant]
   );
 
   const checkHealth = useCallback(async () => {

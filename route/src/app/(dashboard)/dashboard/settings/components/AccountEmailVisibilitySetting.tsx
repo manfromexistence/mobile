@@ -11,7 +11,7 @@ export default function AccountEmailVisibilitySetting() {
     useShallow((state) => ({
       emailsVisible: state.emailsVisible,
       setEmailsVisible: state.setEmailsVisible,
-    })),
+    }))
   );
 
   const label = (key: string, fallback: string) =>
@@ -27,7 +27,7 @@ export default function AccountEmailVisibilitySetting() {
           <p className="text-sm text-text-muted">
             {label(
               "accountEmailVisibilityDesc",
-              "Show full account emails across providers, combos, logs, quota, and playground screens. Turn this off to mask them by default.",
+              "Show full account emails across providers, combos, logs, quota, and playground screens. Turn this off to mask them by default."
             )}
           </p>
         </div>

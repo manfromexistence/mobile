@@ -80,7 +80,7 @@ describe("/api/settings/memory", () => {
         retentionDays: 14,
         strategy: "semantic",
         skillsEnabled: true,
-      }) as any,
+      }) as any
     );
 
     expect(res.status).toBe(200);

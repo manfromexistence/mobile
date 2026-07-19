@@ -368,7 +368,7 @@ export interface WebProviderHostLink {
  */
 export function resolveWebProviderHost(
   providerId: string | null | undefined,
-  fallbackBaseUrl?: string | null,
+  fallbackBaseUrl?: string | null
 ): WebProviderHostLink | null {
   if (!providerId) return null;
   const entry = (WEB_COOKIE_PROVIDERS as Record<string, { website?: string }>)[providerId];

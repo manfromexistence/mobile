@@ -16,9 +16,9 @@ export const wizardCsvMappingSchema = z
   .refine(
     (m) =>
       Object.values(m).some(
-        (v) => v.startsWith("body.messages[") || v === "body.input" || v === "body.prompt",
+        (v) => v.startsWith("body.messages[") || v === "body.input" || v === "body.prompt"
       ),
-    { message: "CSV mapping must produce request body content" },
+    { message: "CSV mapping must produce request body content" }
   );
 
 // Used only for client-side parsing — backend keeps using v1BatchCreateSchema.

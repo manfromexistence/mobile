@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   if (!statusResult.success) {
     return NextResponse.json(
       { error: "Invalid status value", details: statusResult.error.issues },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: CORS_HEADERS }
     );
   }
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       .regex(/^\/[^]*$/, "Path must be absolute")
       .refine(
         (p) => !p.includes("\0") && !p.includes(".."),
-        "Path must not contain traversal patterns or null bytes",
+        "Path must not contain traversal patterns or null bytes"
       ),
   });
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: CORS_HEADERS }
     );
   }
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const plugin = await pluginManager.install(parsed.data.path);
     return NextResponse.json(
       { plugin: formatPlugin(plugin) },
-      { status: 201, headers: CORS_HEADERS },
+      { status: 201, headers: CORS_HEADERS }
     );
   } catch (err: unknown) {
     console.error("[plugins] Failed to install plugin:", err);

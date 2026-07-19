@@ -80,7 +80,7 @@ export const clientApiPolicy: RoutePolicy = {
       if (!isRequireApiKeyEnabled()) {
         console.warn(
           `[clientApiPolicy] invalid bearer presented to ${ctx.classification.normalizedPath} ` +
-            `but REQUIRE_API_KEY=false — falling through to anonymous (key_id=${maskKeyId(bearer)})`,
+            `but REQUIRE_API_KEY=false — falling through to anonymous (key_id=${maskKeyId(bearer)})`
         );
         return allow({ kind: "anonymous", id: "local" });
       }

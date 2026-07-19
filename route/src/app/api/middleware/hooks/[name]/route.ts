@@ -108,7 +108,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
     console.error("[API] PUT /api/middleware/hooks/[name] error:", error);
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to update hook" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

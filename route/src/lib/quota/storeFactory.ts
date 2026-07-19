@@ -93,13 +93,13 @@ export async function getQuotaStore(): Promise<QuotaStore> {
         _store = store;
         log.info(
           { redisUrl: redisUrl.replace(/:[^:@]*@/, ":***@") },
-          "QuotaStore: using Redis driver",
+          "QuotaStore: using Redis driver"
         );
         return _store;
       } catch (err) {
         log.warn(
           { err: (err as Error)?.message },
-          "Redis QuotaStore unavailable — falling back to sqlite",
+          "Redis QuotaStore unavailable — falling back to sqlite"
         );
         // Fall through to sqlite
       }

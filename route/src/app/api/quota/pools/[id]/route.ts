@@ -104,7 +104,7 @@ export async function PATCH(request: Request, { params }: RouteParams): Promise<
         id,
         prevApiKeyIds,
         nextApiKeyIds,
-        parsed.data.exclusive ?? false,
+        parsed.data.exclusive ?? false
       );
     }
 

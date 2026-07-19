@@ -89,8 +89,7 @@ export default function ModelLockoutCard() {
         if (!mounted) return;
 
         const raw = (json as Record<string, unknown>).modelLockout as
-          | Record<string, unknown>
-          | undefined;
+          Record<string, unknown> | undefined;
 
         const parsed: ModelLockoutSettings = {
           enabled: typeof raw?.enabled === "boolean" ? raw.enabled : DEFAULTS.enabled,
@@ -116,7 +115,7 @@ export default function ModelLockoutCard() {
         setErrorCodesInput("");
       } catch (error) {
         notify.error(
-          error instanceof Error ? error.message : "Failed to load model lockout settings",
+          error instanceof Error ? error.message : "Failed to load model lockout settings"
         );
       } finally {
         if (mounted) setLoading(false);
@@ -176,7 +175,7 @@ export default function ModelLockoutCard() {
           const msg = issues
             .map(
               (d: { path?: (string | number)[]; message?: string }) =>
-                `${fieldLabels[String(d.path?.[0])] || String(d.path?.[0] || "")}: ${d.message}`,
+                `${fieldLabels[String(d.path?.[0])] || String(d.path?.[0] || "")}: ${d.message}`
             )
             .filter(Boolean)
             .join("\n");
@@ -186,8 +185,7 @@ export default function ModelLockoutCard() {
       }
       const json = await res.json();
       const raw = (json as Record<string, unknown>).modelLockout as
-        | Record<string, unknown>
-        | undefined;
+        Record<string, unknown> | undefined;
       if (raw) {
         setData({
           enabled: typeof raw.enabled === "boolean" ? raw.enabled : saveDraft.enabled,
@@ -214,7 +212,7 @@ export default function ModelLockoutCard() {
       notify.success(t("savedSuccessfully") || "Settings saved successfully");
     } catch (error) {
       notify.error(
-        error instanceof Error ? error.message : "Failed to save model lockout settings",
+        error instanceof Error ? error.message : "Failed to save model lockout settings"
       );
     } finally {
       setSaving(false);

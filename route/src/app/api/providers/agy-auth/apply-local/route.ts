@@ -76,12 +76,12 @@ export async function POST(request: Request) {
             "No local Antigravity CLI login found. Run `agy`, sign in with Google, then try again.",
           code: "no_local_login",
         },
-        { status: 404 },
+        { status: 404 }
       );
     }
     return NextResponse.json(
       { error: "Could not read the local agy token file", code: "read_failed" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -119,12 +119,12 @@ export async function POST(request: Request) {
     if (error instanceof AgyAuthFileError) {
       return NextResponse.json(
         { error: error.message, code: error.code },
-        { status: error.status },
+        { status: error.status }
       );
     }
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to import local Antigravity CLI login" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

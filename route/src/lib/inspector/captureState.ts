@@ -48,7 +48,7 @@ export function getSystemProxyState(): Readonly<SystemProxyState> {
 export function setSystemProxyApplied(
   port: number,
   previousState: PreviousState,
-  guardMinutes: number,
+  guardMinutes: number
 ): void {
   if (guardTimer) clearTimeout(guardTimer);
 

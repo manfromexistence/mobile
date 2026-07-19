@@ -45,7 +45,11 @@
     "!**/*.spec.ts",
     "!**/*.spec.tsx"
   ],
-  "workspaces": ["open-sse", "packages/dx-serializer", "packages/dx-cli"],
+  "workspaces": [
+    "open-sse",
+    "packages/dx-serializer",
+    "packages/dx-cli"
+  ],
   "engines": {
     "node": ">=22.0.0 <23 || >=24.0.0 <27"
   },
@@ -226,12 +230,12 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@lobehub/icons": "^5.8.0",
+    "@dx-serializer/core": "workspace:*",
+    "@lobehub/icons": "^5.14.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@monaco-editor/react": "^4.7.0",
     "@ngrok/ngrok": "^1.7.0",
     "@swc/helpers": "0.5.23",
-    "@dx-serializer/core": "workspace:*",
     "@toon-format/toon": "^2.3.0",
     "@types/mdx": "^2.0.13",
     "@xyflow/react": "^12.11.1",
@@ -364,7 +368,9 @@
       "prettier --write",
       "eslint --fix --no-error-on-unmatched-pattern --suppressions-location config/quality/eslint-suppressions.json"
     ],
-    "*.{json,md,yml,yaml,css}": ["prettier --write"]
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   },
   "pnpm": {
     "onlyBuiltDependencies": [

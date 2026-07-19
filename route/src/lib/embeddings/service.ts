@@ -49,7 +49,7 @@ export interface EmbeddingHandlerOptions {
 
 export async function createEmbeddingResponse(
   body: ValidatedEmbeddingBody,
-  options: EmbeddingHandlerOptions = {},
+  options: EmbeddingHandlerOptions = {}
 ): Promise<Response> {
   const modelStr = body.model;
   const startTime = Date.now();
@@ -74,7 +74,7 @@ export async function createEmbeddingResponse(
             HTTP_STATUS.BAD_REQUEST,
             `Embedding combo "${modelStr}" mixes models with incompatible vector ` +
               `dimensions (${dimConflict.distinct.join(", ")}). Failover between them ` +
-              `would corrupt your vector store — use a single embedding dimension per combo.`,
+              `would corrupt your vector store — use a single embedding dimension per combo.`
           );
         }
 
@@ -150,7 +150,7 @@ export async function createEmbeddingResponse(
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid embedding model: ${body.model}. Use format: provider/model`,
+      `Invalid embedding model: ${body.model}. Use format: provider/model`
     );
   }
 
@@ -165,7 +165,7 @@ export async function createEmbeddingResponse(
         (n) =>
           n.prefix === provider &&
           (n.apiType === "chat" || n.apiType === "responses" || n.apiType === "embeddings") &&
-          n.baseUrl,
+          n.baseUrl
       );
       if (matchingNode) {
         const baseUrl = String(matchingNode.baseUrl).replace(/\/+$/, "");
@@ -190,7 +190,7 @@ export async function createEmbeddingResponse(
         credentialsProviderId = matchingNode.id || provider;
         log.info(
           "EMBED",
-          `Resolved custom embedding provider: ${provider} -> ${providerConfig.baseUrl}`,
+          `Resolved custom embedding provider: ${provider} -> ${providerConfig.baseUrl}`
         );
       }
     } catch (err) {
@@ -201,7 +201,7 @@ export async function createEmbeddingResponse(
   if (!providerConfig) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Unknown embedding provider: ${provider}. No matching hardcoded or local provider found.`,
+      `Unknown embedding provider: ${provider}. No matching hardcoded or local provider found.`
     );
   }
 
@@ -211,7 +211,7 @@ export async function createEmbeddingResponse(
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials for embedding provider: ${provider}`,
+        `No credentials for embedding provider: ${provider}`
       );
     }
     if ("allRateLimited" in credentials && credentials.allRateLimited) {
@@ -219,7 +219,7 @@ export async function createEmbeddingResponse(
         HTTP_STATUS.RATE_LIMITED,
         `[${provider}] All accounts rate limited`,
         credentials.retryAfter,
-        credentials.retryAfterHuman,
+        credentials.retryAfterHuman
       );
     }
   }
@@ -235,7 +235,7 @@ export async function createEmbeddingResponse(
   const effectiveModel = resolveBareModelToConnectionDefault(
     modelStr,
     resolvedModel,
-    connectionDefaultModel,
+    connectionDefaultModel
   );
 
   // Resolve the connection-level proxy so the upstream embedding request honors

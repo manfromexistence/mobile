@@ -75,7 +75,7 @@ export type VisionBridgeConfig = {
  * Merge settings with defaults to produce a complete config.
  */
 export function getVisionBridgeConfig(
-  settings: VisionBridgeSettings | undefined | null = {},
+  settings: VisionBridgeSettings | undefined | null = {}
 ): VisionBridgeConfig {
   const s = settings ?? {};
   return {

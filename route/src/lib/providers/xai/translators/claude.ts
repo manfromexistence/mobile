@@ -306,7 +306,7 @@ export function claudeRequestToXaiResponses(req: AnthropicRequest): XaiResponses
  */
 export function xaiCompletedToClaudeJson(
   completed: XaiCompleted,
-  origReq: AnthropicRequest | null = null,
+  origReq: AnthropicRequest | null = null
 ): object {
   const content: unknown[] = [];
   let stopReason = "end_turn";

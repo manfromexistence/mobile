@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
       { error: "Missing authorization" },
-      { status: 401, headers: CORS_HEADERS },
+      { status: 401, headers: CORS_HEADERS }
     );
   }
 
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   if (!server) {
     return NextResponse.json(
       { error: "Invalid or unauthorized token" },
-      { status: 403, headers: CORS_HEADERS },
+      { status: 403, headers: CORS_HEADERS }
     );
   }
 
@@ -49,6 +49,6 @@ export async function GET(request: NextRequest) {
         score: e.score,
       })),
     },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

@@ -53,10 +53,10 @@ export function createSseTextTransform(
     field: FieldCategory,
     isStopSignal?: boolean,
     index?: string | number,
-    isSnapshot?: boolean,
+    isSnapshot?: boolean
   ) => string,
   onFlush?: (lastJson: any, isJsonStream?: boolean, lastContentJson?: any) => any,
-  onCancel?: () => void,
+  onCancel?: () => void
 ): TransformStream {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder("utf-8");
@@ -193,7 +193,7 @@ export function createSseTextTransform(
           if (!matched) {
             console.warn(
               "[SSE-TRANSFORM] No string fields sanitized in SSE JSON chunk. Keys:",
-              Object.keys(json).slice(0, 5).join(", "),
+              Object.keys(json).slice(0, 5).join(", ")
             );
           } else {
             lastContentJson = json;
@@ -203,7 +203,7 @@ export function createSseTextTransform(
             const flushedValue = onFlush(
               lastJson || json,
               isJsonStream,
-              lastContentJson || lastJson || json,
+              lastContentJson || lastJson || json
             ); // Use json as fallback just in case
             if (flushedValue) {
               const prefix = lastPrefix || "data: ";
@@ -237,7 +237,7 @@ export function createSseTextTransform(
             if (trimmedSegment.startsWith("{") || trimmedSegment.startsWith("[")) {
               console.warn(
                 "[SSE-TRANSFORM] Dropping malformed JSON chunk to prevent syntax injection:",
-                trimmedSegment.slice(0, 100),
+                trimmedSegment.slice(0, 100)
               );
               pendingEventLine = "";
             } else {

@@ -94,7 +94,7 @@ export interface ProviderModelsSectionProps {
   handleBulkToggleModelHidden: (
     providerKey: string,
     modelIds: string[],
-    hidden: boolean,
+    hidden: boolean
   ) => Promise<void>;
   handleClearAllModels: () => Promise<void>;
   onTestModel: (modelId: string, fullModel: string) => Promise<void>;
@@ -379,7 +379,7 @@ export default function ProviderModelsSection({
       }
       return acc;
     },
-    {},
+    {}
   );
 
   const modelsWithVisibility = models.map((model) => ({
@@ -427,14 +427,14 @@ export default function ProviderModelsSection({
             handleBulkToggleModelHidden(
               providerId,
               filteredModels.map((model) => model.id),
-              false,
+              false
             )
           }
           onDeselectAll={() =>
             handleBulkToggleModelHidden(
               providerId,
               filteredModels.map((model) => model.id),
-              true,
+              true
             )
           }
           selectAllDisabled={hiddenFilteredCount === 0 || bulkVisibilityAction !== null}

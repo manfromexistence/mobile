@@ -47,14 +47,14 @@ export function getProxyRegistryGeneration() {
 // SQLite transaction as the proxy registry row and assignment upsert.
 function clearLegacyProxyForAssignment(
   db: ReturnType<typeof getDbInstance>,
-  assignment: ProxyAssignmentPayload,
+  assignment: ProxyAssignmentPayload
 ): LegacyProxyClearStatus {
   const normalizedScope = normalizeScope(assignment.scope);
   const scopeId = normalizeAssignmentScopeId(normalizedScope, assignment.scopeId);
   const level = toLegacyProxyLevel(normalizedScope);
 
   const writeProxyConfig = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)"
   );
 
   if (level === "global") {
@@ -111,12 +111,12 @@ function insertProxyRow(
   db: ReturnType<typeof getDbInstance>,
   id: string,
   payload: ProxyPayload,
-  now: string,
+  now: string
 ) {
   db.prepare(
     `INSERT INTO proxy_registry
       (id, name, type, host, port, username, password, region, notes, status, source, family, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     payload.name,
@@ -131,7 +131,7 @@ function insertProxyRow(
     payload.source || "manual",
     payload.family || "auto",
     now,
-    now,
+    now
   );
 }
 
@@ -140,7 +140,7 @@ function updateProxyRow(
   id: string,
   existing: ProxyRegistryRecord,
   payload: Partial<ProxyPayload>,
-  now: string,
+  now: string
 ) {
   const incomingUsername =
     typeof payload.username === "string" ? payload.username.trim() : undefined;
@@ -159,7 +159,7 @@ function updateProxyRow(
   db.prepare(
     `UPDATE proxy_registry
        SET name = ?, type = ?, host = ?, port = ?, username = ?, password = ?, region = ?, notes = ?, status = ?, source = ?, family = ?, updated_at = ?
-     WHERE id = ?`,
+     WHERE id = ?`
   ).run(
     merged.name,
     merged.type,
@@ -173,7 +173,7 @@ function updateProxyRow(
     merged.source || "manual",
     merged.family || "auto",
     merged.updatedAt,
-    id,
+    id
   );
 }
 
@@ -181,7 +181,7 @@ function upsertAssignmentRow(
   db: ReturnType<typeof getDbInstance>,
   assignment: ProxyAssignmentPayload,
   proxyId: string,
-  now: string,
+  now: string
 ) {
   const normalizedScope = normalizeScope(assignment.scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, assignment.scopeId);
@@ -205,28 +205,28 @@ function replaceScopeWithSingleProxy(
   normalizedScope: string,
   normalizedScopeId: string | null,
   proxyId: string,
-  now: string,
+  now: string
 ) {
   db.prepare("DELETE FROM proxy_assignments WHERE scope = ? AND scope_id IS ?").run(
     normalizedScope,
-    normalizedScopeId,
+    normalizedScopeId
   );
   db.prepare(
     `INSERT INTO proxy_assignments (proxy_id, scope, scope_id, position, created_at, updated_at)
-     VALUES (?, ?, ?, 0, ?, ?)`,
+     VALUES (?, ?, ?, 0, ?, ?)`
   ).run(proxyId, normalizedScope, normalizedScopeId, now, now);
 }
 
 function getAssignmentRow(
   db: ReturnType<typeof getDbInstance>,
   scope: string,
-  scopeId?: string | null,
+  scopeId?: string | null
 ) {
   const normalizedScope = normalizeScope(scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, scopeId);
   const row = db
     .prepare(
-      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ?",
+      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ?"
     )
     .get(normalizedScope, normalizedScopeId);
   return row ? mapAssignmentRow(row) : null;
@@ -237,7 +237,7 @@ export async function listProxies(options?: { includeSecrets?: boolean }) {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT id, name, type, host, port, username, password, region, notes, status, source, family, created_at, updated_at FROM proxy_registry ORDER BY datetime(updated_at) DESC, name ASC",
+      "SELECT id, name, type, host, port, username, password, region, notes, status, source, family, created_at, updated_at FROM proxy_registry ORDER BY datetime(updated_at) DESC, name ASC"
     )
     .all();
 
@@ -253,12 +253,12 @@ export async function getProxyById(id: string, options?: { includeSecrets?: bool
 function getProxyRowById(
   db: ReturnType<typeof getDbInstance>,
   id: string,
-  options?: { includeSecrets?: boolean },
+  options?: { includeSecrets?: boolean }
 ) {
   const includeSecrets = options?.includeSecrets === true;
   const row = db
     .prepare(
-      "SELECT id, name, type, host, port, username, password, region, notes, status, source, family, created_at, updated_at FROM proxy_registry WHERE id = ?",
+      "SELECT id, name, type, host, port, username, password, region, notes, status, source, family, created_at, updated_at FROM proxy_registry WHERE id = ?"
     )
     .get(id);
   if (!row) return null;
@@ -269,7 +269,7 @@ function getProxyRowById(
 function getProxyRowByIdOrThrow(
   db: ReturnType<typeof getDbInstance>,
   id: string,
-  options?: { includeSecrets?: boolean },
+  options?: { includeSecrets?: boolean }
 ) {
   const proxy = getProxyRowById(db, id, options);
   if (!proxy) {
@@ -330,7 +330,7 @@ export async function updateProxy(id: string, payload: Partial<ProxyPayload>) {
 
 export async function createProxyAndAssign(
   payload: ProxyPayload,
-  assignment: ProxyAssignmentPayload,
+  assignment: ProxyAssignmentPayload
 ): Promise<ProxyMutationResult> {
   const db = getDbInstance();
   const id = randomUUID();
@@ -365,7 +365,7 @@ export async function createProxyAndAssign(
 export async function updateProxyAndAssign(
   id: string,
   payload: Partial<ProxyPayload>,
-  assignment: ProxyAssignmentPayload,
+  assignment: ProxyAssignmentPayload
 ): Promise<ProxyMutationResult | null> {
   const db = getDbInstance();
   const now = new Date().toISOString();
@@ -407,7 +407,7 @@ export async function getProxyAssignments(filters?: { proxyId?: string; scope?: 
     if (filters?.proxyId) {
       return db
         .prepare(
-          "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE proxy_id = ? ORDER BY scope, scope_id",
+          "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE proxy_id = ? ORDER BY scope, scope_id"
         )
         .all(filters.proxyId)
         .map(mapAssignmentRow);
@@ -416,7 +416,7 @@ export async function getProxyAssignments(filters?: { proxyId?: string; scope?: 
     if (filters?.scope) {
       return db
         .prepare(
-          "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? ORDER BY scope_id",
+          "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? ORDER BY scope_id"
         )
         .all(normalizeScope(filters.scope))
         .map(mapAssignmentRow);
@@ -424,7 +424,7 @@ export async function getProxyAssignments(filters?: { proxyId?: string; scope?: 
 
     return db
       .prepare(
-        "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments ORDER BY scope, scope_id",
+        "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments ORDER BY scope, scope_id"
       )
       .all()
       .map(mapAssignmentRow);
@@ -441,7 +441,7 @@ export async function getProxyWhereUsed(proxyId: string) {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE proxy_id = ? ORDER BY scope, scope_id",
+      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE proxy_id = ? ORDER BY scope, scope_id"
     )
     .all(proxyId)
     .map(mapAssignmentRow);
@@ -455,7 +455,7 @@ export async function getProxyWhereUsed(proxyId: string) {
 export async function assignProxyToScope(
   scope: string,
   scopeId: string | null,
-  proxyId: string | null,
+  proxyId: string | null
 ): Promise<ProxyAssignmentRecord | null> {
   const normalizedScope = normalizeScope(scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, scopeId);
@@ -464,7 +464,7 @@ export async function assignProxyToScope(
   if (!proxyId) {
     db.prepare("DELETE FROM proxy_assignments WHERE scope = ? AND scope_id IS ?").run(
       normalizedScope,
-      normalizedScopeId,
+      normalizedScopeId
     );
     clearRotationState(db, normalizedScope, normalizedScopeId);
     backupDbFile("pre-write");
@@ -503,21 +503,21 @@ function normalizeRotationScopeId(scope: ProxyScope, scopeId?: string | null): s
 function clearRotationState(
   db: ReturnType<typeof getDbInstance>,
   scope: string,
-  normalizedScopeId: string | null,
+  normalizedScopeId: string | null
 ) {
   db.prepare("DELETE FROM proxy_scope_rotation WHERE scope = ? AND scope_id IS ?").run(
     scope,
-    normalizedScopeId ?? "",
+    normalizedScopeId ?? ""
   );
 }
 
 function resetRotationCursor(
   db: ReturnType<typeof getDbInstance>,
   scope: string,
-  normalizedScopeId: string | null,
+  normalizedScopeId: string | null
 ) {
   db.prepare(
-    "UPDATE proxy_scope_rotation SET cursor = 0, rotated_at = NULL, updated_at = ? WHERE scope = ? AND scope_id IS ?",
+    "UPDATE proxy_scope_rotation SET cursor = 0, rotated_at = NULL, updated_at = ? WHERE scope = ? AND scope_id IS ?"
   ).run(new Date().toISOString(), scope, normalizedScopeId ?? "");
 }
 
@@ -535,7 +535,7 @@ function normalizeRotationStrategy(strategy: unknown): ProxyRotationStrategy {
 export async function addProxyToScopePool(
   scope: string,
   scopeId: string | null,
-  proxyId: string,
+  proxyId: string
 ): Promise<ProxyAssignmentRecord | null> {
   const normalizedScope = normalizeScope(scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, scopeId);
@@ -553,7 +553,7 @@ export async function addProxyToScopePool(
 
   const existing = db
     .prepare(
-      "SELECT id FROM proxy_assignments WHERE scope = ? AND scope_id IS ? AND proxy_id = ? LIMIT 1",
+      "SELECT id FROM proxy_assignments WHERE scope = ? AND scope_id IS ? AND proxy_id = ? LIMIT 1"
     )
     .get(normalizedScope, normalizedScopeId, proxyId);
 
@@ -561,13 +561,13 @@ export async function addProxyToScopePool(
     const now = new Date().toISOString();
     const maxRow = db
       .prepare(
-        "SELECT MAX(position) AS maxPos FROM proxy_assignments WHERE scope = ? AND scope_id IS ?",
+        "SELECT MAX(position) AS maxPos FROM proxy_assignments WHERE scope = ? AND scope_id IS ?"
       )
       .get(normalizedScope, normalizedScopeId) as { maxPos?: number | null } | undefined;
     const nextPosition = maxRow && typeof maxRow.maxPos === "number" ? maxRow.maxPos + 1 : 0;
     db.prepare(
       `INSERT INTO proxy_assignments (proxy_id, scope, scope_id, position, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?)`
     ).run(proxyId, normalizedScope, normalizedScopeId, nextPosition, now, now);
 
     backupDbFile("pre-write");
@@ -576,7 +576,7 @@ export async function addProxyToScopePool(
 
   const row = db
     .prepare(
-      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ? AND proxy_id = ? LIMIT 1",
+      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ? AND proxy_id = ? LIMIT 1"
     )
     .get(normalizedScope, normalizedScopeId, proxyId);
   return row ? mapAssignmentRow(row) : null;
@@ -589,7 +589,7 @@ export async function addProxyToScopePool(
 export async function removeProxyFromScopePool(
   scope: string,
   scopeId: string | null,
-  proxyId: string,
+  proxyId: string
 ): Promise<boolean> {
   const normalizedScope = normalizeScope(scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, scopeId);
@@ -611,14 +611,14 @@ export async function removeProxyFromScopePool(
  */
 export async function getScopeProxyPool(
   scope: string,
-  scopeId?: string | null,
+  scopeId?: string | null
 ): Promise<ProxyAssignmentRecord[]> {
   const normalizedScope = normalizeScope(scope);
   const normalizedScopeId = normalizeAssignmentScopeId(normalizedScope, scopeId);
   const db = getDbInstance();
   return db
     .prepare(
-      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ? ORDER BY position ASC, datetime(created_at) ASC, id ASC",
+      "SELECT id, proxy_id, scope, scope_id, position, created_at, updated_at FROM proxy_assignments WHERE scope = ? AND scope_id IS ? ORDER BY position ASC, datetime(created_at) ASC, id ASC"
     )
     .all(normalizedScope, normalizedScopeId)
     .map(mapAssignmentRow);
@@ -633,7 +633,7 @@ export async function setScopeRotationStrategy(
   scope: string,
   scopeId: string | null,
   strategy: ProxyRotationStrategy | string,
-  options?: { stickyWindowMinutes?: number },
+  options?: { stickyWindowMinutes?: number }
 ): Promise<ProxyRotationStrategy> {
   const normalizedScope = normalizeScope(scope);
   const rotationScopeId = normalizeRotationScopeId(normalizedScope, scopeId);
@@ -651,14 +651,14 @@ export async function setScopeRotationStrategy(
       `INSERT INTO proxy_scope_rotation (scope, scope_id, strategy, sticky_window_minutes, updated_at)
        VALUES (?, ?, ?, ?, ?)
        ON CONFLICT(scope, scope_id)
-       DO UPDATE SET strategy = excluded.strategy, sticky_window_minutes = excluded.sticky_window_minutes, updated_at = excluded.updated_at`,
+       DO UPDATE SET strategy = excluded.strategy, sticky_window_minutes = excluded.sticky_window_minutes, updated_at = excluded.updated_at`
     ).run(normalizedScope, rotationScopeId, normalizedStrategy, stickyWindow, now);
   } else {
     db.prepare(
       `INSERT INTO proxy_scope_rotation (scope, scope_id, strategy, updated_at)
        VALUES (?, ?, ?, ?)
        ON CONFLICT(scope, scope_id)
-       DO UPDATE SET strategy = excluded.strategy, updated_at = excluded.updated_at`,
+       DO UPDATE SET strategy = excluded.strategy, updated_at = excluded.updated_at`
     ).run(normalizedScope, rotationScopeId, normalizedStrategy, now);
   }
 
@@ -669,7 +669,7 @@ export async function setScopeRotationStrategy(
 /** Read a scope's rotation strategy (#6365). Defaults to `round-robin`. */
 export async function getScopeRotationStrategy(
   scope: string,
-  scopeId?: string | null,
+  scopeId?: string | null
 ): Promise<ProxyRotationStrategy> {
   const normalizedScope = normalizeScope(scope);
   const rotationScopeId = normalizeRotationScopeId(normalizedScope, scopeId);
@@ -686,7 +686,7 @@ export async function getScopeRotationStrategy(
 function getOrCreateRotationRow(
   db: ReturnType<typeof getDbInstance>,
   normalizedScope: string,
-  rotationScopeId: string,
+  rotationScopeId: string
 ): {
   strategy: ProxyRotationStrategy;
   cursor: number;
@@ -695,7 +695,7 @@ function getOrCreateRotationRow(
 } {
   const row = db
     .prepare(
-      "SELECT strategy, cursor, sticky_window_minutes, rotated_at FROM proxy_scope_rotation WHERE scope = ? AND scope_id IS ?",
+      "SELECT strategy, cursor, sticky_window_minutes, rotated_at FROM proxy_scope_rotation WHERE scope = ? AND scope_id IS ?"
     )
     .get(normalizedScope, rotationScopeId) as
     | {
@@ -717,7 +717,7 @@ function getOrCreateRotationRow(
 
   const now = new Date().toISOString();
   db.prepare(
-    "INSERT OR IGNORE INTO proxy_scope_rotation (scope, scope_id, strategy, cursor, updated_at) VALUES (?, ?, ?, 0, ?)",
+    "INSERT OR IGNORE INTO proxy_scope_rotation (scope, scope_id, strategy, cursor, updated_at) VALUES (?, ?, ?, 0, ?)"
   ).run(normalizedScope, rotationScopeId, DEFAULT_PROXY_ROTATION_STRATEGY, now);
   return {
     strategy: DEFAULT_PROXY_ROTATION_STRATEGY,
@@ -737,7 +737,7 @@ function pickFromCandidates<T>(
   db: ReturnType<typeof getDbInstance>,
   normalizedScope: string,
   rotationScopeId: string,
-  candidates: T[],
+  candidates: T[]
 ): T {
   if (candidates.length === 1) return candidates[0];
 
@@ -761,13 +761,13 @@ function pickFromCandidates<T>(
     if (expired) {
       cursor = state.cursor + 1;
       db.prepare(
-        "UPDATE proxy_scope_rotation SET cursor = ?, rotated_at = ?, updated_at = ? WHERE scope = ? AND scope_id IS ?",
+        "UPDATE proxy_scope_rotation SET cursor = ?, rotated_at = ?, updated_at = ? WHERE scope = ? AND scope_id IS ?"
       ).run(
         cursor,
         new Date().toISOString(),
         new Date().toISOString(),
         normalizedScope,
-        rotationScopeId,
+        rotationScopeId
       );
     }
     const idx = ((cursor % candidates.length) + candidates.length) % candidates.length;
@@ -777,7 +777,7 @@ function pickFromCandidates<T>(
   // round-robin (default): pick at the current cursor, then advance it monotonically.
   const idx = ((state.cursor % candidates.length) + candidates.length) % candidates.length;
   db.prepare(
-    "UPDATE proxy_scope_rotation SET cursor = ?, updated_at = ? WHERE scope = ? AND scope_id IS ?",
+    "UPDATE proxy_scope_rotation SET cursor = ?, updated_at = ? WHERE scope = ? AND scope_id IS ?"
   ).run(state.cursor + 1, new Date().toISOString(), normalizedScope, rotationScopeId);
   return candidates[idx];
 }
@@ -790,7 +790,7 @@ function fetchAlivePoolRows(
   db: ReturnType<typeof getDbInstance>,
   scope: string,
   scopeIdFilter: string | null,
-  matchAnyScopeId: boolean,
+  matchAnyScopeId: boolean
 ): JsonRecord[] {
   const baseSelect =
     "SELECT p.id, p.type, p.host, p.port, p.username, p.password, p.notes, p.family, a.position AS __pos, a.id AS __aid " +
@@ -813,7 +813,7 @@ export async function deleteProxyById(id: string, options?: { force?: boolean })
 
   if (!force && usage.count > 0) {
     const err = new Error(
-      "Proxy is still assigned. Remove assignments first or use force=true",
+      "Proxy is still assigned. Remove assignments first or use force=true"
     ) as Error & {
       status?: number;
       code?: string;
@@ -849,13 +849,13 @@ function resolveScopePoolInternal(
   db: ReturnType<typeof getDbInstance>,
   scope: ProxyScope,
   levelId: string | null,
-  options: { rotationScopeId: string; matchAnyScopeId?: boolean; scopeIdFilter?: string | null },
+  options: { rotationScopeId: string; matchAnyScopeId?: boolean; scopeIdFilter?: string | null }
 ): ReturnType<typeof toRegistryProxyResolution> | null {
   const rows = fetchAlivePoolRows(
     db,
     scope,
     options.scopeIdFilter ?? null,
-    options.matchAnyScopeId === true,
+    options.matchAnyScopeId === true
   );
   if (rows.length === 0) return null;
   const picked = pickFromCandidates(db, scope, options.rotationScopeId, rows);
@@ -968,7 +968,7 @@ export function hasBlockingProxyAssignment(connectionId: string): boolean {
                OR (a.scope = 'provider' AND a.scope_id = ?)
                OR (a.scope = 'global'))
              AND NOT ${PROXY_ALIVE_PREDICATE}
-           LIMIT 1`,
+           LIMIT 1`
       )
       .get(connectionId, provider);
     return !!dead;
@@ -982,8 +982,7 @@ export async function migrateLegacyProxyConfigToRegistry(options?: { force?: boo
   const db = getDbInstance();
 
   const existingCountRow = db.prepare("SELECT COUNT(*) AS cnt FROM proxy_registry").get() as
-    | { cnt?: number }
-    | undefined;
+    { cnt?: number } | undefined;
   const existingCount = Number(existingCountRow?.cnt || 0);
   if (!force && existingCount > 0) {
     return { migrated: 0, skipped: true, reason: "registry_not_empty" as const };
@@ -1075,7 +1074,7 @@ export async function getProxyHealthStats(options?: { hours?: number }) {
         AND l.proxy_port = p.port
         AND l.timestamp >= ?
        GROUP BY p.id, p.name, p.type, p.host, p.port
-       ORDER BY p.name ASC`,
+       ORDER BY p.name ASC`
     )
     .all(sinceIso) as Array<Record<string, unknown>>;
 
@@ -1109,7 +1108,7 @@ export async function getProxyHealthStats(options?: { hours?: number }) {
 export async function bulkAssignProxyToScope(
   scope: string,
   scopeIds: string[],
-  proxyId: string | null,
+  proxyId: string | null
 ): Promise<{ updated: number; failed: Array<{ scopeId: string; reason: string }> }> {
   const uniqueScopeIds = [
     ...new Set((scopeIds || []).map((id) => String(id).trim()).filter(Boolean)),

@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       {
         error: error instanceof Error ? error.message : "Failed to load cloudflared tunnel status",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       {
         error: error instanceof Error ? error.message : "Failed to update cloudflared tunnel",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

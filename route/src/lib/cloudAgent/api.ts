@@ -91,7 +91,7 @@ function getConnectionToken(connection: JsonRecord): string | null {
 }
 
 export async function getCloudAgentCredentials(
-  providerId: string,
+  providerId: string
 ): Promise<AgentCredentials | null> {
   const connections = (await getProviderConnections({
     provider: providerId,

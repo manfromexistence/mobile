@@ -109,7 +109,7 @@ function uniqueStrings(values: Array<string | null | undefined>) {
 function toQualifiedId(
   providerAlias: string | null,
   provider: string | null,
-  model: string | null,
+  model: string | null
 ) {
   if (!model) return null;
   if (providerAlias) return `${providerAlias}/${model}`;
@@ -127,7 +127,7 @@ function getRegistryModel(providerOrAlias: string | null, modelId: string | null
 function buildModalities(
   input: string[],
   output: string[],
-  supportsVision: boolean | null,
+  supportsVision: boolean | null
 ): { input: string[]; output: string[] } {
   if (input.length > 0 || output.length > 0) {
     return { input, output };
@@ -170,7 +170,7 @@ export function getModelCatalogVersion() {
 }
 
 export function getCatalogDiagnosticsHeaders(
-  options: CatalogDiagnosticsOptions = {},
+  options: CatalogDiagnosticsOptions = {}
 ): Record<string, string> {
   const resolvedRequestId = getResolvedRequestId(options.request, options.requestId);
   return {
@@ -201,7 +201,7 @@ export function getCanonicalModelMetadata(input: {
   const modalities = buildModalities(
     resolved.modalitiesInput,
     resolved.modalitiesOutput,
-    resolved.supportsVision,
+    resolved.supportsVision
   );
 
   return {
@@ -259,7 +259,7 @@ export function getCanonicalModelMetadata(input: {
 
 export function enrichCatalogModelEntry<T extends JsonRecord>(
   entry: T,
-  input?: { provider?: string | null; model?: string | null },
+  input?: { provider?: string | null; model?: string | null }
 ): T {
   const provider =
     input?.provider ||
@@ -303,7 +303,7 @@ export function enrichCatalogModelEntry<T extends JsonRecord>(
                 effort_tiers: extendCodexGpt56EffortValues(
                   metadata.provider,
                   metadata.model,
-                  CANONICAL_EFFORT_VALUES,
+                  CANONICAL_EFFORT_VALUES
                 ),
               }
             : {}),
@@ -393,12 +393,12 @@ function normalizeAliasCandidates(candidates: string[] | undefined) {
       if (!parsed.provider || !parsed.model) return candidate;
       const providerAlias = PROVIDER_ID_TO_ALIAS[parsed.provider] || parsed.provider;
       return `${providerAlias}/${parsed.model}`;
-    }),
+    })
   );
 }
 
 export async function resolveModelAliasLookup(
-  alias: string,
+  alias: string
 ): Promise<{ ok: true; value: ResolvedAliasLookup } | { ok: false; error: AliasResolutionError }> {
   const normalizedAlias = asNonEmptyString(alias);
   if (!normalizedAlias) {
@@ -419,7 +419,7 @@ export async function resolveModelAliasLookup(
     const modelInfo = await getModelInfo(normalizedAlias);
     if (!modelInfo.provider || !modelInfo.model) {
       const candidates = normalizeAliasCandidates(
-        (modelInfo as JsonRecord).candidateAliases as string[],
+        (modelInfo as JsonRecord).candidateAliases as string[]
       );
       return {
         ok: false,

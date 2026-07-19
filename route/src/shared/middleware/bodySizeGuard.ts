@@ -81,7 +81,7 @@ export function checkBodySize(request: Request, limit: number = MAX_BODY_BYTES):
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
     }
   }

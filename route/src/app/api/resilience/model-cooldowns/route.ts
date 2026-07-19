@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     console.error("[API] GET /api/resilience/model-cooldowns error:", error);
     return NextResponse.json(
       { error: getErrorMessage(error, "Failed to load cooldowns") },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -66,7 +66,7 @@ export async function DELETE(request: Request) {
     console.error("[API] DELETE /api/resilience/model-cooldowns error:", error);
     return NextResponse.json(
       { error: getErrorMessage(error, "Failed to clear cooldown") },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

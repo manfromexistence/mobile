@@ -138,7 +138,7 @@ export function insertCompressionAnalyticsRow(row: CompressionAnalyticsRow): voi
       rtk_raw_output_pointers, rtk_raw_output_total_bytes, skip_reason
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     row.timestamp,
     row.combo_id ?? null,
@@ -166,7 +166,7 @@ export function insertCompressionAnalyticsRow(row: CompressionAnalyticsRow): voi
     row.rtk_raw_output_bytes ?? null,
     row.rtk_raw_output_pointers ?? null,
     row.rtk_raw_output_total_bytes ?? null,
-    row.skip_reason ?? null,
+    row.skip_reason ?? null
   );
 }
 
@@ -189,7 +189,7 @@ export function recordContextEditingTelemetry(
     | { clearedInputTokens?: number; clearedToolUses?: number; editCount?: number }
     | null
     | undefined,
-  provider: string | null = "claude",
+  provider: string | null = "claude"
 ): void {
   const cleared = telemetry?.clearedInputTokens ?? 0;
   if (!Number.isFinite(cleared) || cleared <= 0) return;
@@ -234,7 +234,7 @@ export function insertCompressionEngineBreakdown(rows: CompressionEngineBreakdow
   const stmt = db.prepare(
     `INSERT INTO compression_engine_breakdown
        (timestamp, request_id, engine, original_tokens, compressed_tokens, tokens_saved, duration_ms)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
   );
   const insertAll = db.transaction((items: CompressionEngineBreakdownRow[]) => {
     for (const r of items) {
@@ -245,7 +245,7 @@ export function insertCompressionEngineBreakdown(rows: CompressionEngineBreakdow
         r.original_tokens,
         r.compressed_tokens,
         r.tokens_saved,
-        r.duration_ms ?? null,
+        r.duration_ms ?? null
       );
     }
   });
@@ -255,7 +255,7 @@ export function insertCompressionEngineBreakdown(rows: CompressionEngineBreakdow
 export function attachCompressionUsageReceipt(
   requestId: string | null | undefined,
   usage: Record<string, unknown> | null | undefined,
-  source: "provider" | "estimated" | "stream" = "provider",
+  source: "provider" | "estimated" | "stream" = "provider"
 ): void {
   if (!requestId || !usage || typeof usage !== "object") return;
   const promptTokens = toFiniteInt(usage.prompt_tokens);
@@ -267,10 +267,10 @@ export function attachCompressionUsageReceipt(
       ? (usage.prompt_tokens_details as Record<string, unknown>)
       : {};
   const cacheReadTokens = toFiniteInt(
-    usage.cache_read_input_tokens ?? usage.cached_tokens ?? promptDetails.cached_tokens,
+    usage.cache_read_input_tokens ?? usage.cached_tokens ?? promptDetails.cached_tokens
   );
   const cacheWriteTokens = toFiniteInt(
-    usage.cache_creation_input_tokens ?? promptDetails.cache_creation_tokens,
+    usage.cache_creation_input_tokens ?? promptDetails.cache_creation_tokens
   );
   if (promptTokens === null && completionTokens === null && totalTokens <= 0) return;
 
@@ -292,7 +292,7 @@ export function attachCompressionUsageReceipt(
         ORDER BY id DESC
         LIMIT 1
       )
-  `,
+  `
   ).run(
     promptTokens,
     completionTokens,
@@ -301,7 +301,7 @@ export function attachCompressionUsageReceipt(
     cacheWriteTokens,
     source,
     requestId,
-    requestId,
+    requestId
   );
 }
 
@@ -334,7 +334,7 @@ export function getPerEngineAnalytics(engineId: string, days = 7) {
               COALESCE(SUM(compressed_tokens), 0) AS compressed,
               COALESCE(SUM(tokens_saved), 0) AS saved
        FROM compression_engine_breakdown
-       WHERE engine = ? AND timestamp >= ?`,
+       WHERE engine = ? AND timestamp >= ?`
     )
     .get(engineId, since) as EngineAggRow;
 
@@ -354,7 +354,7 @@ export function getPerEngineAnalytics(engineId: string, days = 7) {
            OR request_id NOT IN (
              SELECT request_id FROM compression_engine_breakdown WHERE request_id IS NOT NULL
            )
-         )`,
+         )`
     )
     .get(engineId, since) as EngineAggRow;
 
@@ -397,7 +397,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       COALESCE(AVG(CASE WHEN original_tokens > 0 THEN CAST(tokens_saved AS REAL) / original_tokens * 100 ELSE 0 END), 0) as avgPct,
       COALESCE(AVG(duration_ms), 0) as avgDur
     FROM compression_analytics ${successWhere}
-  `,
+  `
     )
     .get(...params) as ScalarRow | undefined;
 
@@ -408,7 +408,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       COALESCE(AVG(CASE WHEN original_tokens > 0 THEN CAST(tokens_saved AS REAL) / original_tokens * 100 ELSE 0 END), 0) as avgPct
     FROM compression_analytics ${successWhere}
     GROUP BY mode
-  `,
+  `
     )
     .all(...params) as Array<{ mode: string; cnt: number; saved: number; avgPct: number }>;
 
@@ -420,7 +420,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
     SELECT mode, COUNT(*) as cnt
     FROM compression_analytics ${appendCondition(whereClause, "skip_reason IS NOT NULL")}
     GROUP BY mode
-  `,
+  `
     )
     .all(...params) as Array<{ mode: string; cnt: number }>;
 
@@ -448,7 +448,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       COALESCE(AVG(CASE WHEN original_tokens > 0 THEN CAST(tokens_saved AS REAL) / original_tokens * 100 ELSE 0 END), 0) as avgPct
     FROM compression_analytics ${successWhere}
     GROUP BY COALESCE(engine, mode)
-  `,
+  `
     )
     .all(...params) as Array<{ engine: string; cnt: number; saved: number; avgPct: number }>;
 
@@ -469,7 +469,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       COALESCE(SUM(tokens_saved), 0) as saved
     FROM compression_analytics ${appendCondition(successWhere, "compression_combo_id IS NOT NULL")}
     GROUP BY compression_combo_id ORDER BY cnt DESC
-  `,
+  `
     )
     .all(...params) as Array<{ compressionComboId: string | null; cnt: number; saved: number }>;
 
@@ -485,7 +485,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
     SELECT provider, COUNT(*) as cnt, COALESCE(SUM(tokens_saved), 0) as saved
     FROM compression_analytics ${successWhere}
     GROUP BY provider ORDER BY cnt DESC
-  `,
+  `
     )
     .all(...params) as Array<{ provider: string | null; cnt: number; saved: number }>;
 
@@ -511,7 +511,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
     FROM compression_analytics
     WHERE timestamp >= ? AND skip_reason IS NULL
     GROUP BY hour ORDER BY hour ASC
-  `,
+  `
     )
     .all(new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()) as Array<{
     hour: string;
@@ -539,7 +539,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       COALESCE(SUM(estimated_usd_saved), 0) as usdSaved
     FROM compression_analytics ${appendCondition(successWhere, "receipt_source IS NOT NULL")}
     GROUP BY receipt_source
-  `,
+  `
     )
     .all(...params) as Array<{
     source: string | null;
@@ -579,7 +579,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       `
     SELECT COUNT(*) as cnt
     FROM compression_analytics ${appendCondition(successWhere, "validation_fallback = 1")}
-  `,
+  `
     )
     .get(...params) as { cnt: number } | undefined;
 
@@ -588,7 +588,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
       `
     SELECT COUNT(*) as cnt, COALESCE(SUM(mcp_description_tokens_saved), 0) as saved
     FROM compression_analytics ${appendCondition(successWhere, "mcp_description_tokens_saved > 0")}
-  `,
+  `
     )
     .get(...params) as { cnt: number; saved: number } | undefined;
 
@@ -598,7 +598,7 @@ export function getCompressionAnalyticsSummary(since?: string): CompressionAnaly
     SELECT skip_reason as reason, COUNT(*) as cnt
     FROM compression_analytics ${appendCondition(whereClause, "skip_reason IS NOT NULL")}
     GROUP BY skip_reason
-  `,
+  `
     )
     .all(...params) as Array<{ reason: string | null; cnt: number }>;
 
@@ -655,7 +655,7 @@ export function getLatestCompressionAnalyticsRun(): LatestCompressionAnalyticsRu
               request_id, engine, validation_fallback
          FROM compression_analytics
         ORDER BY timestamp DESC, id DESC
-        LIMIT 1`,
+        LIMIT 1`
     )
     .get() as LatestCompressionAnalyticsRun | undefined;
 }

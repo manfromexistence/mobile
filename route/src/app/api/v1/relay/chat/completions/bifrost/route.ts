@@ -84,8 +84,8 @@ export async function POST(request: Request) {
       JSON.stringify(
         buildErrorBody(
           503,
-          "Bifrost sidecar disabled via BIFROST_ENABLED=0. Use /api/v1/relay/chat/completions for the TS path.",
-        ),
+          "Bifrost sidecar disabled via BIFROST_ENABLED=0. Use /api/v1/relay/chat/completions for the TS path."
+        )
       ),
       {
         status: 503,
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
           "X-Bifrost-Fallback": "/api/v1/relay/chat/completions",
           "X-Bifrost-Killswitch": "BIFROST_ENABLED=0",
         },
-      },
+      }
     );
   }
 
@@ -104,8 +104,8 @@ export async function POST(request: Request) {
       JSON.stringify(
         buildErrorBody(
           503,
-          "Bifrost sidecar not configured. Set BIFROST_BASE_URL or use /api/v1/relay/chat/completions for the TS path.",
-        ),
+          "Bifrost sidecar not configured. Set BIFROST_BASE_URL or use /api/v1/relay/chat/completions for the TS path."
+        )
       ),
       {
         status: 503,
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
           ...JSON_CORS_HEADERS,
           "X-Bifrost-Fallback": "/api/v1/relay/chat/completions",
         },
-      },
+      }
     );
   }
 
@@ -210,9 +210,9 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return new Response(
         JSON.stringify(
-          buildErrorBody(400, parsed.error.issues[0]?.message || "Invalid request body"),
+          buildErrorBody(400, parsed.error.issues[0]?.message || "Invalid request body")
         ),
-        { status: 400, headers: JSON_CORS_HEADERS },
+        { status: 400, headers: JSON_CORS_HEADERS }
       );
     }
     const body = parsed.data;
@@ -232,7 +232,7 @@ export async function POST(request: Request) {
           ...buildErrorBody(400, "Request blocked: potential prompt injection detected"),
           detections: guard.result.detections.length,
         }),
-        { status: 400, headers: JSON_CORS_HEADERS },
+        { status: 400, headers: JSON_CORS_HEADERS }
       );
     }
 
@@ -240,12 +240,12 @@ export async function POST(request: Request) {
     if (allowedModels.length > 0 && !allowedModels.includes("*")) {
       const model = (body as { model?: string }).model || "";
       const allowed = allowedModels.some(
-        (p) => model === p || (p.endsWith("*") && model.startsWith(p.slice(0, -1))),
+        (p) => model === p || (p.endsWith("*") && model.startsWith(p.slice(0, -1)))
       );
       if (!allowed) {
         return new Response(
           JSON.stringify(buildErrorBody(403, `Model "${model}" not allowed by this relay token`)),
-          { status: 403, headers: JSON_CORS_HEADERS },
+          { status: 403, headers: JSON_CORS_HEADERS }
         );
       }
     }
@@ -336,8 +336,8 @@ export async function POST(request: Request) {
           isAbort ? 504 : 502,
           isAbort
             ? `Bifrost sidecar timed out after ${BIFROST_TIMEOUT_MS}ms`
-            : `Bifrost sidecar unreachable: ${err instanceof Error ? err.message : String(err)}`,
-        ),
+            : `Bifrost sidecar unreachable: ${err instanceof Error ? err.message : String(err)}`
+        )
       ),
       {
         status: isAbort ? 504 : 502,
@@ -345,7 +345,7 @@ export async function POST(request: Request) {
           ...JSON_CORS_HEADERS,
           "X-Bifrost-Fallback": "/api/v1/relay/chat/completions",
         },
-      },
+      }
     );
   }
 }

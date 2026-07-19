@@ -89,8 +89,8 @@ export function useLocalStoragePoolMigration({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(adaptLsPoolToApiSchema(p as LsPool)),
-        }).then((r) => r.ok),
-      ),
+        }).then((r) => r.ok)
+      )
     )
       .then((results) => {
         if (results.every(Boolean)) {

@@ -34,7 +34,7 @@ export function useProviderOptions(initialProvider = "openai") {
         const [connData, nodesData] = await Promise.all([connRes.json(), nodesRes.json()]);
         const nodeMap = new Map((nodesData.nodes || []).map((n) => [n.id, n]));
         const activeProviders = new Set(
-          (connData.connections || []).filter((c) => c.isActive !== false).map((c) => c.provider),
+          (connData.connections || []).filter((c) => c.isActive !== false).map((c) => c.provider)
         );
         const options = [...activeProviders]
           .map((pid) => {
@@ -68,7 +68,7 @@ export function useProviderOptions(initialProvider = "openai") {
           setProvider((current: string): string =>
             nextOptions.some((opt: any) => opt.value === current)
               ? current
-              : ((nextOptions[0] as any).value as string),
+              : ((nextOptions[0] as any).value as string)
           );
         }
       } catch {
@@ -81,7 +81,7 @@ export function useProviderOptions(initialProvider = "openai") {
           setProvider((current) =>
             fallbackOptions.some((opt) => opt.value === current)
               ? current
-              : fallbackOptions[0].value,
+              : fallbackOptions[0].value
           );
         }
       } finally {

@@ -462,7 +462,7 @@ export default function TestBenchAccordion({ forceOpen, onOpenChange }: TestBenc
       title={translateOrFallback("advancedTestBenchTitle", "Test Bench (8 scenarios)")}
       subtitle={translateOrFallback(
         "advancedTestBenchSubtitle",
-        "Runs every scenario and reports pass/fail plus compatibility percentage.",
+        "Runs every scenario and reports pass/fail plus compatibility percentage."
       )}
       icon="science"
       defaultOpen={forceOpen ?? false}

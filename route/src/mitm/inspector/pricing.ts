@@ -46,7 +46,7 @@ export function lookupPricing(model: string | null): ModelPricing | null {
 export function estimateCost(
   model: string | null,
   tokensIn: number | null,
-  tokensOut: number | null,
+  tokensOut: number | null
 ): number | null {
   if (tokensIn == null && tokensOut == null) return null;
   const price = lookupPricing(model);

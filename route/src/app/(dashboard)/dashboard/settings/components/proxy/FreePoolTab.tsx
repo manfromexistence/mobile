@@ -396,7 +396,7 @@ export default function FreePoolTab() {
               >
                 {p}
               </button>
-            ),
+            )
           )}
           <button
             type="button"

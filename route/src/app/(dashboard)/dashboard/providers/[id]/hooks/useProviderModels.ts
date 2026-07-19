@@ -37,7 +37,7 @@ export interface UseProviderModelsReturn {
 
 export function useProviderModels(
   providerId: string,
-  isSearchProvider: boolean,
+  isSearchProvider: boolean
 ): UseProviderModelsReturn {
   const t = useTranslations("providers");
   const notify = useNotificationStore();
@@ -86,7 +86,7 @@ export function useProviderModels(
         notify.error("Network error setting alias");
       }
     },
-    [fetchAliases, t, notify],
+    [fetchAliases, t, notify]
   );
 
   const handleDeleteAlias = useCallback(
@@ -107,7 +107,7 @@ export function useProviderModels(
         notify.error("Network error deleting alias");
       }
     },
-    [fetchAliases, t, notify],
+    [fetchAliases, t, notify]
   );
 
   const fetchProviderModelMeta = useCallback(async () => {
@@ -125,7 +125,7 @@ export function useProviderModels(
       try {
         const syncRes = await fetch(
           `/api/synced-available-models?provider=${encodeURIComponent(providerId)}`,
-          { cache: "no-store" },
+          { cache: "no-store" }
         );
         if (syncRes.ok) {
           const syncData = await syncRes.json();

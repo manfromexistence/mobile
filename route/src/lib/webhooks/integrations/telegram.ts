@@ -27,7 +27,7 @@ export function buildTelegramUrl(botToken: string): string {
 export function buildTelegramPayload(
   event: WebhookEvent,
   data: Record<string, unknown>,
-  chatId: string,
+  chatId: string
 ): TelegramSendMessagePayload {
   const desc = EVENT_DESCRIPTIONS[event];
   const model = typeof data.model === "string" ? escapeMd(data.model) : null;

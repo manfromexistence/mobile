@@ -214,7 +214,7 @@ export default function KiloToolCard({
       const prefix = config.apiKey.slice(0, 8);
       const suffix = config.apiKey.slice(-4);
       const matchedKey = apiKeys.find(
-        (k) => k.key && k.key.startsWith(prefix) && k.key.endsWith(suffix),
+        (k) => k.key && k.key.startsWith(prefix) && k.key.endsWith(suffix)
       );
       if (matchedKey) setSelectedApiKeyId(matchedKey.id);
     }

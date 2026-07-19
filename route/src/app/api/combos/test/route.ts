@@ -142,7 +142,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -168,7 +168,7 @@ export async function POST(request) {
     const baseInternalUrl = getInternalBaseUrl();
     const internalApiKey = await getInternalApiKey();
     const results = await Promise.all(
-      targets.map((target) => testComboTarget(target, baseInternalUrl, internalApiKey)),
+      targets.map((target) => testComboTarget(target, baseInternalUrl, internalApiKey))
     );
     const resolvedResult = results.find((result) => result.status === "ok") || null;
     const resolvedBy = resolvedResult?.model || null;

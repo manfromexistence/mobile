@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 export function buildKiroApiKeyConnectionName(
   targetProvider: string,
   region: string,
-  apiKey: string,
+  apiKey: string
 ): string {
   const label = targetProvider === "amazon-q" ? "Amazon Q" : "Kiro";
   const safeRegion = region || "us-east-1";

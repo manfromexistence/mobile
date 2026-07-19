@@ -55,7 +55,7 @@ export default function ApiKeyFilterDropdown({
     const q = query.trim().toLowerCase();
     if (!q) return available;
     return available.filter(
-      (k) => k.name.toLowerCase().includes(q) || k.id.toLowerCase().includes(q),
+      (k) => k.name.toLowerCase().includes(q) || k.id.toLowerCase().includes(q)
     );
   }, [available, query]);
 
@@ -70,7 +70,7 @@ export default function ApiKeyFilterDropdown({
         onChange([...selected, id]);
       }
     },
-    [selected, onChange],
+    [selected, onChange]
   );
 
   const selectAll = useCallback(() => {

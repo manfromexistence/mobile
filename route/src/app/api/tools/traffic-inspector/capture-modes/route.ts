@@ -47,7 +47,7 @@ export async function GET(): Promise<Response> {
     const msg = sanitizeErrorMessage(err);
     return new Response(
       JSON.stringify(buildErrorBody(500, msg || "Failed to get capture mode status")),
-      { status: 500, headers: { "content-type": "application/json" } },
+      { status: 500, headers: { "content-type": "application/json" } }
     );
   }
 }

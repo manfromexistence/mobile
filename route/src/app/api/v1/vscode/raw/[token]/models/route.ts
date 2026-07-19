@@ -16,7 +16,7 @@ export async function OPTIONS() {
 
 export async function GET(
   request: Request,
-  { params }: { params?: Promise<{ token: string }> | { token: string } } = {},
+  { params }: { params?: Promise<{ token: string }> | { token: string } } = {}
 ) {
   const resolvedParams = params ? await params : undefined;
   const authorizedRequest = withPathTokenApiKey(request, resolvedParams?.token);
@@ -32,12 +32,12 @@ export async function GET(
     {
       ...catalog.body,
       data: expandVscodeRawModels(catalog.body.data).map((model) =>
-        enrichModelForVscode(model, authorizedRequest, { preserveNativeId: true }),
+        enrichModelForVscode(model, authorizedRequest, { preserveNativeId: true })
       ),
     },
     {
       status: catalog.status,
       headers: catalog.headers,
-    },
+    }
   );
 }

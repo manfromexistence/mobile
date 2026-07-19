@@ -12,7 +12,7 @@ async function validateCatalogApiKey(apiKey: string): Promise<boolean> {
 export async function getModelCatalogAuthRejection(
   request: Request,
   settings: Record<string, any>,
-  headers: Record<string, string>,
+  headers: Record<string, string>
 ): Promise<Response | null> {
   if (settings.requireAuthForModels !== true || !(await isAuthRequired(request))) return null;
 
@@ -30,7 +30,7 @@ export async function getModelCatalogAuthRejection(
       {
         status: 401,
         headers,
-      },
+      }
     );
   }
 
@@ -47,7 +47,7 @@ export async function getModelCatalogAuthRejection(
     {
       status: 401,
       headers,
-    },
+    }
   );
 }
 

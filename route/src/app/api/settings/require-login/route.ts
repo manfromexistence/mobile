@@ -35,7 +35,7 @@ export async function GET() {
     console.error("[API] Error fetching require-login settings:", error);
     return NextResponse.json(
       { requireLogin: true, hasPassword: true, setupComplete: true, ...nodeInfo },
-      { status: 200 },
+      { status: 200 }
     );
   }
 }
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     console.error("[API] Error updating require-login settings:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to update settings" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

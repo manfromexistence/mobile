@@ -69,7 +69,7 @@ function pushShorthandEntry(
   portStr: string,
   username: string,
   password: string,
-  type: string,
+  type: string
 ): boolean {
   if (!host) {
     errors.push({ line: lineNum, reason: "bulkImportErrorMissingHost" });
@@ -115,7 +115,7 @@ function parseShorthandLine(
   lineNum: number,
   defaultType: string,
   entries: ParsedProxyEntry[],
-  errors: ParseError[],
+  errors: ParseError[]
 ): boolean {
   let type = defaultType;
   let working = raw;

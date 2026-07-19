@@ -453,7 +453,7 @@ export default function BatchDetailModal({
                   if (
                     window.confirm(
                       t("batchDetailActionRetry") +
-                        ` (${batch.requestCountsFailed} ${t("batchActionRetry")})?`,
+                        ` (${batch.requestCountsFailed} ${t("batchActionRetry")})?`
                     )
                   ) {
                     const result = await retry({

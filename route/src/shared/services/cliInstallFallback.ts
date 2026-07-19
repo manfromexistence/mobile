@@ -52,7 +52,7 @@ export interface SettingsFallbackResult {
  */
 export const withSettingsFallback = (
   settingsPath: string | undefined,
-  notInstalledResult: NotInstalledResult,
+  notInstalledResult: NotInstalledResult
 ): NotInstalledResult | SettingsFallbackResult => {
   if (notInstalledResult.reason !== "not_found") return notInstalledResult;
   if (!settingsPath || !fsSync.existsSync(settingsPath)) return notInstalledResult;

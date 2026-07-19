@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         .join("; ");
       return NextResponse.json(
         { status: "error", error: `Invalid request: ${detail}` },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const { providerId, modelId, connectionId } = validation.data;
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
           status: "error",
           error: "Paid model blocked while hidePaidModels is enabled",
         },
-        { status: 403 },
+        { status: 403 }
       );
     }
 
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
         status: "error",
         error: sanitizeErrorMessage(error) || "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

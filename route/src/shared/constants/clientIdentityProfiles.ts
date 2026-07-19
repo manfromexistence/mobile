@@ -83,7 +83,7 @@ export function isClientIdentityProfileId(value: unknown): value is string {
  * `applyCustomHeaders()` regardless of where the header entries came from.
  */
 export function getClientIdentityProfileHeaders(
-  profileId: string | undefined | null,
+  profileId: string | undefined | null
 ): Record<string, string> {
   if (!isClientIdentityProfileId(profileId)) return {};
   return { ...CLIENT_IDENTITY_PROFILES[profileId].headers };

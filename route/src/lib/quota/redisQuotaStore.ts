@@ -88,7 +88,7 @@ function slidingWindowEffective(
   curr: number,
   prev: number,
   nowMs: number,
-  windowMs: number,
+  windowMs: number
 ): number {
   const currentBucketIndex = Math.floor(nowMs / windowMs);
   const currentBucketStartMs = currentBucketIndex * windowMs;
@@ -238,7 +238,7 @@ export class RedisQuotaStore implements QuotaStore {
    */
   async poolUsageWithDimensions(
     poolId: string,
-    planDimensions: Array<{ unit: string; window: string; limit: number }>,
+    planDimensions: Array<{ unit: string; window: string; limit: number }>
   ): Promise<PoolUsageSnapshot> {
     const nowMs = Date.now();
     const pool = getPool(poolId);

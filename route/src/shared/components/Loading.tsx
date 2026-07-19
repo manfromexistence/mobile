@@ -53,7 +53,7 @@ export function Spinner({ size = "md", className, label }: SpinnerProps) {
         aria-hidden="true"
         className={cn(
           "material-symbols-outlined text-primary animate-spin motion-reduce:animate-none",
-          spinnerSizes[size],
+          spinnerSizes[size]
         )}
       >
         progress_activity
@@ -69,7 +69,7 @@ export function PageLoading({ message, className }: PageLoadingProps) {
     <div
       className={cn(
         "fixed inset-0 z-50 flex flex-col items-center justify-center bg-bg px-6",
-        className,
+        className
       )}
       role="status"
       aria-live="polite"

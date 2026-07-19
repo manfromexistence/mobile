@@ -73,7 +73,7 @@ const DEMO_STEPS: PipelineStep[] = [
 
 /** Maps step status to badge variant. */
 function statusVariant(
-  status: PipelineStep["status"],
+  status: PipelineStep["status"]
 ): "default" | "primary" | "success" | "error" | "warning" | "info" {
   switch (status) {
     case "active":
@@ -146,7 +146,7 @@ export default function PipelineView({
       if (next) setHasOpened(true);
       onOpenChange?.(next);
     },
-    [onOpenChange],
+    [onOpenChange]
   );
 
   const steps = pipelineSteps ?? DEMO_STEPS;
@@ -191,7 +191,7 @@ export default function PipelineView({
                 <span>
                   {tr(
                     "pipelineVisualizationHint",
-                    "Envie um request pelo Chat Tester para ver o pipeline em tempo real. Abaixo: exemplo estático.",
+                    "Envie um request pelo Chat Tester para ver o pipeline em tempo real. Abaixo: exemplo estático."
                   )}
                 </span>
               </div>

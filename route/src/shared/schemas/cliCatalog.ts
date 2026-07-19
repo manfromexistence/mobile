@@ -30,7 +30,7 @@ export const CliCatalogEntrySchema = z.object({
         envKey: z.string().optional(),
         defaultValue: z.string().optional(),
         isTopLevel: z.boolean().optional(),
-      }),
+      })
     )
     .optional(),
   guideSteps: z
@@ -42,7 +42,7 @@ export const CliCatalogEntrySchema = z.object({
         value: z.string().optional(),
         copyable: z.boolean().optional(),
         type: z.enum(["apiKeySelector", "modelSelector"]).optional(),
-      }),
+      })
     )
     .optional(),
   codeBlock: z.object({ language: z.string(), code: z.string() }).optional(),

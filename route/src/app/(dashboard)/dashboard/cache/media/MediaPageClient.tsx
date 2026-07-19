@@ -63,7 +63,7 @@ const MUSIC_PROVIDERS_REQUIRING_CREDENTIALS = providersRequiringCredentials(MUSI
 const SPEECH_PROVIDERS_REQUIRING_CREDENTIALS =
   providersRequiringCredentials(AUDIO_SPEECH_PROVIDERS);
 const TRANSCRIPTION_PROVIDERS_REQUIRING_CREDENTIALS = providersRequiringCredentials(
-  AUDIO_TRANSCRIPTION_PROVIDERS,
+  AUDIO_TRANSCRIPTION_PROVIDERS
 );
 
 const MODALITY_CONFIG: Record<
@@ -379,21 +379,13 @@ function parseApiError(raw: any, statusCode: number): { message: string; isCrede
     // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
     (msg.toLowerCase().includes("no credentials") ||
       // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
-      msg
-        .toLowerCase()
-        .includes("invalid api key") ||
+      msg.toLowerCase().includes("invalid api key") ||
       // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
-      msg
-        .toLowerCase()
-        .includes("unauthorized") ||
+      msg.toLowerCase().includes("unauthorized") ||
       // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
-      msg
-        .toLowerCase()
-        .includes("authentication") ||
+      msg.toLowerCase().includes("authentication") ||
       // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
-      msg
-        .toLowerCase()
-        .includes("api key") ||
+      msg.toLowerCase().includes("api key") ||
       statusCode === 401 ||
       statusCode === 403);
 
@@ -480,7 +472,7 @@ export default function MediaPageClient() {
 
   // Selected provider and model per modality
   const [selectedProvider, setSelectedProvider] = useState<string>(
-    INITIAL_IMAGE_PROVIDER?.id ?? "",
+    INITIAL_IMAGE_PROVIDER?.id ?? ""
   );
   const [selectedModel, setSelectedModel] = useState<string>(INITIAL_IMAGE_MODEL?.id ?? "");
 
@@ -504,7 +496,7 @@ export default function MediaPageClient() {
   // so we can hide them when they haven't been set up in the providers page
   const LOCAL_PROVIDERS = ["sdwebui", "comfyui"];
   const [configuredLocalProviders, setConfiguredLocalProviders] = useState<Set<string>>(
-    new Set(LOCAL_PROVIDERS), // Optimistic: show all until we know otherwise
+    new Set(LOCAL_PROVIDERS) // Optimistic: show all until we know otherwise
   );
 
   useEffect(() => {
@@ -547,7 +539,7 @@ export default function MediaPageClient() {
 
   // Filter out unconfigured local providers from the provider list
   const currentProviders = (PROVIDER_MODELS[activeTab] ?? []).filter(
-    (p) => !LOCAL_PROVIDERS.includes(p.id) || configuredLocalProviders.has(p.id),
+    (p) => !LOCAL_PROVIDERS.includes(p.id) || configuredLocalProviders.has(p.id)
   );
   const currentModels = currentProviders.find((p) => p.id === selectedProvider)?.models ?? [];
 
@@ -649,7 +641,7 @@ export default function MediaPageClient() {
         // Check for noSpeechDetected flag (music, silence, etc.) — NOT a credential error
         if (data?.noSpeechDetected) {
           setError(
-            `No speech detected in the audio file. If you uploaded music or a silent file, try an audio file with spoken words. Provider: "${selectedProvider}".`,
+            `No speech detected in the audio file. If you uploaded music or a silent file, try an audio file with spoken words. Provider: "${selectedProvider}".`
           );
           setIsCredentialsError(false);
           setLoading(false);
@@ -658,7 +650,7 @@ export default function MediaPageClient() {
         // Warn if text is empty without the noSpeechDetected flag (unexpected)
         if (data && typeof data.text === "string" && data.text.trim() === "") {
           setError(
-            `Transcription returned empty text. The audio may contain no recognizable speech, or the "${selectedProvider}" API key may be invalid. Check Dashboard → Logs → Proxy for details.`,
+            `Transcription returned empty text. The audio may contain no recognizable speech, or the "${selectedProvider}" API key may be invalid. Check Dashboard → Logs → Proxy for details.`
           );
           // Only mark as credential error if we can confirm it from context
           setIsCredentialsError(false);
@@ -860,7 +852,7 @@ export default function MediaPageClient() {
                 setFileSizeError(null);
                 if (file && file.size > MAX_TRANSCRIPTION_FILE_SIZE) {
                   setFileSizeError(
-                    `File too large (${formatFileSize(file.size)}). Maximum allowed: 4 GB.`,
+                    `File too large (${formatFileSize(file.size)}). Maximum allowed: 4 GB.`
                   );
                   setAudioFile(null);
                   e.target.value = "";

@@ -138,7 +138,7 @@ function AccountRoundRobinSection({ t, busy, settings, setSettings, run }: Secti
               run(async () => {
                 const limit = Math.min(
                   10,
-                  Math.max(1, parseInt(String(settings.stickyRoundRobinLimit), 10) || 3),
+                  Math.max(1, parseInt(String(settings.stickyRoundRobinLimit), 10) || 3)
                 );
                 const updated = await patchSettings({ stickyRoundRobinLimit: limit });
                 setSettings((prev) => ({
@@ -198,7 +198,7 @@ function ComboRoundRobinSection({ t, busy, settings, setSettings, run }: Section
               run(async () => {
                 const limit = Math.min(
                   100,
-                  Math.max(1, parseInt(String(settings.comboStickyRoundRobinLimit), 10) || 1),
+                  Math.max(1, parseInt(String(settings.comboStickyRoundRobinLimit), 10) || 1)
                 );
                 const updated = await patchSettings({ comboStickyRoundRobinLimit: limit });
                 setSettings((prev) => ({

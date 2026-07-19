@@ -97,7 +97,7 @@ export const updateKeyPermissionsSchema = z
       .union([
         z
           .array(
-            z.object({ limit: z.number().int().positive(), window: z.number().int().positive() }),
+            z.object({ limit: z.number().int().positive(), window: z.number().int().positive() })
           )
           .max(50),
         z.null(),

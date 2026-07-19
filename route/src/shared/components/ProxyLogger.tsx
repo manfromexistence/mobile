@@ -66,7 +66,7 @@ export default function ProxyLogger() {
       { key: "ok", label: t("filterSuccess"), icon: "check_circle" },
       { key: "timeout", label: t("filterTimeout"), icon: "timer_off" },
     ],
-    [t],
+    [t]
   );
 
   const columns = useMemo(
@@ -82,7 +82,7 @@ export default function ProxyLogger() {
       { key: "ip", label: t("colClientIp") },
       { key: "time", label: t("colTime") },
     ],
-    [t],
+    [t]
   );
 
   const [visibleColumns, setVisibleColumns] = useState(() => {
@@ -135,7 +135,7 @@ export default function ProxyLogger() {
         if (showLoading) setLoading(false);
       }
     },
-    [search, activeFilter, selectedType, selectedProvider, selectedLevel],
+    [search, activeFilter, selectedType, selectedProvider, selectedLevel]
   );
 
   useEffect(() => {

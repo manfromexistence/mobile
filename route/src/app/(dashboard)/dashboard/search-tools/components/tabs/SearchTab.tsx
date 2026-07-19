@@ -103,7 +103,7 @@ export default function SearchTab({
         setResponse(data);
         onMetrics?.(
           data.metrics?.response_time_ms ?? duration,
-          data.usage?.search_cost_usd ?? null,
+          data.usage?.search_cost_usd ?? null
         );
       } else {
         setError(data.error?.message || data.error || `Error ${res.status}`);

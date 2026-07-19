@@ -48,7 +48,7 @@ function recordUsage(
   clientIp: string,
   userAgent: string | null,
   status: RelayUsageStatus,
-  statusCode: number,
+  statusCode: number
 ) {
   recordRelayUsage(tokenId, {
     requestId: request.headers.get("x-request-id") || undefined,
@@ -68,7 +68,7 @@ async function forwardToBifrost(
   backend: ReturnType<typeof resolveRelayRoutingBackend>,
   startTime: number,
   clientIp: string,
-  userAgent: string | null,
+  userAgent: string | null
 ): Promise<Response> {
   const wantsStream =
     Boolean((body as { stream?: boolean } | null)?.stream) && config.streamingEnabled;
@@ -116,7 +116,7 @@ async function forwardToBifrost(
             config.baseUrl,
             timedOut
               ? `Bifrost sidecar stream timed out after ${config.timeoutMs}ms`
-              : "bifrost-stream-error",
+              : "bifrost-stream-error"
           );
         }
         recordUsage(
@@ -126,7 +126,7 @@ async function forwardToBifrost(
           clientIp,
           userAgent,
           error || statusCode >= 500 ? "error" : "success",
-          statusCode,
+          statusCode
         );
       });
 
@@ -144,7 +144,7 @@ async function forwardToBifrost(
       clientIp,
       userAgent,
       upstream.status < 500 ? "success" : "error",
-      upstream.status,
+      upstream.status
     );
 
     return new Response(upstream.body, {
@@ -157,7 +157,7 @@ async function forwardToBifrost(
     throw new Error(
       isAbort
         ? `Bifrost sidecar timed out after ${config.timeoutMs}ms`
-        : `Bifrost sidecar unreachable: ${error instanceof Error ? error.message : String(error)}`,
+        : `Bifrost sidecar unreachable: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }
@@ -269,14 +269,14 @@ export async function POST(request: Request) {
           });
           const injectionBody = buildErrorBody(
             400,
-            "Request blocked: potential prompt injection detected",
+            "Request blocked: potential prompt injection detected"
           );
           return new Response(
             JSON.stringify({
               ...injectionBody,
               detections: result.detections.length,
             }),
-            { status: 400, headers: JSON_CORS_HEADERS },
+            { status: 400, headers: JSON_CORS_HEADERS }
           );
         }
 
@@ -285,16 +285,16 @@ export async function POST(request: Request) {
         if (allowedModels.length > 0 && !allowedModels.includes("*")) {
           const model = (parsedBody as { model?: string }).model || "";
           const allowed = allowedModels.some(
-            (p) => model === p || (p.endsWith("*") && model.startsWith(p.slice(0, -1))),
+            (p) => model === p || (p.endsWith("*") && model.startsWith(p.slice(0, -1)))
           );
           if (!allowed) {
             // Echo the requested model string back through buildErrorBody so any
             // accidental path/stack leakage in `model` is sanitized.
             return new Response(
               JSON.stringify(
-                buildErrorBody(403, `Model "${model}" not allowed by this relay token`),
+                buildErrorBody(403, `Model "${model}" not allowed by this relay token`)
               ),
-              { status: 403, headers: JSON_CORS_HEADERS },
+              { status: 403, headers: JSON_CORS_HEADERS }
             );
           }
         }
@@ -310,7 +310,7 @@ export async function POST(request: Request) {
       backend,
       bifrostConfig,
       parsedBody,
-      (model) => getProviderPluginManifestEntryForModel(model)?.sidecar ?? null,
+      (model) => getProviderPluginManifestEntryForModel(model)?.sidecar ?? null
     );
     if (bifrostDecision.fallbackReason) {
       bifrostFallbackReason = bifrostDecision.fallbackReason;
@@ -329,7 +329,7 @@ export async function POST(request: Request) {
             backend,
             startTime,
             clientIp,
-            userAgent,
+            userAgent
           );
           clearBifrostFailure(bifrostConfig.baseUrl);
           return bifrostResponse;
@@ -354,7 +354,7 @@ export async function POST(request: Request) {
     // 4. Proxy to internal handler
     const originalRequest = new Request(
       request.url.replace("/relay/chat/completions", "/chat/completions"),
-      request,
+      request
     );
     const response = await handleChat(originalRequest);
 

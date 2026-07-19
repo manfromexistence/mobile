@@ -26,7 +26,7 @@ export async function getMitmAlias(toolName?: string) {
 export async function setMitmAliasAll(toolName: string, mappings: unknown) {
   const db = getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('mitmAlias', ?, ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('mitmAlias', ?, ?)"
   ).run(toolName, JSON.stringify(mappings || {}));
   backupDbFile("pre-write");
 }

@@ -59,7 +59,7 @@ async function postHandler(request, context) {
   if (!credentials) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `No credentials for provider: ${resolvedProvider}`,
+      `No credentials for provider: ${resolvedProvider}`
     );
   }
   if (isAllRateLimitedCredentials(credentials)) {

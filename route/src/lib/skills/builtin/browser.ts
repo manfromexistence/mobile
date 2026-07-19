@@ -13,7 +13,7 @@ export const browserSkill: SkillHandler = async (input, context) => {
   }
 
   throw new Error(
-    "Browser automation skill is disabled. Configure a Playwright-backed browser runtime before enabling this skill.",
+    "Browser automation skill is disabled. Configure a Playwright-backed browser runtime before enabling this skill."
   );
 };
 

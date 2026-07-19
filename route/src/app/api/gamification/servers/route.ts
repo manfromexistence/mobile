@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400, headers: CORS_HEADERS },
+      { status: 400, headers: CORS_HEADERS }
     );
   }
 

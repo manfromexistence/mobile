@@ -112,7 +112,7 @@ function canonicalize(value: unknown): unknown {
     return Object.fromEntries(
       Object.keys(value as JsonRecord)
         .sort((left, right) => left.localeCompare(right))
-        .map((key) => [key, canonicalize((value as JsonRecord)[key])]),
+        .map((key) => [key, canonicalize((value as JsonRecord)[key])])
     );
   }
 
@@ -127,7 +127,7 @@ function parseStoredJson(value: unknown, field: string): unknown {
   } catch (error) {
     console.warn(
       `[HOT_RELOAD] Failed to parse persisted settings field "${field}":`,
-      error instanceof Error ? error.message : error,
+      error instanceof Error ? error.message : error
     );
     return null;
   }
@@ -140,8 +140,8 @@ function normalizeStringArray(value: unknown): string[] {
     new Set(
       value
         .map((entry) => (typeof entry === "string" ? entry.trim() : ""))
-        .filter((entry) => entry.length > 0),
-    ),
+        .filter((entry) => entry.length > 0)
+    )
   );
 }
 
@@ -167,7 +167,7 @@ function normalizeBackgroundDegradation(value: unknown): JsonRecord | null {
         key.trim(),
         typeof entryValue === "string" ? entryValue.trim() : "",
       ])
-      .filter(([key, entryValue]) => key.length > 0 && entryValue.length > 0),
+      .filter(([key, entryValue]) => key.length > 0 && entryValue.length > 0)
   );
   const detectionPatterns = normalizeStringArray(record.detectionPatterns);
 
@@ -204,8 +204,8 @@ function normalizeAuthzBypass(settings: Record<string, unknown>): AuthzBypassSna
         new Set(
           rawPrefixes
             .map((entry) => (typeof entry === "string" ? entry.trim() : ""))
-            .filter((entry) => entry.length > 0 && entry.startsWith("/")),
-        ),
+            .filter((entry) => entry.length > 0 && entry.startsWith("/"))
+        )
       )
     : [...DEFAULT_AUTHZ_BYPASS_SNAPSHOT.prefixes];
   return { enabled, prefixes };
@@ -227,7 +227,7 @@ export function getAuthzBypassSnapshot(): AuthzBypassSnapshot {
 }
 
 export function buildRuntimeSettingsSnapshot(
-  settings: Record<string, unknown>,
+  settings: Record<string, unknown>
 ): RuntimeSettingsSnapshot {
   return {
     payloadRules: normalizePayloadRules(settings.payloadRules),
@@ -259,9 +259,8 @@ function getPreviousSnapshot(): RuntimeSettingsSnapshot {
 }
 
 async function applyPayloadRulesSection(payloadRules: unknown) {
-  const { clearPayloadRulesConfigOverride, setPayloadRulesConfig } = await import(
-    "@omniroute/open-sse/services/payloadRules.ts"
-  );
+  const { clearPayloadRulesConfigOverride, setPayloadRulesConfig } =
+    await import("@omniroute/open-sse/services/payloadRules.ts");
 
   if (payloadRules === null || payloadRules === undefined) {
     clearPayloadRulesConfigOverride();
@@ -313,9 +312,8 @@ async function applyCacheControlSection() {
 }
 
 async function applyUsageTrackingSection(newBuffer: number | null) {
-  const { invalidateBufferTokensCache, setBufferTokensCache } = await import(
-    "@omniroute/open-sse/utils/usageTracking.ts"
-  );
+  const { invalidateBufferTokensCache, setBufferTokensCache } =
+    await import("@omniroute/open-sse/utils/usageTracking.ts");
   if (typeof newBuffer === "number" && newBuffer >= 0) {
     // Set the value directly so the first request after a settings save gets the
     // correct count synchronously — no race window back to DEFAULT (2000).
@@ -326,9 +324,8 @@ async function applyUsageTrackingSection(newBuffer: number | null) {
 }
 
 async function applyThoughtSignatureSection(mode: string) {
-  const { setGeminiThoughtSignatureMode } = await import(
-    "@omniroute/open-sse/services/geminiThoughtSignatureStore.ts"
-  );
+  const { setGeminiThoughtSignatureMode } =
+    await import("@omniroute/open-sse/services/geminiThoughtSignatureStore.ts");
   setGeminiThoughtSignatureMode(mode);
 }
 
@@ -348,9 +345,8 @@ async function applyCorsOriginsSection(corsOrigins: string) {
  * `providers[PROVIDER_CC_BRIDGE]`.
  */
 async function applyCcBridgeTransformsSection(ccBridgeTransforms: unknown) {
-  const { setSystemTransformsConfig } = await import(
-    "@omniroute/open-sse/services/systemTransforms.ts"
-  );
+  const { setSystemTransformsConfig } =
+    await import("@omniroute/open-sse/services/systemTransforms.ts");
   if (ccBridgeTransforms && typeof ccBridgeTransforms === "object") {
     setSystemTransformsConfig(ccBridgeTransforms);
   }
@@ -365,9 +361,8 @@ function applyAuthzBypassSection(snapshot: AuthzBypassSnapshot) {
 }
 
 async function applySystemTransformsSection(systemTransforms: unknown) {
-  const { setSystemTransformsConfig, resetSystemTransformsConfig } = await import(
-    "@omniroute/open-sse/services/systemTransforms.ts"
-  );
+  const { setSystemTransformsConfig, resetSystemTransformsConfig } =
+    await import("@omniroute/open-sse/services/systemTransforms.ts");
 
   if (
     systemTransforms === null ||
@@ -384,7 +379,7 @@ async function applySystemTransformsSection(systemTransforms: unknown) {
 async function applyModelsDevSyncSection(
   previousSnapshot: RuntimeSettingsSnapshot,
   currentSnapshot: RuntimeSettingsSnapshot,
-  force: boolean,
+  force: boolean
 ) {
   const { startPeriodicSync, stopPeriodicSync } = await import("@/lib/modelsDevSync");
   const skipBackgroundSyncInTests =
@@ -427,7 +422,7 @@ async function applyModelsDevSyncSection(
 
 export async function applyRuntimeSettings(
   settings: Record<string, unknown>,
-  options: { force?: boolean; source?: string } = {},
+  options: { force?: boolean; source?: string } = {}
 ): Promise<RuntimeReloadChange[]> {
   const source = options.source || "runtime";
   const force = options.force === true;
@@ -473,7 +468,7 @@ export async function applyRuntimeSettings(
     force ||
     hasChanged(
       currentSnapshot.alwaysPreserveClientCache,
-      previousSnapshot.alwaysPreserveClientCache,
+      previousSnapshot.alwaysPreserveClientCache
     )
   ) {
     await applyCacheControlSection();
@@ -498,7 +493,7 @@ export async function applyRuntimeSettings(
     force ||
     hasChanged(
       currentSnapshot.antigravitySignatureCacheMode,
-      previousSnapshot.antigravitySignatureCacheMode,
+      previousSnapshot.antigravitySignatureCacheMode
     )
   ) {
     await applyThoughtSignatureSection(currentSnapshot.antigravitySignatureCacheMode);

@@ -161,7 +161,7 @@ export async function validateWebCookieProvider({
           Cookie: cookie,
         },
       },
-      isLocalProvider(provider),
+      isLocalProvider(provider)
     );
 
     if (res.status === 401 || res.status === 403) {
@@ -334,7 +334,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               max_tokens: 1,
             }),
           },
-          isLocal,
+          isLocal
         );
         if (res.status === 401 || res.status === 403) {
           return { valid: false, error: "Invalid API key" };
@@ -350,10 +350,10 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
   // Same as buildOpengatewayValidator but returns an object spreadable into SPECIALTY_VALIDATORS.
   // isLocal is captured via closure from the outer function scope.
   function buildGitlawbValidators(
-    configs: [string, string, string][],
+    configs: [string, string, string][]
   ): Record<string, ReturnType<typeof buildOpengatewayValidator>> {
     return Object.fromEntries(
-      configs.map(([id, baseUrl, model]) => [id, buildOpengatewayValidator(baseUrl, model)]),
+      configs.map(([id, baseUrl, model]) => [id, buildOpengatewayValidator(baseUrl, model)])
     );
   }
 
@@ -376,7 +376,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
             method: "GET",
             headers: buildBearerHeaders(apiKey, providerSpecificData),
           },
-          isLocal,
+          isLocal
         );
 
         if (res.ok) {
@@ -431,7 +431,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               Authorization: `Bearer ${key}`,
             },
           },
-          false,
+          false
         );
         if (res.ok) return { valid: true, error: null };
         if (res.status === 401 || res.status === 403) {
@@ -564,7 +564,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
             headers: buildBearerHeaders(apiKey, providerSpecificData),
             body: "{}",
           },
-          isLocal,
+          isLocal
         );
         if (res.status === 401) {
           return { valid: false, error: "Invalid API key" };
@@ -576,9 +576,8 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
     },
     vertex: async ({ apiKey }: any) => {
       try {
-        const { parseSAFromApiKey, getAccessToken, isExpressApiKey } = await import(
-          "@omniroute/open-sse/executors/vertex.ts"
-        );
+        const { parseSAFromApiKey, getAccessToken, isExpressApiKey } =
+          await import("@omniroute/open-sse/executors/vertex.ts");
         // Express-mode API keys are opaque strings sent directly as the ?key= query param — there is
         // no JWT to mint, so accept any non-empty Express key (the live chat/media call validates it).
         if (isExpressApiKey(apiKey)) {
@@ -594,9 +593,8 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
     },
     "vertex-partner": async ({ apiKey }: any) => {
       try {
-        const { parseSAFromApiKey, getAccessToken, isExpressApiKey } = await import(
-          "@omniroute/open-sse/executors/vertex.ts"
-        );
+        const { parseSAFromApiKey, getAccessToken, isExpressApiKey } =
+          await import("@omniroute/open-sse/executors/vertex.ts");
         if (isExpressApiKey(apiKey)) {
           return { valid: true, error: null };
         }
@@ -621,7 +619,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               max_tokens: 1,
             }),
           },
-          isLocal,
+          isLocal
         );
         if (res.status === 401 || res.status === 403) {
           return { valid: false, error: "Invalid API key" };
@@ -663,7 +661,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               max_tokens: 1,
             }),
           },
-          20000,
+          20000
         );
         if (res.status === 401 || res.status === 403) {
           return { valid: false, error: "Invalid API key" };
@@ -702,7 +700,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               max_tokens: 1,
             }),
           },
-          20000,
+          20000
         );
         if (res.status === 401 || res.status === 403) {
           return { valid: false, error: "Invalid API key" };
@@ -726,7 +724,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
     "xiaomi-mimo": async ({ apiKey, providerSpecificData }: any) => {
       try {
         const baseUrl = normalizeBaseUrl(
-          providerSpecificData?.baseUrl || "https://api.xiaomimimo.com/v1",
+          providerSpecificData?.baseUrl || "https://api.xiaomimimo.com/v1"
         );
         const chatUrl = `${baseUrl.replace(/\/chat\/completions$/, "")}/chat/completions`;
         const res = await validationWrite(
@@ -740,7 +738,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
               max_tokens: 1,
             }),
           },
-          isLocal,
+          isLocal
         );
         if (res.status === 401 || res.status === 403) {
           return { valid: false, error: "Invalid API key" };
@@ -766,7 +764,7 @@ export async function validateProviderApiKey({ provider, apiKey, providerSpecifi
           const { url, init } = configFn(apiKey, providerSpecificData);
           return validateSearchProvider(url, init, providerSpecificData, isLocal);
         },
-      ]),
+      ])
     ),
   };
 

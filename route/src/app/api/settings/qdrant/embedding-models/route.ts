@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const options: EmbeddingModelOption[] = AI_MODELS.filter((m: any) =>
-      isLikelyEmbeddingModel(String(m.provider || ""), String(m.model || ""), String(m.name || "")),
+      isLikelyEmbeddingModel(String(m.provider || ""), String(m.model || ""), String(m.name || ""))
     )
       .map((m: any) => ({
         value: `${m.provider}/${m.model}`,
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         isActive: true,
       })) as Array<Record<string, unknown>>;
       const apiKey = connections.find(
-        (c) => typeof c.apiKey === "string" && (c.apiKey as string).trim().length > 0,
+        (c) => typeof c.apiKey === "string" && (c.apiKey as string).trim().length > 0
       )?.apiKey as string | undefined;
 
       if (apiKey) {

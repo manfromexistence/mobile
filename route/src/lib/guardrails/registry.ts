@@ -87,8 +87,7 @@ export class GuardrailRegistry {
     }
 
     this.guardrails = this.guardrails.filter(
-      (existing) =>
-        normalizeGuardrailName(existing.name) !== normalizeGuardrailName(guardrail.name),
+      (existing) => normalizeGuardrailName(existing.name) !== normalizeGuardrailName(guardrail.name)
     );
     this.guardrails.push(guardrail);
     this.guardrails.sort((left, right) => left.priority - right.priority);
@@ -105,7 +104,7 @@ export class GuardrailRegistry {
 
   private isDisabled(guardrail: BaseGuardrail, context: GuardrailContext) {
     const disabled = new Set(
-      (context.disabledGuardrails || []).map((entry) => normalizeGuardrailName(entry)),
+      (context.disabledGuardrails || []).map((entry) => normalizeGuardrailName(entry))
     );
     return disabled.has(normalizeGuardrailName(guardrail.name));
   }
@@ -150,7 +149,7 @@ export class GuardrailRegistry {
         logger.debug?.(
           "GUARDRAIL",
           `${guardrail.name} pre-call ${execution.blocked ? "blocked" : modified ? "modified" : "passed"}`,
-          meta || undefined,
+          meta || undefined
         );
 
         if (execution.blocked) {
@@ -223,7 +222,7 @@ export class GuardrailRegistry {
         logger.debug?.(
           "GUARDRAIL",
           `${guardrail.name} post-call ${execution.blocked ? "blocked" : modified ? "modified" : "passed"}`,
-          meta || undefined,
+          meta || undefined
         );
 
         if (execution.blocked) {

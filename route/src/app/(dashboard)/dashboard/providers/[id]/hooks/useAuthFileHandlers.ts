@@ -23,14 +23,14 @@ export function useAuthFileHandlers({
   // ── Codex ──────────────────────────────────────────────────────────────────
   const [applyingCodexAuthId, setApplyingCodexAuthId] = useState<string | null>(null);
   const [applyCodexModalConnectionId, setApplyCodexModalConnectionId] = useState<string | null>(
-    null,
+    null
   );
   const [exportingCodexAuthId, setExportingCodexAuthId] = useState<string | null>(null);
 
   // ── Claude ─────────────────────────────────────────────────────────────────
   const [applyingClaudeAuthId, setApplyingClaudeAuthId] = useState<string | null>(null);
   const [applyClaudeModalConnectionId, setApplyClaudeModalConnectionId] = useState<string | null>(
-    null,
+    null
   );
   const [exportingClaudeAuthId, setExportingClaudeAuthId] = useState<string | null>(null);
 

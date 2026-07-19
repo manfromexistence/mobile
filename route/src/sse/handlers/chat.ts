@@ -189,7 +189,7 @@ async function getCombosCachedForChat(): Promise<unknown[]> {
 function normalizeAllowedConnectionIds(value: unknown): string[] | null {
   if (!Array.isArray(value)) return null;
   const ids = value.filter(
-    (entry): entry is string => typeof entry === "string" && entry.trim().length > 0,
+    (entry): entry is string => typeof entry === "string" && entry.trim().length > 0
   );
   return ids.length > 0 ? ids : null;
 }
@@ -217,7 +217,7 @@ export async function handleChat(
   request: any,
   clientRawRequest: any = null,
   preParsedBody: any = null,
-  correlationId?: string,
+  correlationId?: string
 ) {
   // Pipeline: Start request telemetry
   const reqId = correlationId || generateRequestId();
@@ -283,7 +283,7 @@ export async function handleChat(
     log.warn("CHAT", `Rejecting non-string model (typeof=${typeof rawModel})`);
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `model: Expected string, received ${Array.isArray(rawModel) ? "array" : typeof rawModel}`,
+      `model: Expected string, received ${Array.isArray(rawModel) ? "array" : typeof rawModel}`
     );
   }
 
@@ -346,7 +346,7 @@ export async function handleChat(
     body = { ...body, stream: true };
     log.debug(
       "STREAM",
-      "Accept: text/event-stream header → overriding stream=true (body had no stream field)",
+      "Accept: text/event-stream header → overriding stream=true (body had no stream field)"
     );
   }
 
@@ -375,7 +375,7 @@ export async function handleChat(
   const effort = body.reasoning_effort || body.reasoning?.effort || null;
   log.request(
     "POST",
-    `${url.pathname} | ${modelStr} | ${msgCount} msgs${toolCount ? ` | ${toolCount} tools` : ""}${effort ? ` | effort=${effort}` : ""}`,
+    `${url.pathname} | ${modelStr} | ${msgCount} msgs${toolCount ? ` | ${toolCount} tools` : ""}${effort ? ` | effort=${effort}` : ""}`
   );
 
   // Log only that an API key was provided — never the key itself, not even a
@@ -417,7 +417,7 @@ export async function handleChat(
     log.warn("CHAT", `Rejecting image-generation model on chat endpoint: ${modelStr}`);
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Model '${modelStr}' is an image-generation model and cannot be used on /v1/chat/completions. Use POST /v1/images/generations instead.`,
+      `Model '${modelStr}' is an image-generation model and cannot be used on /v1/chat/completions. Use POST /v1/images/generations instead.`
     );
   }
 
@@ -436,7 +436,7 @@ export async function handleChat(
   if (policy.rejection) {
     log.warn(
       "POLICY",
-      `API key policy rejected: ${modelStr} (key=${policy.apiKeyInfo?.id || "unknown"})`,
+      `API key policy rejected: ${modelStr} (key=${policy.apiKeyInfo?.id || "unknown"})`
     );
     return policy.rejection;
   }
@@ -467,7 +467,7 @@ export async function handleChat(
     });
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      preCallGuardrails.message || "Request rejected: suspicious content detected",
+      preCallGuardrails.message || "Request rejected: suspicious content detected"
     );
   }
   body = preCallGuardrails.payload;
@@ -481,7 +481,7 @@ export async function handleChat(
     if (!rerouteAllowed) {
       log.warn(
         "POLICY",
-        `Guardrail reroute to "${rerouteModel}" rejected by API key policy (key=${apiKeyInfo?.id || "unknown"}); keeping original model "${modelStr}"`,
+        `Guardrail reroute to "${rerouteModel}" rejected by API key policy (key=${apiKeyInfo?.id || "unknown"}); keeping original model "${modelStr}"`
       );
       body = { ...body, model: modelStr };
     } else {
@@ -502,7 +502,7 @@ export async function handleChat(
       if (sessionViolation) {
         return withSessionHeader(
           errorResponse(HTTP_STATUS.RATE_LIMITED, sessionViolation.message),
-          sessionId,
+          sessionId
         );
       }
       registerKeySession(apiKeyInfo.id, sessionId);
@@ -549,7 +549,7 @@ export async function handleChat(
       body = { ...body, model: tr.model };
       log.info(
         "T05",
-        `Task-Aware: detected="${tr.taskType}" → model override: ${modelStr} → ${tr.model}`,
+        `Task-Aware: detected="${tr.taskType}" → model override: ${modelStr} → ${tr.model}`
       );
     } else if (tr.taskType !== "chat") {
       log.debug("T05", `Task-Aware: detected="${tr.taskType}" (no override configured)`);
@@ -569,7 +569,7 @@ export async function handleChat(
     if (wsRoute.wasRouted) {
       log.info(
         "WEBSEARCH-ROUTE",
-        `web_search tool → model override: ${resolvedModelStr} → ${wsRoute.model}`,
+        `web_search tool → model override: ${resolvedModelStr} → ${wsRoute.model}`
       );
       resolvedModelStr = wsRoute.model;
       body = { ...body, model: wsRoute.model };
@@ -610,14 +610,13 @@ export async function handleChat(
     if (settings?.autoRoutingEnabled === false) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        "Auto routing is disabled. Enable it in Settings > Routing.",
+        "Auto routing is disabled. Enable it in Settings > Routing."
       );
     }
 
     try {
-      const { parseAutoPrefix } = await import(
-        "@omniroute/open-sse/services/autoCombo/autoPrefix.ts"
-      );
+      const { parseAutoPrefix } =
+        await import("@omniroute/open-sse/services/autoCombo/autoPrefix.ts");
       const parsed = parseAutoPrefix(resolvedModelStr);
       if (parsed.valid) {
         if (!Object.prototype.hasOwnProperty.call(AUTO_TEMPLATE_VARIANTS, resolvedModelStr)) {
@@ -633,7 +632,7 @@ export async function handleChat(
         }
         log.info(
           "AUTO",
-          `Zero-config routing variant: ${autoVariant || "default"} (model=${resolvedModelStr})`,
+          `Zero-config routing variant: ${autoVariant || "default"} (model=${resolvedModelStr})`
         );
       } else if (!autoSpec) {
         log.warn("AUTO", `Invalid auto prefix format: ${resolvedModelStr}`);
@@ -666,21 +665,20 @@ export async function handleChat(
     if (!recognizedBuiltInAuto) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `Model '${resolvedModelStr}' is not a valid combo or provider. Unknown built-in auto combo.`,
+        `Model '${resolvedModelStr}' is not a valid combo or provider. Unknown built-in auto combo.`
       );
     }
 
     try {
-      const { createVirtualAutoCombo } = await import(
-        "@omniroute/open-sse/services/autoCombo/virtualFactory.ts"
-      );
+      const { createVirtualAutoCombo } =
+        await import("@omniroute/open-sse/services/autoCombo/virtualFactory.ts");
       const virtualCombo = await createVirtualAutoCombo(autoVariant, autoSpec);
       virtualCombo.name = resolvedModelStr;
       virtualCombo.id = resolvedModelStr;
       combo = virtualCombo;
       log.info(
         "AUTO",
-        `Virtual auto-combo created: ${combo.name} (${virtualCombo.candidatePool?.length || 0} candidates)`,
+        `Virtual auto-combo created: ${combo.name} (${virtualCombo.candidatePool?.length || 0} candidates)`
       );
     } catch (err) {
       log.error("AUTO", "Failed to create virtual auto-combo", { err });
@@ -689,7 +687,7 @@ export async function handleChat(
   if (combo) {
     log.info(
       "CHAT",
-      `Combo "${modelStr}" [${combo.strategy || "priority"}] with ${combo.models.length} models`,
+      `Combo "${modelStr}" [${combo.strategy || "priority"}] with ${combo.models.length} models`
     );
 
     // Pre-check function used by combo routing. For explicit combo live tests,
@@ -697,7 +695,7 @@ export async function handleChat(
     const comboPreselectedCredentials = new Map<string, any>();
     const getComboCredentialCacheKey = (
       modelString: string,
-      target?: { connectionId?: string | null; executionKey?: string | null },
+      target?: { connectionId?: string | null; executionKey?: string | null }
     ) => `${target?.executionKey || target?.connectionId || ""}:${modelString}`;
     const checkModelAvailable = async (
       modelString: string,
@@ -707,7 +705,7 @@ export async function handleChat(
         allowedConnectionIds?: string[] | null;
         executionKey?: string | null;
         providerId?: string | null;
-      },
+      }
     ) => {
       if (isComboLiveTest) return true;
 
@@ -733,7 +731,7 @@ export async function handleChat(
         typeof target?.connectionId === "string" && target.connectionId.trim().length > 0;
       let allowedConnections = intersectAllowedConnectionIds(
         apiKeyInfo?.allowedConnections ?? null,
-        target?.allowedConnectionIds ?? null,
+        target?.allowedConnectionIds ?? null
       );
 
       // A4: quota-exclusive keys must only use the pool's connection(s).
@@ -741,7 +739,7 @@ export async function handleChat(
         const quotaScope = await resolveQuotaKeyScope(apiKeyInfo.allowedQuotas);
         allowedConnections = constrainConnectionsToQuota(
           allowedConnections ?? [],
-          quotaScope.connectionIds,
+          quotaScope.connectionIds
         );
       }
 
@@ -759,7 +757,7 @@ export async function handleChat(
           ...(target?.allowRateLimitedConnection ? { allowRateLimitedConnections: true } : {}),
           ...(target?.connectionId ? { forcedConnectionId: target.connectionId } : {}),
           ...(bypassProviderQuotaPolicy ? { bypassQuotaPolicy: true } : {}),
-        },
+        }
       );
       if (!creds || creds.allRateLimited) return false;
 
@@ -811,7 +809,7 @@ export async function handleChat(
           failoverBeforeRetry?: boolean;
           providerId?: string | null;
           effectiveComboStrategy?: string | null;
-        },
+        }
       ) =>
         handleSingleModelChat(
           b,
@@ -832,7 +830,7 @@ export async function handleChat(
             skipUpstreamRetry: target?.failoverBeforeRetry ?? false,
             allowRateLimitedConnection: target?.allowRateLimitedConnection === true,
             preselectedCredentials: comboPreselectedCredentials.get(
-              getComboCredentialCacheKey(m, target),
+              getComboCredentialCacheKey(m, target)
             ),
             cachedSettings: settings,
             providerId: target?.providerId ?? null,
@@ -840,7 +838,7 @@ export async function handleChat(
             modelPinned: (target as any)?.modelPinned ?? false,
           },
           target?.effectiveComboStrategy ?? combo.strategy,
-          true,
+          true
         ).then(async (res: Response) => {
           // Auto-promote the winning combo model to position #1 (opt-in flag).
           if (res?.ok)
@@ -848,7 +846,7 @@ export async function handleChat(
               combo,
               m,
               settings as Record<string, unknown>,
-              comboPromoteDeps,
+              comboPromoteDeps
             );
           return res;
         }),
@@ -873,7 +871,7 @@ export async function handleChat(
       const fallbackModel = (settings as any).globalFallbackModel.trim();
       log.info(
         "GLOBAL_FALLBACK",
-        `Combo "${combo.name}" exhausted — attempting global fallback: ${fallbackModel}`,
+        `Combo "${combo.name}" exhausted — attempting global fallback: ${fallbackModel}`
       );
       try {
         const fallbackResponse = await handleSingleModelChat(
@@ -891,7 +889,7 @@ export async function handleChat(
             forceLiveComboTest: isComboLiveTest,
           },
           combo.strategy,
-          true,
+          true
         );
         if (fallbackResponse.ok) {
           log.info("GLOBAL_FALLBACK", `Global fallback ${fallbackModel} succeeded`);
@@ -900,7 +898,7 @@ export async function handleChat(
         }
         log.warn(
           "GLOBAL_FALLBACK",
-          `Global fallback ${fallbackModel} also failed (${fallbackResponse.status})`,
+          `Global fallback ${fallbackModel} also failed (${fallbackResponse.status})`
         );
       } catch (err: any) {
         log.warn("GLOBAL_FALLBACK", `Global fallback error: ${err?.message || "unknown"}`);
@@ -952,7 +950,7 @@ export async function handleChat(
       correlationId: reqId,
     },
     null,
-    false,
+    false
   );
   recordTelemetry(telemetry);
   return withCorrelationId(withSessionHeader(response, sessionId), reqId);
@@ -1000,14 +998,14 @@ async function handleSingleModelChat(
     correlationId?: string | null;
   } = {},
   comboStrategy: string | null = null,
-  isCombo: boolean = false,
+  isCombo: boolean = false
 ) {
   // 1. Resolve model → provider/model
   const resolved = await resolveModelOrError(
     modelStr,
     body,
     clientRawRequest?.endpoint,
-    clientRawRequest?.headers,
+    clientRawRequest?.headers
   );
   if (resolved.error) return resolved.error;
 
@@ -1018,7 +1016,7 @@ async function handleSingleModelChat(
     const redirectCombo = (resolved as any).combo;
     log.info(
       "ROUTING",
-      `Safety-net combo redirect for "${modelStr}" → combo="${redirectCombo.name}"`,
+      `Safety-net combo redirect for "${modelStr}" → combo="${redirectCombo.name}"`
     );
     log.info("ROUTING", `Auto-combo redirect from handleSingleModelChat for "${modelStr}"`);
     log.info("ROUTING", `Auto-combo redirect to combo flow for "${modelStr}"`);
@@ -1036,7 +1034,7 @@ async function handleSingleModelChat(
           allowRateLimitedConnection?: boolean;
           providerId?: string | null;
           effectiveComboStrategy?: string | null;
-        },
+        }
       ) =>
         handleSingleModelChat(
           b,
@@ -1059,7 +1057,7 @@ async function handleSingleModelChat(
             correlationId: runtimeOptions?.correlationId ?? null,
           },
           target?.effectiveComboStrategy ?? redirectCombo.strategy ?? "priority",
-          false,
+          false
         ),
       isModelAvailable: async () => true,
       log,
@@ -1105,7 +1103,7 @@ async function handleSingleModelChat(
     runtimeOptions.forcedConnectionId.trim().length > 0;
   let effectiveAllowedConnections = intersectAllowedConnectionIds(
     apiKeyInfo?.allowedConnections ?? null,
-    runtimeOptions.allowedConnectionIds ?? null,
+    runtimeOptions.allowedConnectionIds ?? null
   );
 
   // A4: quota-exclusive keys must only use the pool's connection(s).
@@ -1113,7 +1111,7 @@ async function handleSingleModelChat(
     const quotaScope = await resolveQuotaKeyScope(apiKeyInfo.allowedQuotas);
     effectiveAllowedConnections = constrainConnectionsToQuota(
       effectiveAllowedConnections ?? [],
-      quotaScope.connectionIds,
+      quotaScope.connectionIds
     );
   }
 
@@ -1159,7 +1157,7 @@ async function handleSingleModelChat(
   // Issue #2100 follow-up: opt-in upstream 429 hint trust per provider.
   const useHints429 = resolveUseUpstream429BreakerHints(
     provider,
-    (providerProfile as { useUpstream429BreakerHints?: boolean }).useUpstream429BreakerHints,
+    (providerProfile as { useUpstream429BreakerHints?: boolean }).useUpstream429BreakerHints
   );
   const breaker = getCircuitBreaker(provider, {
     failureThreshold: providerProfile.failureThreshold,
@@ -1182,7 +1180,7 @@ async function handleSingleModelChat(
 
   const userAgent = request?.headers?.get("user-agent") || "";
   const baseRetrySettings = resolveCooldownAwareRetrySettings(
-    runtimeOptions.cachedSettings ?? (await getCachedSettings().catch(() => ({}))),
+    runtimeOptions.cachedSettings ?? (await getCachedSettings().catch(() => ({})))
   );
   const disableCooldownAwareRetry =
     isCombo || forceLiveComboTest || runtimeOptions.emergencyFallbackTried === true;
@@ -1201,7 +1199,7 @@ async function handleSingleModelChat(
     log.debug("AUTH", `${provider}/${model} filtered out by connection-level routing constraints`);
     return errorResponse(
       HTTP_STATUS.SERVICE_UNAVAILABLE,
-      "No eligible connections matched the requested routing constraints",
+      "No eligible connections matched the requested routing constraints"
     );
   }
 
@@ -1249,7 +1247,7 @@ async function handleSingleModelChat(
                 ...(runtimeOptions.forcedConnectionId
                   ? { forcedConnectionId: runtimeOptions.forcedConnectionId }
                   : {}),
-              },
+              }
             );
       preselectedCredentials = null;
 
@@ -1265,14 +1263,14 @@ async function handleSingleModelChat(
             const waitSec = Math.max(Math.ceil(retryDecision.waitMs / 1000), 0);
             log.info(
               "COOLDOWN_RETRY",
-              `${provider}/${model} all connections cooling down (${retryDecision.retryAfterHuman || `retry in ${waitSec}s`}) — waiting ${waitSec}s before retry ${requestRetryAttempt + 1}/${retrySettings.maxRetries}`,
+              `${provider}/${model} all connections cooling down (${retryDecision.retryAfterHuman || `retry in ${waitSec}s`}) — waiting ${waitSec}s before retry ${requestRetryAttempt + 1}/${retrySettings.maxRetries}`
             );
 
             const completed = await waitForCooldownAwareRetry(retryDecision.waitMs, requestSignal);
             if (!completed) {
               log.info(
                 "COOLDOWN_RETRY",
-                `${provider}/${model} retry wait aborted by client disconnect`,
+                `${provider}/${model} retry wait aborted by client disconnect`
               );
               return errorResponse(499, "Request aborted");
             }
@@ -1280,7 +1278,7 @@ async function handleSingleModelChat(
             requestRetryAttempt += 1;
             log.info(
               "COOLDOWN_RETRY",
-              `${provider}/${model} cooldown elapsed — restarting request attempt ${requestRetryAttempt}/${retrySettings.maxRetries}`,
+              `${provider}/${model} cooldown elapsed — restarting request attempt ${requestRetryAttempt}/${retrySettings.maxRetries}`
             );
             continue requestAttemptLoop;
           }
@@ -1301,7 +1299,7 @@ async function handleSingleModelChat(
           provider,
           model,
           lastError,
-          lastStatus,
+          lastStatus
         );
         const lastFailedConnectionId =
           excludedConnectionIds.size > 0
@@ -1338,14 +1336,14 @@ async function handleSingleModelChat(
             "CONTEXT_RELAY",
             `Injecting handoff for session ${runtimeOptions.sessionId}: ${handoff.fromAccount.slice(
               0,
-              8,
-            )} -> ${credentials.connectionId.slice(0, 8)}`,
+              8
+            )} -> ${credentials.connectionId.slice(0, 8)}`
           );
         }
       }
       const refreshedCredentials = await checkAndRefreshToken(provider, credentials);
       const storeEnabled = isOpenAIResponsesStoreEnabled(
-        refreshedCredentials?.providerSpecificData ?? credentials?.providerSpecificData,
+        refreshedCredentials?.providerSpecificData ?? credentials?.providerSpecificData
       );
       if (provider === "codex" && storeEnabled && runtimeOptions.sessionId) {
         requestBody = ensureOpenAIStoreSessionFallback(requestBody, runtimeOptions.sessionId);
@@ -1370,7 +1368,7 @@ async function handleSingleModelChat(
           runtimeOptions.sessionId,
           provider,
           credentials.connectionId,
-          refreshedCredentials,
+          refreshedCredentials
         );
       }
       const proxyInfo = await safeResolveProxy(credentials.connectionId, apiKeyInfo?.id);
@@ -1471,7 +1469,7 @@ async function handleSingleModelChat(
           streamEarlyEofRetries += 1;
           log.warn(
             "STREAM",
-            `${provider}/${model} closed the stream early before useful content — retrying once (attempt ${streamEarlyEofRetries})`,
+            `${provider}/${model} closed the stream early before useful content — retrying once (attempt ${streamEarlyEofRetries})`
           );
           // Plain re-attempt of the same request: no markAccountUnavailable, no
           // excludedConnectionIds mutation (an early close is not a bad connection).
@@ -1491,13 +1489,13 @@ async function handleSingleModelChat(
           provider,
           model,
           providerProfile,
-          { isCombo },
+          { isCombo }
         );
 
         if (shouldFallback && !hasForcedConnection) {
           log.warn(
             "AUTH",
-            `Antigravity connection ${accountId}... produced no useful stream content, trying fallback connection`,
+            `Antigravity connection ${accountId}... produced no useful stream content, trying fallback connection`
           );
           if (Number.isFinite(cooldownMs) && cooldownMs > 0) {
             lastCooldownMs = cooldownMs;
@@ -1507,7 +1505,7 @@ async function handleSingleModelChat(
             try {
               const affinity = getSessionAccountAffinity(
                 runtimeOptions.sessionAffinityKey,
-                provider,
+                provider
               );
               if (affinity?.connectionId === credentials.connectionId) {
                 deleteSessionAccountAffinity(runtimeOptions.sessionAffinityKey, provider);
@@ -1541,13 +1539,13 @@ async function handleSingleModelChat(
           provider,
           model,
           providerProfile,
-          { isCombo },
+          { isCombo }
         );
 
         if (shouldFallback && !hasForcedConnection) {
           log.warn(
             "AUTH",
-            `Antigravity connection ${accountId}... timed out before response headers, trying fallback connection`,
+            `Antigravity connection ${accountId}... timed out before response headers, trying fallback connection`
           );
           if (Number.isFinite(cooldownMs) && cooldownMs > 0) {
             lastCooldownMs = cooldownMs;
@@ -1557,7 +1555,7 @@ async function handleSingleModelChat(
             try {
               const affinity = getSessionAccountAffinity(
                 runtimeOptions.sessionAffinityKey,
-                provider,
+                provider
               );
               if (affinity?.connectionId === credentials.connectionId) {
                 deleteSessionAccountAffinity(runtimeOptions.sessionAffinityKey, provider);
@@ -1586,7 +1584,7 @@ async function handleSingleModelChat(
 
         log.warn(
           "AUTH",
-          `Account ${accountId}... at local concurrency cap, trying fallback account`,
+          `Account ${accountId}... at local concurrency cap, trying fallback account`
         );
         excludedConnectionIds.add(credentials.connectionId);
         lastError = result.error;
@@ -1605,7 +1603,7 @@ async function handleSingleModelChat(
         const fallbackDecision = shouldUseFallback(
           Number(result.status || 0),
           String(result.error || ""),
-          Array.isArray(body?.tools) && body.tools.length > 0,
+          Array.isArray(body?.tools) && body.tools.length > 0
         );
 
         if (isFallbackDecision(fallbackDecision)) {
@@ -1620,16 +1618,16 @@ async function handleSingleModelChat(
               Number(
                 fallbackBody.max_tokens ??
                   fallbackBody.max_completion_tokens ??
-                  fallbackDecision.maxOutputTokens,
+                  fallbackDecision.maxOutputTokens
               ) || fallbackDecision.maxOutputTokens,
-              fallbackDecision.maxOutputTokens,
+              fallbackDecision.maxOutputTokens
             );
             fallbackBody.max_tokens = maxTokens;
             fallbackBody.max_completion_tokens = maxTokens;
 
             log.warn(
               "EMERGENCY_FALLBACK",
-              `${currentModelStr} -> ${fallbackModelStr} | reason=${fallbackDecision.reason}`,
+              `${currentModelStr} -> ${fallbackModelStr} | reason=${fallbackDecision.reason}`
             );
 
             const fallbackResponse = await handleSingleModelChat(
@@ -1648,7 +1646,7 @@ async function handleSingleModelChat(
                 comboExecutionKey: null,
               },
               null, // no strategy for emergency fallback
-              Boolean(comboName), // isCombo if comboName exists
+              Boolean(comboName) // isCombo if comboName exists
             );
 
             if (fallbackResponse.ok) {
@@ -1657,7 +1655,7 @@ async function handleSingleModelChat(
 
             log.warn(
               "EMERGENCY_FALLBACK",
-              `Emergency fallback to ${fallbackModelStr} failed with status ${fallbackResponse.status}. Resuming original provider account fallback.`,
+              `Emergency fallback to ${fallbackModelStr} failed with status ${fallbackResponse.status}. Resuming original provider account fallback.`
             );
           }
         }
@@ -1688,7 +1686,7 @@ async function handleSingleModelChat(
             result.status,
             0,
             providerProfile,
-            { maxCooldownMs: mlSettings.maxCooldownMs },
+            { maxCooldownMs: mlSettings.maxCooldownMs }
           );
 
           log.info(
@@ -1698,7 +1696,7 @@ async function handleSingleModelChat(
               model: limitedModel,
               cooldownMs: lockResult.cooldownMs,
               failureCount: lockResult.failureCount,
-            }),
+            })
           );
         }
 
@@ -1750,7 +1748,7 @@ async function handleSingleModelChat(
                 (failureKind === "rate_limit" || failureKind === "transient")
               ),
               isCombo,
-            },
+            }
           );
 
       if (shouldFallback) {
@@ -1768,7 +1766,7 @@ async function handleSingleModelChat(
             evictSessionAccountAffinityForConnection(
               runtimeOptions.sessionAffinityKey,
               provider,
-              credentials.connectionId,
+              credentials.connectionId
             );
           } catch {
             // best-effort: selection also excludes this connection for the current retry.

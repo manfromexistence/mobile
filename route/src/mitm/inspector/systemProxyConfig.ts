@@ -53,7 +53,7 @@ export interface ApplyResult {
 export type ExecFileFn = (
   file: string,
   args: string[],
-  options?: ExecFileOptions,
+  options?: ExecFileOptions
 ) => Promise<{ stdout: string; stderr: string }>;
 
 let execImpl: ExecFileFn = defaultExec;
@@ -61,7 +61,7 @@ let execImpl: ExecFileFn = defaultExec;
 function defaultExec(
   file: string,
   args: string[],
-  options: ExecFileOptions = {},
+  options: ExecFileOptions = {}
 ): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     execFile(file, args, options, (err, stdout, stderr) => {

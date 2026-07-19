@@ -18,7 +18,7 @@ export default function TranslatorConceptCard() {
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   return (
@@ -35,13 +35,13 @@ export default function TranslatorConceptCard() {
             <h2 className="text-sm font-semibold text-text-main mb-1">
               {tr(
                 "conceptHeadline",
-                'Your app speaks one API "language". Translator converts it to use another provider.',
+                'Your app speaks one API "language". Translator converts it to use another provider.'
               )}
             </h2>
             <p className="text-xs text-text-muted">
               {tr(
                 "friendlySubtitle",
-                "Use your existing app with any provider without rewriting code.",
+                "Use your existing app with any provider without rewriting code."
               )}
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function TranslatorConceptCard() {
           >
             {tr(
               "conceptHowItWorksBody",
-              "Your app sends a request in its own format. Translator detects that format, converts through OpenAI as an intermediate hub (or directly when a direct translator is available), sends it to the selected provider, and converts the response back to your app's format.",
+              "Your app sends a request in its own format. Translator detects that format, converts through OpenAI as an intermediate hub (or directly when a direct translator is available), sends it to the selected provider, and converts the response back to your app's format."
             )}
           </div>
         )}

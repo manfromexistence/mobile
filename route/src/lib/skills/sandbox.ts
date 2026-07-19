@@ -68,7 +68,7 @@ class SandboxRunner {
     image: string,
     command: string[],
     env: Record<string, string> = {},
-    configOverride: Partial<SandboxConfig> = {},
+    configOverride: Partial<SandboxConfig> = {}
   ): Promise<SandboxResult> {
     const sandboxId = randomUUID();
     const startTime = Date.now();

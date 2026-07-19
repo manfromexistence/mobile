@@ -88,7 +88,7 @@ function sanitize(msg: string): string {
 async function notionFetch(
   path: string,
   apiKey: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<unknown> {
   const url = `${NOTION_API_BASE}${path}`;
   const controller = new AbortController();
@@ -182,7 +182,7 @@ export function createNotionClient(apiKey: string) {
     async searchPagesAndDatabases(
       query: string,
       startCursor?: string,
-      pageSize = 20,
+      pageSize = 20
     ): Promise<unknown> {
       const body: Record<string, unknown> = {
         query,
@@ -203,7 +203,7 @@ export function createNotionClient(apiKey: string) {
     async listBlockChildren(
       blockId: string,
       startCursor?: string,
-      pageSize = 50,
+      pageSize = 50
     ): Promise<unknown> {
       const params = new URLSearchParams();
       params.set("page_size", String(Math.min(pageSize, 100)));
@@ -216,7 +216,7 @@ export function createNotionClient(apiKey: string) {
       filter?: unknown,
       sorts?: unknown[],
       startCursor?: string,
-      pageSize = 50,
+      pageSize = 50
     ): Promise<unknown> {
       const body: Record<string, unknown> = {
         page_size: Math.min(pageSize, 100),

@@ -26,7 +26,7 @@ export async function submitCredentialBlob(
   blob: string,
   reauthConnection: { id?: string } | null | undefined,
   setStep: (s: string) => void,
-  onSuccess?: () => void,
+  onSuccess?: () => void
 ): Promise<void> {
   const res = await fetch(`/api/oauth/${provider}/paste-credentials`, {
     method: "POST",

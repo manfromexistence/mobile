@@ -26,7 +26,7 @@ export async function GET(request: Request) {
           const runtime = (await Promise.race([
             getCliRuntimeStatus(toolId),
             new Promise((_, reject) =>
-              setTimeout(() => reject(new Error("Timeout")), RUNTIME_CHECK_TIMEOUT),
+              setTimeout(() => reject(new Error("Timeout")), RUNTIME_CHECK_TIMEOUT)
             ),
           ])) as {
             installed: boolean;
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
             reason: error.message || "Check failed",
           };
         }
-      }),
+      })
     );
 
     // Check config status for installed+runnable tools via direct file reads
@@ -74,7 +74,7 @@ export async function GET(request: Request) {
           return;
         }
         statuses[toolId].configStatus = await checkToolConfigStatus(toolId);
-      }),
+      })
     );
 
     // Merge last-configured timestamps from SQLite

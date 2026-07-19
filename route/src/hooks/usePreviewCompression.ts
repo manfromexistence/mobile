@@ -68,7 +68,7 @@ export async function runPreviewBatch(args: RunPreviewArgs): Promise<PreviewBatc
       } catch (e) {
         return { engine, run: null, error: e instanceof Error ? e.message : "error" };
       }
-    }),
+    })
   );
   let combined: CompressionRunModel | null = null;
   let diff: PreviewResponse["diff"] | null = null;

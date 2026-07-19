@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     if (minScore > 0) filtered = filtered.filter((r) => r.score >= minScore);
     if (query) {
       filtered = filtered.filter(
-        (r) => matchesSearch(r.fullName, query) || matchesSearch(r.description, query),
+        (r) => matchesSearch(r.fullName, query) || matchesSearch(r.description, query)
       );
     }
 

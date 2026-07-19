@@ -77,7 +77,7 @@ export function getComboMiddlewareHooks(comboId: string): HookConfig[] {
   const db = getDbInstance() as any;
   const rows = db
     .prepare(
-      "SELECT * FROM middleware_hooks WHERE enabled = 1 AND (scope_type = 'global' OR (scope_type = 'combo' AND combo_id = ?)) ORDER BY priority ASC",
+      "SELECT * FROM middleware_hooks WHERE enabled = 1 AND (scope_type = 'global' OR (scope_type = 'combo' AND combo_id = ?)) ORDER BY priority ASC"
     )
     .all(comboId) as HookConfigRow[];
   return rows.map(rowToHookConfig);
@@ -89,8 +89,7 @@ export function getComboMiddlewareHooks(comboId: string): HookConfig[] {
 export function getMiddlewareHook(name: string): HookConfig | undefined {
   const db = getDbInstance() as any;
   const row = db.prepare("SELECT * FROM middleware_hooks WHERE name = ?").get(name) as
-    | HookConfigRow
-    | undefined;
+    HookConfigRow | undefined;
   return row ? rowToHookConfig(row) : undefined;
 }
 
@@ -107,7 +106,7 @@ export function createMiddlewareHook(config: HookConfig): HookConfig {
     `
     INSERT INTO middleware_hooks (name, description, priority, scope_type, combo_id, enabled, code, created_at, updated_at, run_count, last_error)
     VALUES (@name, @description, @priority, @scope_type, @combo_id, @enabled, @code, @created_at, @updated_at, @run_count, @last_error)
-  `,
+  `
   ).run(row);
 
   return getMiddlewareHook(config.name)!;
@@ -118,7 +117,7 @@ export function createMiddlewareHook(config: HookConfig): HookConfig {
  */
 export function updateMiddlewareHook(
   name: string,
-  updates: Partial<HookConfig>,
+  updates: Partial<HookConfig>
 ): HookConfig | undefined {
   const existing = getMiddlewareHook(name);
   if (!existing) return undefined;
@@ -140,7 +139,7 @@ export function updateMiddlewareHook(
       run_count = @run_count,
       last_error = @last_error
     WHERE name = @name
-  `,
+  `
   ).run(row);
 
   return getMiddlewareHook(name);
@@ -162,11 +161,11 @@ export function recordHookExecution(name: string, error?: string): void {
   const db = getDbInstance() as any;
   if (error) {
     db.prepare(
-      "UPDATE middleware_hooks SET run_count = run_count + 1, last_error = ?, updated_at = datetime('now') WHERE name = ?",
+      "UPDATE middleware_hooks SET run_count = run_count + 1, last_error = ?, updated_at = datetime('now') WHERE name = ?"
     ).run(error, name);
   } else {
     db.prepare(
-      "UPDATE middleware_hooks SET run_count = run_count + 1, last_error = NULL, updated_at = datetime('now') WHERE name = ?",
+      "UPDATE middleware_hooks SET run_count = run_count + 1, last_error = NULL, updated_at = datetime('now') WHERE name = ?"
     ).run(name);
   }
 }
@@ -182,7 +181,7 @@ export function insertHookLog(entry: HookLogEntry): void {
     `
     INSERT INTO middleware_logs (id, hook_name, request_id, duration_ms, mutated, skipped, error, timestamp)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     entry.id,
     entry.hookName,
@@ -191,7 +190,7 @@ export function insertHookLog(entry: HookLogEntry): void {
     entry.mutated ? 1 : 0,
     entry.skipped ? 1 : 0,
     entry.error || null,
-    entry.timestamp,
+    entry.timestamp
   );
 }
 
@@ -232,7 +231,7 @@ export function cleanupHookLogs(maxEntries = 10000): number {
     DELETE FROM middleware_logs WHERE id NOT IN (
       SELECT id FROM middleware_logs ORDER BY timestamp DESC LIMIT ?
     )
-  `,
+  `
     )
     .run(maxEntries);
   return result.changes;

@@ -36,7 +36,7 @@ export async function getObsidianSyncStatus(): Promise<ObsidianSyncStatus> {
 }
 
 export async function enableObsidianVaultSync(
-  vaultPath: string,
+  vaultPath: string
 ): Promise<ObsidianSyncEnableResult> {
   const resolvedPath = path.resolve(vaultPath);
 

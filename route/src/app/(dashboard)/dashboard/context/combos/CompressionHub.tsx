@@ -131,7 +131,7 @@ export default function CompressionHub() {
         setError("Failed to save settings.");
       }
     },
-    [settings],
+    [settings]
   );
 
   // ── Derived state ─────────────────────────────────────────────────────────────

@@ -80,7 +80,7 @@ export async function selectSessionAffinityConnection<T extends SessionAffinityC
   provider: string,
   sessionKey: string | null | undefined,
   connections: T[],
-  ttlMs = 0,
+  ttlMs = 0
 ): Promise<T | null> {
   if (!sessionKey || connections.length === 0 || ttlMs <= 0) return null;
 
@@ -97,8 +97,8 @@ export async function selectSessionAffinityConnection<T extends SessionAffinityC
         "AUTH",
         `session_key=${formatSessionKeyForLog(sessionKey)} -> connection ${connection.id.slice(
           0,
-          8,
-        )} (affinity)`,
+          8
+        )} (affinity)`
       );
       return connection;
     }
@@ -106,7 +106,7 @@ export async function selectSessionAffinityConnection<T extends SessionAffinityC
     deleteSessionAccountAffinity(sessionKey, provider);
     log.info(
       "AUTH",
-      `affinity cleared for session_key=${formatSessionKeyForLog(sessionKey)} provider=${provider}`,
+      `affinity cleared for session_key=${formatSessionKeyForLog(sessionKey)} provider=${provider}`
     );
   }
 
@@ -121,8 +121,8 @@ export async function selectSessionAffinityConnection<T extends SessionAffinityC
   log.info(
     "AUTH",
     `new affinity created for session_key=${formatSessionKeyForLog(
-      sessionKey,
-    )} -> connection ${connection.id.slice(0, 8)}`,
+      sessionKey
+    )} -> connection ${connection.id.slice(0, 8)}`
   );
   return connection;
 }
@@ -150,7 +150,7 @@ export interface AffinityPinSettings {
 export function resolveSessionAffinityTtlMs(
   provider: string,
   options: AffinityPinOptions,
-  settings: AffinityPinSettings,
+  settings: AffinityPinSettings
 ): number {
   if (provider !== "codex") return 0;
   const override = Number(options.sessionAffinityTtlMs);
@@ -170,7 +170,7 @@ export interface AffinityPinPredicates {
   /** auth.ts::isCodexScopeUnavailable (codex per-scope cooldown). */
   isCodexScopeUnavailable: (
     connection: AffinityPinConnection,
-    requestedModel: string | null,
+    requestedModel: string | null
   ) => boolean;
   /** Wraps auth.ts::evaluateQuotaLimitPolicy(...).blocked for one connection. */
   isQuotaPolicyBlocked: (connection: AffinityPinConnection) => boolean;
@@ -193,7 +193,7 @@ export interface ApplySessionAffinityPinParams extends AffinityPinPredicates {
  */
 function isConnectionEligibleForAffinityPin(
   connection: AffinityPinConnection,
-  params: ApplySessionAffinityPinParams,
+  params: ApplySessionAffinityPinParams
 ): boolean {
   const { provider, requestedModel, options } = params;
   const allowSuppressed = options.allowSuppressedConnections === true;
@@ -241,7 +241,7 @@ export function applySessionAffinityPin(params: ApplySessionAffinityPinParams): 
 
   log.info(
     "AUTH",
-    `session affinity pin ${pinned.connectionId.slice(0, 8)}... overrides forcedConnectionId ${forcedConnectionId.slice(0, 8)}... (#5903)`,
+    `session affinity pin ${pinned.connectionId.slice(0, 8)}... overrides forcedConnectionId ${forcedConnectionId.slice(0, 8)}... (#5903)`
   );
   return pinned.connectionId;
 }

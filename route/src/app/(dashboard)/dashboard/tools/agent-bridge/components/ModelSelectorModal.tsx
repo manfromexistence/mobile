@@ -60,7 +60,7 @@ export function ModelSelectorModal({
   const filtered = models.filter(
     (m) =>
       m.id.toLowerCase().includes(search.toLowerCase()) ||
-      m.name.toLowerCase().includes(search.toLowerCase()),
+      m.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

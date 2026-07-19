@@ -12,13 +12,13 @@ import {
 type QuickTester = (
   host: string,
   port: number,
-  type: string,
+  type: string
 ) => Promise<{ ok: boolean; latencyMs: number }>;
 
 async function testProxyQuick(
   host: string,
   port: number,
-  type: string,
+  type: string
 ): Promise<{ ok: boolean; latencyMs: number }> {
   const proxyUrl = proxyConfigToUrl({ type, host, port });
   if (!proxyUrl) return { ok: false, latencyMs: 0 };

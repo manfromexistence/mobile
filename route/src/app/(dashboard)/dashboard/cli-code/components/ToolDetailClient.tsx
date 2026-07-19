@@ -136,7 +136,7 @@ export default function ToolDetailClient({ toolId, category }: ToolDetailClientP
     });
 
     const activeAliases = new Set(
-      activeProviders.map((c) => PROVIDER_ID_TO_ALIAS[c.provider] || c.provider),
+      activeProviders.map((c) => PROVIDER_ID_TO_ALIAS[c.provider] || c.provider)
     );
     const activeProviderIds = new Set(activeProviders.map((c) => c.provider));
     dynamicModels.forEach((dm) => {

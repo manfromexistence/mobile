@@ -26,7 +26,7 @@ export function RequestStreamingList({
 }: RequestStreamingListProps) {
   const { virtualItems, totalHeight, containerRef, rowRef } = useVirtualList(
     requests,
-    containerHeight,
+    containerHeight
   );
 
   if (requests.length === 0) {

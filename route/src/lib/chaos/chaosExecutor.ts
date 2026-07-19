@@ -103,7 +103,7 @@ const MAX_CONCURRENCY = 10;
 
 function resolveEffectiveRunParams(
   input: ChaosRunInput,
-  globalConfig: ChaosConfig,
+  globalConfig: ChaosConfig
 ): EffectiveRunParams {
   const mode: ChaosMode = input.mode || globalConfig.defaultMode || "parallel";
   const timeoutMs = input.timeoutMs || globalConfig.timeoutMs || 120_000;
@@ -122,13 +122,13 @@ function resolveEffectiveRunParams(
  */
 function resolveModelId(
   conn: { provider?: string; id?: string; defaultModel?: string | null },
-  overrides: ChaosConfig["providerOverrides"],
+  overrides: ChaosConfig["providerOverrides"]
 ): string {
   const override = overrides.find(
     (o) =>
       o.enabled &&
       (o.providerId.toLowerCase() === (conn.provider || "").toLowerCase() ||
-        o.providerId.toLowerCase() === (conn.id || "").toLowerCase()),
+        o.providerId.toLowerCase() === (conn.id || "").toLowerCase())
   );
   if (override?.modelId) return override.modelId;
   return conn.defaultModel || conn.provider || conn.id || "unknown";
@@ -149,13 +149,13 @@ function filterByRequestedProviders(active: any[], requested: string[]): any[] {
 /** Narrow `active` connections down to the enabled global-config overrides (soft filter). */
 function filterByEnabledOverrides(
   active: any[],
-  enabledOverrides: ChaosConfig["providerOverrides"],
+  enabledOverrides: ChaosConfig["providerOverrides"]
 ): any[] {
   const overrideIds = new Set(enabledOverrides.map((o) => o.providerId.toLowerCase()));
   const selected = active.filter(
     (c: any) =>
       overrideIds.has((c.provider ?? "").toLowerCase()) ||
-      overrideIds.has((c.id ?? "").toLowerCase()),
+      overrideIds.has((c.id ?? "").toLowerCase())
   );
   return selected.length > 0 ? selected : active; // fallback to all active
 }
@@ -183,11 +183,11 @@ function toProviderInfoList(selected: any[]): ProviderInfo[] {
  */
 async function selectChaosProviders(
   input: ChaosRunInput,
-  globalConfig: ChaosConfig,
+  globalConfig: ChaosConfig
 ): Promise<{ providers: ProviderInfo[]; enabledOverrides: ChaosConfig["providerOverrides"] }> {
   const allConnections = await getProviderConnections().catch(() => [] as any[]);
   const active = (Array.isArray(allConnections) ? allConnections : []).filter(
-    (c: any) => c.isActive !== false,
+    (c: any) => c.isActive !== false
   );
 
   if (active.length === 0) {
@@ -213,7 +213,7 @@ function buildDispatchRequest(
   messages: { role: string; content: string }[],
   maxTokens: number,
   timeoutMs: number,
-  apiKey?: string | null,
+  apiKey?: string | null
 ): Request {
   const headers = new Headers({ "Content-Type": "application/json" });
   if (apiKey) {
@@ -230,7 +230,7 @@ function buildDispatchRequest(
 async function parseDispatchResponse(
   res: Response,
   ctx: { providerId: string; providerName: string; modelId: string },
-  start: number,
+  start: number
 ): Promise<ModelResult> {
   if (!res.ok) {
     const errText = await res.text().catch(() => "unknown error");
@@ -259,7 +259,7 @@ function buildDispatchErrorResult(
   err: unknown,
   ctx: { providerId: string; providerName: string; modelId: string },
   start: number,
-  timeoutMs: number,
+  timeoutMs: number
 ): ModelResult {
   const errObj = err as { name?: string; type?: string; message?: string };
   const isAbort = errObj?.name === "AbortError" || errObj?.type === "aborted";
@@ -286,7 +286,7 @@ async function dispatchToModel(
   messages: { role: string; content: string }[],
   timeoutMs: number,
   maxTokens: number,
-  apiKey?: string | null,
+  apiKey?: string | null
 ): Promise<ModelResult> {
   const start = performance.now();
   const ctx = { providerId, providerName, modelId };
@@ -308,7 +308,7 @@ async function dispatchToModel(
  */
 async function runWithConcurrencyLimit<T>(
   tasks: (() => Promise<T>)[],
-  limit: number,
+  limit: number
 ): Promise<T[]> {
   const results: T[] = new Array(tasks.length);
   let nextIndex = 0;
@@ -329,7 +329,7 @@ async function runWithConcurrencyLimit<T>(
 
 function buildMessages(
   systemPrompt: string,
-  userContent: string,
+  userContent: string
 ): { role: "system" | "user"; content: string }[] {
   return [
     { role: "system", content: systemPrompt },
@@ -341,7 +341,7 @@ async function dispatchParallel(
   providers: ProviderInfo[],
   input: ChaosRunInput,
   overrides: ChaosConfig["providerOverrides"],
-  params: EffectiveRunParams,
+  params: EffectiveRunParams
 ): Promise<ModelResult[]> {
   const tasks = providers.map((p) => () => {
     const modelId = resolveModelId(p, overrides);
@@ -353,7 +353,7 @@ async function dispatchParallel(
       messages,
       params.timeoutMs,
       params.maxTokens,
-      input.apiKey,
+      input.apiKey
     );
   });
 
@@ -373,7 +373,7 @@ async function dispatchCollaborative(
   providers: ProviderInfo[],
   input: ChaosRunInput,
   overrides: ChaosConfig["providerOverrides"],
-  params: EffectiveRunParams,
+  params: EffectiveRunParams
 ): Promise<ModelResult[]> {
   const results: ModelResult[] = [];
   let context = input.task;
@@ -389,7 +389,7 @@ async function dispatchCollaborative(
       messages,
       params.timeoutMs,
       params.maxTokens,
-      input.apiKey,
+      input.apiKey
     );
     results.push(result);
 

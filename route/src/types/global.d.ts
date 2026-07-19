@@ -41,14 +41,14 @@ declare module "node-machine-id" {
 declare module "fetch-socks" {
   export function socksDispatcher(
     proxy: { type: number; host: string; port: number },
-    options?: Record<string, unknown>,
+    options?: Record<string, unknown>
   ): import("undici").Dispatcher;
 }
 
 declare module "figlet" {
   export default function figlet(
     text: string,
-    callback: (err: Error | null, result?: string) => void,
+    callback: (err: Error | null, result?: string) => void
   ): void;
   export function textSync(text: string, options?: Record<string, unknown>): string;
 }

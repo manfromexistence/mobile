@@ -35,7 +35,7 @@ function withSortOrder(payload: string, sortOrder: number | null): JsonRecord {
 
 function getComboNameSet(
   db: ReturnType<typeof getDbInstance>,
-  extraNames: string[] = [],
+  extraNames: string[] = []
 ): Set<string> {
   const rows = db.prepare("SELECT name FROM combos").all();
   const names = new Set<string>();
@@ -59,7 +59,7 @@ function getComboNameSet(
 function normalizeStoredCombo(
   combo: JsonRecord,
   db: ReturnType<typeof getDbInstance>,
-  extraNames: string[] = [],
+  extraNames: string[] = []
 ): JsonRecord {
   return normalizeComboRecord(combo, {
     allCombos: getComboNameSet(db, extraNames),
@@ -95,7 +95,7 @@ export async function getCombos() {
   const db = getDbInstance();
   const rawCombos = db
     .prepare(
-      "SELECT data, sort_order, context_cache_protection FROM combos ORDER BY sort_order ASC, name COLLATE NOCASE ASC",
+      "SELECT data, sort_order, context_cache_protection FROM combos ORDER BY sort_order ASC, name COLLATE NOCASE ASC"
     )
     .all()
     .map((row) => parseComboRow(row))
@@ -108,7 +108,7 @@ export async function getCombos() {
   return rawCombos.map((combo) =>
     normalizeComboRecord(combo, {
       allCombos: comboNames,
-    }),
+    })
   );
 }
 
@@ -141,7 +141,7 @@ export async function getComboByNameInsensitive(name: string) {
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT data, sort_order, context_cache_protection FROM combos WHERE name = ? COLLATE NOCASE",
+      "SELECT data, sort_order, context_cache_protection FROM combos WHERE name = ? COLLATE NOCASE"
     )
     .get(name);
   const combo = parseComboRow(row);
@@ -169,12 +169,12 @@ export async function createCombo(data: JsonRecord) {
       updatedAt: now,
     },
     db,
-    typeof data.name === "string" ? [data.name] : [],
+    typeof data.name === "string" ? [data.name] : []
   );
 
   const contextCache = data.context_cache_protection ? 1 : 0;
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at, context_cache_protection) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at, context_cache_protection) VALUES (?, ?, ?, ?, ?, ?, ?)"
   ).run(combo.id, combo.name, JSON.stringify(combo), sortOrder, now, now, contextCache);
 
   invalidateDbCache("combos");
@@ -218,14 +218,14 @@ export async function updateCombo(id: string, data: JsonRecord) {
   const contextCacheProtection = normalizedMerged.context_cache_protection ? 1 : 0;
 
   db.prepare(
-    "UPDATE combos SET name = ?, data = ?, sort_order = ?, updated_at = ?, context_cache_protection = ? WHERE id = ?",
+    "UPDATE combos SET name = ?, data = ?, sort_order = ?, updated_at = ?, context_cache_protection = ? WHERE id = ?"
   ).run(
     nextName,
     JSON.stringify(normalizedMerged),
     sortOrder,
     normalizedMerged.updatedAt,
     contextCacheProtection,
-    id,
+    id
   );
 
   // Invalidate stale context-cache pins when combo targets change.
@@ -249,7 +249,7 @@ export async function reorderCombos(comboIds: string[]) {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT id, name, data, sort_order FROM combos ORDER BY sort_order ASC, name COLLATE NOCASE ASC",
+      "SELECT id, name, data, sort_order FROM combos ORDER BY sort_order ASC, name COLLATE NOCASE ASC"
     )
     .all();
   if (rows.length === 0) return [];
@@ -260,7 +260,7 @@ export async function reorderCombos(comboIds: string[]) {
         const record = asRecord(row);
         return typeof record.id === "string" ? record.id : null;
       })
-      .filter((id): id is string => id !== null),
+      .filter((id): id is string => id !== null)
   );
 
   const seen = new Set<string>();
@@ -281,14 +281,14 @@ export async function reorderCombos(comboIds: string[]) {
   ];
 
   const update = db.prepare(
-    "UPDATE combos SET data = ?, sort_order = ?, updated_at = ? WHERE id = ?",
+    "UPDATE combos SET data = ?, sort_order = ?, updated_at = ? WHERE id = ?"
   );
   const now = new Date().toISOString();
   const rowById = new Map(
     rows.map((row) => {
       const record = asRecord(row);
       return [String(record.id), row];
-    }),
+    })
   );
   const comboNames = rows
     .map((row) => {
@@ -305,7 +305,7 @@ export async function reorderCombos(comboIds: string[]) {
       const sortOrder = index + 1;
       const updatedCombo = normalizeComboRecord(
         { ...combo, sortOrder, updatedAt: now },
-        { allCombos: comboNames },
+        { allCombos: comboNames }
       );
       update.run(JSON.stringify(updatedCombo), sortOrder, now, id);
     });
@@ -334,6 +334,6 @@ export async function deleteComboByName(name: string) {
 
 export function setActiveCombo(name: string, db = getDbInstance()) {
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'activeCombo', ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'activeCombo', ?)"
   ).run(JSON.stringify(name));
 }

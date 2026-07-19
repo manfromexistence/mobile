@@ -46,7 +46,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -135,7 +135,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             providerSpecificData,
           }),
         ];
-      }),
+      })
     );
 
     return NextResponse.json({ node: updated });

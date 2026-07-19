@@ -20,7 +20,7 @@ export default function CloudflareRelayModal({
   const [accountId, setAccountId] = useState("");
   const [apiToken, setApiToken] = useState("");
   const [projectName, setProjectName] = useState(
-    process.env.NEXT_PUBLIC_CLOUDFLARE_RELAY_DEFAULT_PROJECT || "omniroute-relay",
+    process.env.NEXT_PUBLIC_CLOUDFLARE_RELAY_DEFAULT_PROJECT || "omniroute-relay"
   );
   const [deploying, setDeploying] = useState(false);
   const [error, setError] = useState<string | null>(null);

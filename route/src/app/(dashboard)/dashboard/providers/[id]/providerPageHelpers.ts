@@ -50,14 +50,7 @@ export type LocalProviderMetadata = {
 
 export type CommandCodeAuthFlowState = {
   phase:
-    | "idle"
-    | "starting"
-    | "polling"
-    | "received"
-    | "applying"
-    | "applied"
-    | "expired"
-    | "error";
+    "idle" | "starting" | "polling" | "received" | "applying" | "applied" | "expired" | "error";
   state: string;
   authUrl: string;
   callbackUrl: string;
@@ -166,7 +159,7 @@ export interface TestAllModelOutcome {
  */
 export function evaluateTestAllEntry(
   entry: { status?: "ok" | "error"; rateLimited?: boolean; isTimeout?: boolean } | null | undefined,
-  autoHideFailed: boolean,
+  autoHideFailed: boolean
 ): TestAllModelOutcome {
   const ok = entry?.status === "ok";
   const transient = Boolean(entry?.rateLimited || entry?.isTimeout);
@@ -188,7 +181,7 @@ export function evaluateTestAllEntry(
 export function testAllResultsText(
   t: ProviderMessageTranslator,
   ok: number,
-  total: number,
+  total: number
 ): string {
   return providerText(t, "testAllResults", "{ok} of {total} models working", { ok, total });
 }
@@ -198,7 +191,7 @@ export function providerCountText(
   key: string,
   count: number,
   singularFallback: string,
-  pluralFallback: string,
+  pluralFallback: string
 ): string {
   return providerText(t, key, count === 1 ? singularFallback : pluralFallback, { count });
 }
@@ -249,7 +242,7 @@ export function getLocalProviderMetadata(providerId?: string | null) {
 export function isBaseUrlConfigurableProvider(providerId?: string | null) {
   return Boolean(
     providerId &&
-      (CONFIGURABLE_BASE_URL_PROVIDERS.has(providerId) || isSelfHostedChatProvider(providerId)),
+    (CONFIGURABLE_BASE_URL_PROVIDERS.has(providerId) || isSelfHostedChatProvider(providerId))
   );
 }
 
@@ -282,7 +275,7 @@ export function getProviderBaseUrlDefault(providerId?: string | null) {
 
 export function getProviderBaseUrlHint(
   providerId?: string | null,
-  t?: ((key: string, values?: Record<string, unknown>) => string) | null,
+  t?: ((key: string, values?: Record<string, unknown>) => string) | null
 ) {
   const localProvider = getLocalProviderMetadata(providerId);
   if (localProvider && t) {
@@ -350,8 +343,8 @@ export function parseRoutingTagsInput(value: string): string[] | undefined {
       value
         .split(",")
         .map((tag) => tag.trim().toLowerCase())
-        .filter(Boolean),
-    ),
+        .filter(Boolean)
+    )
   );
   return tags.length > 0 ? tags : undefined;
 }
@@ -362,8 +355,8 @@ export function parseExcludedModelsInput(value: string): string[] | undefined {
       value
         .split(",")
         .map((pattern) => pattern.trim())
-        .filter(Boolean),
-    ),
+        .filter(Boolean)
+    )
   );
   return patterns.length > 0 ? patterns : undefined;
 }
@@ -379,7 +372,7 @@ export function formatExcludedModelsInput(value: unknown): string {
   if (!Array.isArray(value)) return "";
   return value
     .filter(
-      (pattern): pattern is string => typeof pattern === "string" && pattern.trim().length > 0,
+      (pattern): pattern is string => typeof pattern === "string" && pattern.trim().length > 0
     )
     .join(", ");
 }
@@ -397,7 +390,7 @@ export const UPSTREAM_HEADERS_UI_MAX = 16;
 
 export function upstreamHeadersRecordsEqual(
   a: Record<string, string>,
-  b: Record<string, string>,
+  b: Record<string, string>
 ): boolean {
   const ka = Object.keys(a).sort();
   const kb = Object.keys(b).sort();
@@ -420,7 +413,7 @@ export function headerRowsToRecord(rows: HeaderDraftRow[]): Record<string, strin
 export function getProtoSlice(
   c: CompatModelRow | undefined,
   o: CompatModelRow | undefined,
-  protocol: string,
+  protocol: string
 ) {
   return c?.compatByProtocol?.[protocol] ?? o?.compatByProtocol?.[protocol];
 }
@@ -429,7 +422,7 @@ export function effectiveUpstreamHeadersForProtocol(
   modelId: string,
   protocol: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): Record<string, string> {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -449,7 +442,7 @@ export function effectiveUpstreamHeadersForProtocol(
 export function anyUpstreamHeadersBadge(
   modelId: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -493,7 +486,7 @@ function readActiveHiddenFlag(row: CompatModelRow | undefined): boolean | undefi
 export function isModelHiddenFn(
   modelId: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const customHidden = readActiveHiddenFlag(customMap.get(modelId));
   if (customHidden !== undefined) return customHidden;
@@ -508,7 +501,7 @@ export function effectiveNormalizeForProtocol(
   modelId: string,
   protocol: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -524,7 +517,7 @@ export function effectivePreserveForProtocol(
   modelId: string,
   protocol: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -544,7 +537,7 @@ export function effectivePreserveForProtocol(
 export function anyNormalizeCompatBadge(
   modelId: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -559,7 +552,7 @@ export function anyNormalizeCompatBadge(
 export function anyNoPreserveCompatBadge(
   modelId: string,
   customMap: CompatModelMap,
-  overrideMap: CompatModelMap,
+  overrideMap: CompatModelMap
 ): boolean {
   const c = customMap.get(modelId);
   const o = overrideMap.get(modelId);
@@ -616,7 +609,7 @@ export const CODEX_GLOBAL_SERVICE_MODE_VALUES: CodexGlobalServiceMode[] = [
 
 export function getCodexServiceTierLabel(
   t: ProviderMessageTranslator,
-  value: CodexGlobalServiceMode,
+  value: CodexGlobalServiceMode
 ): string {
   if (value === "none") {
     return providerText(t, "codexServiceModeNone", "No global setting");
@@ -748,7 +741,7 @@ export function extractCommandCodeCredentialInput(value: string): string {
 
 export function normalizeAndValidateHttpBaseUrl(
   rawValue: unknown,
-  fallbackUrl: string,
+  fallbackUrl: string
 ): { value: string | null; error: string | null } {
   const value = (typeof rawValue === "string" ? rawValue.trim() : "") || fallbackUrl;
   try {
@@ -884,7 +877,7 @@ export function formatTimeAgo(dateStr: string): string {
 export function getApiLabel(
   t: ProviderMessageTranslator,
   isAnthropicProtocolCompatible: boolean,
-  apiType: string | undefined,
+  apiType: string | undefined
 ): string {
   if (isAnthropicProtocolCompatible) return t("messagesApi");
   switch (apiType) {
@@ -906,7 +899,7 @@ export function getApiLabel(
 export function getApiDefaultPath(
   isCcCompatible: boolean,
   isAnthropicCompatible: boolean,
-  apiType: string | undefined,
+  apiType: string | undefined
 ): string {
   if (isCcCompatible) return CC_COMPATIBLE_DEFAULT_CHAT_PATH;
   if (isAnthropicCompatible) return "/messages";
@@ -930,7 +923,7 @@ export function getApiPath(
   isCcCompatible: boolean,
   isAnthropicCompatible: boolean,
   apiType: string | undefined,
-  chatPath: string | undefined,
+  chatPath: string | undefined
 ): string {
   const defaultPath = getApiDefaultPath(isCcCompatible, isAnthropicCompatible, apiType);
   return (chatPath || defaultPath).replace(/^\//, "");
@@ -940,7 +933,7 @@ export function getHeaderIconProviderId(
   isOpenAICompatible: boolean,
   isAnthropicProtocolCompatible: boolean,
   providerInfoId: string,
-  providerInfoApiType: string | undefined,
+  providerInfoApiType: string | undefined
 ): string {
   if (isOpenAICompatible && providerInfoApiType) {
     return providerInfoApiType === "responses" ? "oai-r" : "oai-cc";

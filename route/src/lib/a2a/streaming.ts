@@ -90,13 +90,13 @@ export const SSE_HEADERS = {
 export function createA2AStream(
   task: A2ATask,
   executeSkill: (
-    task: A2ATask,
+    task: A2ATask
   ) => Promise<{ artifacts: Array<{ content: string }>; metadata: Record<string, unknown> }>,
   abortSignal?: AbortSignal,
   lifecycle?: {
     onStart?: () => void;
     onEnd?: () => void;
-  },
+  }
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 

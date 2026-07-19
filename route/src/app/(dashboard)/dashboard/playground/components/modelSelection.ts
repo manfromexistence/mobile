@@ -26,7 +26,7 @@ import { matchesSearch } from "@/shared/utils/turkishText";
 export function resolveModelFilterKey(
   provider: string,
   modelPrefix: string | undefined,
-  isCompatibleConnectionId: boolean,
+  isCompatibleConnectionId: boolean
 ): string | undefined {
   if (modelPrefix) return modelPrefix;
   if (isCompatibleConnectionId) return undefined;
@@ -40,7 +40,7 @@ export function resolveModelFilterKey(
  */
 export function pickDefaultModel(
   currentModel: string | undefined,
-  availableModels: string[],
+  availableModels: string[]
 ): string | null {
   if (availableModels.length === 0) return null;
   if (currentModel && availableModels.includes(currentModel)) return null;

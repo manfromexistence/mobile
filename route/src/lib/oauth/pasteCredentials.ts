@@ -33,7 +33,7 @@ export function parsePastedCredentials(routeProvider: string, blob: string): Cre
   if (!PASTE_CREDENTIAL_PROVIDERS.has(routeProvider)) {
     throw new Error(
       `paste-credentials not supported for provider: ${routeProvider}. ` +
-        `Supported: ${[...PASTE_CREDENTIAL_PROVIDERS].join(", ")}`,
+        `Supported: ${[...PASTE_CREDENTIAL_PROVIDERS].join(", ")}`
     );
   }
 
@@ -43,7 +43,7 @@ export function parsePastedCredentials(routeProvider: string, blob: string): Cre
   if (decoded.provider !== routeProvider) {
     throw new Error(
       `Pasted credential provider mismatch: blob is for "${decoded.provider}" ` +
-        `but the route provider is "${routeProvider}"`,
+        `but the route provider is "${routeProvider}"`
     );
   }
 

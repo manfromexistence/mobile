@@ -12,14 +12,14 @@
  */
 export function getProviderDisplayLabel(
   provider: string,
-  providerNodes?: Array<{ id?: string; prefix?: string; name?: string }>,
+  providerNodes?: Array<{ id?: string; prefix?: string; name?: string }>
 ): string | null {
   if (!provider) return "-";
   if (provider.startsWith("openai-compatible-") || provider.startsWith("anthropic-compatible-")) {
     // Try to find user-defined name from provider nodes
     if (providerNodes?.length) {
       const matchedNode = providerNodes.find(
-        (node) => node.id === provider || node.prefix === provider,
+        (node) => node.id === provider || node.prefix === provider
       );
       if (matchedNode?.name) return matchedNode.name;
     }

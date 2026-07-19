@@ -26,7 +26,7 @@ export default function DestinationStep({
 
   // Filter providers to only those with batch support (D16)
   const batchProviders = availableProviders.filter((p) =>
-    BATCH_SUPPORTED_PROVIDERS.includes(p.id as (typeof BATCH_SUPPORTED_PROVIDERS)[number]),
+    BATCH_SUPPORTED_PROVIDERS.includes(p.id as (typeof BATCH_SUPPORTED_PROVIDERS)[number])
   );
 
   if (batchProviders.length === 0) {
@@ -61,7 +61,7 @@ export default function DestinationStep({
     }
     // Validate provider type
     const validProvider = BATCH_SUPPORTED_PROVIDERS.includes(
-      providerId as (typeof BATCH_SUPPORTED_PROVIDERS)[number],
+      providerId as (typeof BATCH_SUPPORTED_PROVIDERS)[number]
     );
     if (!validProvider) return;
     const provider = providerId as WizardDestination["provider"];

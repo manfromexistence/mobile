@@ -46,9 +46,9 @@ async function selectPreferredModels(models: OpenAiCatalogModel[]) {
   const activeProviders = new Set(
     activeConnections
       .map((connection) =>
-        typeof connection.provider === "string" ? connection.provider.trim().toLowerCase() : "",
+        typeof connection.provider === "string" ? connection.provider.trim().toLowerCase() : ""
       )
-      .filter(Boolean),
+      .filter(Boolean)
   );
 
   const preferCodexOnly =
@@ -180,7 +180,7 @@ export async function OPTIONS() {
 
 export async function GET(
   request: Request,
-  { params }: { params?: Promise<{ token: string }> | { token: string } } = {},
+  { params }: { params?: Promise<{ token: string }> | { token: string } } = {}
 ) {
   const resolvedParams = params ? await params : undefined;
   const authorizedRequest = withPathTokenApiKey(request, resolvedParams?.token);
@@ -211,6 +211,6 @@ export async function GET(
       headers: {
         ...CORS_HEADERS,
       },
-    },
+    }
   );
 }

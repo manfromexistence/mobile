@@ -59,7 +59,7 @@ export default function ImportGrokCliAuthModal({
     const result = parseGrokJson(json);
     if (!result.valid) {
       setParseError(
-        "Not a valid Grok Build auth.json. Expected an object with a key containing a JWT.",
+        "Not a valid Grok Build auth.json. Expected an object with a key containing a JWT."
       );
       return;
     }

@@ -79,7 +79,7 @@ export function withInjectionGuard(handler: any, options: any = {}) {
                 detections: result.detections.length,
               },
             }),
-            { status: 400, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } },
+            { status: 400, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } }
           );
         }
 

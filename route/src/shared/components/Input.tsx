@@ -44,7 +44,7 @@ export default function Input({
         setCapsLockOn(e.getModifierState("CapsLock"));
       }
     },
-    [isPassword],
+    [isPassword]
   );
 
   const handleKeyDown = useCallback(
@@ -52,7 +52,7 @@ export default function Input({
       detectCapsLock(e);
       externalOnKeyDown?.(e);
     },
-    [detectCapsLock, externalOnKeyDown],
+    [detectCapsLock, externalOnKeyDown]
   );
 
   const handleKeyUp = useCallback(
@@ -60,7 +60,7 @@ export default function Input({
       detectCapsLock(e);
       externalOnKeyUp?.(e);
     },
-    [detectCapsLock, externalOnKeyUp],
+    [detectCapsLock, externalOnKeyUp]
   );
 
   const showCapsLock = isPassword && capsLockOn && inputFocused;
@@ -119,7 +119,7 @@ export default function Input({
             "text-[16px] sm:text-sm",
             icon && "pl-10",
             error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "",
-            inputClassName,
+            inputClassName
           )}
           {...props}
         />

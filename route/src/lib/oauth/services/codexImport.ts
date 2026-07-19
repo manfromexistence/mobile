@@ -199,11 +199,11 @@ export function normalizeCodexImportRecord(input: unknown): NormalizeResult {
 
   const chatgptAccountId = pickString(
     fromJwt.chatgptAccountId,
-    rec.account_id as string | undefined,
+    rec.account_id as string | undefined
   );
   const chatgptPlanType = pickString(
     fromJwt.chatgptPlanType,
-    rec.chatgpt_plan_type as string | undefined,
+    rec.chatgpt_plan_type as string | undefined
   );
 
   const expiresAt = parseExpiry(rec.expired) ?? parseAccessTokenExp(accessToken);

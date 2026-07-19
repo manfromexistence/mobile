@@ -85,8 +85,8 @@ function errorResponse(error: unknown): Promise<Response> {
       buildErrorBody(500, message || "Failed to compute requests-by-provider-date"),
       {
         status: 500,
-      },
-    ),
+      }
+    )
   );
 }
 

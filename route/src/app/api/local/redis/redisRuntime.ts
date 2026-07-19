@@ -9,13 +9,13 @@ export const RUNTIME_PREFERENCE = ["podman", "docker"] as const;
 type ExecFileAsync = (
   file: string,
   args: readonly string[],
-  options: { timeout: number },
+  options: { timeout: number }
 ) => Promise<{ stdout: string; stderr: string }>;
 
 const execFileAsync = promisify(execFile) as ExecFileAsync;
 
 export async function detectRedisContainerRuntime(
-  runCommand: ExecFileAsync = execFileAsync,
+  runCommand: ExecFileAsync = execFileAsync
 ): Promise<string | null> {
   for (const candidate of RUNTIME_PREFERENCE) {
     try {
@@ -31,7 +31,7 @@ export async function detectRedisContainerRuntime(
 export function redisRuntimeUnavailableResponse() {
   return NextResponse.json(
     { ok: false, error: "No container runtime (podman or docker) found on PATH" },
-    { status: 503 },
+    { status: 503 }
   );
 }
 
@@ -39,7 +39,7 @@ export async function runRedisRuntimeCommand(
   runtime: string,
   args: readonly string[],
   timeout: number,
-  runCommand: ExecFileAsync = execFileAsync,
+  runCommand: ExecFileAsync = execFileAsync
 ) {
   const { stdout, stderr } = await runCommand(runtime, args, { timeout });
   return { stdout: stdout.trim(), stderr: stderr.trim() };

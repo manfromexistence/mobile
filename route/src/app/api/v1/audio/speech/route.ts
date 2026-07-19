@@ -87,7 +87,7 @@ async function postHandler(request, context) {
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid speech model: ${body.model}. Use format: provider/model`,
+      `Invalid speech model: ${body.model}. Use format: provider/model`
     );
   }
 

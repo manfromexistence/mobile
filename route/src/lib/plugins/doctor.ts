@@ -33,7 +33,7 @@ export interface DoctorResult {
  */
 export async function runPluginDoctor(
   pluginDir: string,
-  pluginName: string,
+  pluginName: string
 ): Promise<DoctorResult> {
   const checks: DoctorCheck[] = [];
 

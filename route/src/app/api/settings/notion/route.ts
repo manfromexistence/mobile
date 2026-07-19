@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Missing or invalid token", details: parsed.error.issues },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       clearNotionToken();
       return NextResponse.json(
         { error: "Token validation failed: invalid token", connected: false },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const msg = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { error: sanitizeErrorMessage(msg), connected: false },
-      { status: 400 },
+      { status: 400 }
     );
   }
 }

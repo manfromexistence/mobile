@@ -33,7 +33,7 @@ export type ModelResolver = (modelStr: string) => Promise<ResolvedModelInfo>;
  */
 export async function resolveCodexWsModelInfo(
   requestedModel: string,
-  resolve: ModelResolver,
+  resolve: ModelResolver
 ): Promise<ResolvedModelInfo> {
   const info = await resolve(requestedModel);
 
@@ -66,7 +66,7 @@ export async function resolveCodexWsModelInfo(
 export async function resolveResponsesApiModel(
   requestedModel: string,
   resolve: ModelResolver,
-  isCombo?: (name: string) => Promise<boolean> | boolean,
+  isCombo?: (name: string) => Promise<boolean> | boolean
 ): Promise<{ model: string; changed: boolean }> {
   if (!requestedModel || requestedModel.includes("/")) {
     return { model: requestedModel, changed: false };

@@ -12,7 +12,7 @@ import {
 } from "@/shared/constants/sidebarVisibility";
 
 function isSidebarGroup(
-  child: SidebarSectionChild,
+  child: SidebarSectionChild
 ): child is Extract<SidebarSectionChild, { type: "group" }> {
   return "type" in child && child.type === "group";
 }
@@ -67,7 +67,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       .then((res) => res.json())
       .then((data) => {
         setHiddenItems(
-          new Set(normalizeHiddenSidebarItems(data?.[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY])),
+          new Set(normalizeHiddenSidebarItems(data?.[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY]))
         );
       })
       .catch(() => {
@@ -89,7 +89,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   const allItems = useMemo<PaletteItem[]>(
@@ -130,7 +130,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
           ];
         });
       }),
-    [hiddenItems, safeTranslate],
+    [hiddenItems, safeTranslate]
   );
 
   const filtered = useMemo(() => {
@@ -141,7 +141,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
         item.label.toLowerCase().includes(q) ||
         item.subtitle?.toLowerCase().includes(q) ||
         item.sectionLabel.toLowerCase().includes(q) ||
-        item.subgroupLabel?.toLowerCase().includes(q),
+        item.subgroupLabel?.toLowerCase().includes(q)
     );
   }, [allItems, query]);
 
@@ -181,7 +181,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
         router.push(href);
       }
     },
-    [onClose, router],
+    [onClose, router]
   );
 
   useEffect(() => {
@@ -196,7 +196,7 @@ function CommandPaletteDialog({ onClose }: { onClose: () => void }) {
       } else if (e.key === "ArrowUp") {
         e.preventDefault();
         setSelectedIndex(
-          (prev) => (prev - 1 + Math.max(1, filtered.length)) % Math.max(1, filtered.length),
+          (prev) => (prev - 1 + Math.max(1, filtered.length)) % Math.max(1, filtered.length)
         );
       } else if (e.key === "Enter") {
         e.preventDefault();

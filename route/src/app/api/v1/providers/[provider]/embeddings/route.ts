@@ -66,7 +66,7 @@ export async function POST(request, { params }) {
     if (prefix !== providerAlias && prefix !== rawProvider && prefix !== providerEntry.id) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `Model "${body.model}" does not belong to provider "${rawProvider}"`,
+        `Model "${body.model}" does not belong to provider "${rawProvider}"`
       );
     }
   }
@@ -80,7 +80,7 @@ export async function POST(request, { params }) {
       HTTP_STATUS.RATE_LIMITED,
       `[${rawProvider}] All accounts rate limited`,
       credentials.retryAfter,
-      credentials.retryAfterHuman,
+      credentials.retryAfterHuman
     );
   }
 

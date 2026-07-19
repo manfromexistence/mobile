@@ -12,7 +12,7 @@ import type { ChaosPageConfig, ChaosPageMessage } from "./chaosPageTypes";
  */
 export function useChaosTestRun(
   config: ChaosPageConfig,
-  setMessage: (message: ChaosPageMessage) => void,
+  setMessage: (message: ChaosPageMessage) => void
 ) {
   const t = useTranslations("chaosConfig");
   const [testing, setTesting] = useState(false);

@@ -367,7 +367,7 @@ function buildFactors(log: ExplainLog, targetStats: TargetStats): ExplanationFac
 
 function buildEvidence(
   log: ExplainLog,
-  targetStats: TargetStats,
+  targetStats: TargetStats
 ): RouteExplainabilityResponse["evidence"] {
   return [
     { label: "Requested model", value: log.requestedModel || "n/a", tone: "neutral" },
@@ -410,27 +410,27 @@ function buildRecommendations(log: ExplainLog, targetStats: TargetStats): string
 
   if (!isSuccessStatus(status)) {
     recommendations.push(
-      "Inspect the provider error and consider moving this target later in the combo until it recovers.",
+      "Inspect the provider error and consider moving this target later in the combo until it recovers."
     );
   }
   if (targetStats.sampleSize >= 3 && targetStats.successRate < 80) {
     recommendations.push(
-      "Recent success rate is low; review account cooldowns, model lockouts, or provider circuit breaker state.",
+      "Recent success rate is low; review account cooldowns, model lockouts, or provider circuit breaker state."
     );
   }
   if (toNumber(log.duration) > 15000) {
     recommendations.push(
-      "Latency is high; compare this target with a faster provider in Combo Health before increasing traffic.",
+      "Latency is high; compare this target with a faster provider in Combo Health before increasing traffic."
     );
   }
   if (!log.comboName) {
     recommendations.push(
-      "Use a combo when you want fallback visibility and multi-provider route explanations.",
+      "Use a combo when you want fallback visibility and multi-provider route explanations."
     );
   }
   if (recommendations.length === 0) {
     recommendations.push(
-      "Route looks healthy. Keep monitoring target success rate and quota pressure in Combo Health.",
+      "Route looks healthy. Keep monitoring target success rate and quota pressure in Combo Health."
     );
   }
 
@@ -447,7 +447,7 @@ function buildLimitations(log: ExplainLog, relatedTargets: ExplainTarget[]): str
   }
   if (relatedTargets.length <= 1) {
     limitations.push(
-      "No shared request correlation id is available yet; fallback evidence is inferred from the persisted call log metadata.",
+      "No shared request correlation id is available yet; fallback evidence is inferred from the persisted call log metadata."
     );
   }
   return limitations;
@@ -492,7 +492,7 @@ function targetMatchesRuntime(target: ComboScoringInspectorTarget, log: ExplainL
 
 function buildReplayCandidates(
   targets: ComboScoringInspectorTarget[],
-  runtimeTarget: ComboScoringInspectorTarget | undefined,
+  runtimeTarget: ComboScoringInspectorTarget | undefined
 ): DecisionReplayCandidate[] {
   const selectedExecutionKey = targets[0]?.executionKey ?? null;
   const limited = targets.slice(0, 10);
@@ -527,7 +527,7 @@ function buildReplayWarnings(log: ExplainLog, comboWarnings: string[]): string[]
 
   if (log.comboName) {
     warnings.push(
-      "No shared request correlation id is available yet; fallback ordering is inferred from persisted combo log metadata.",
+      "No shared request correlation id is available yet; fallback ordering is inferred from persisted combo log metadata."
     );
   }
 
@@ -587,11 +587,11 @@ async function buildDecisionReplay(log: ExplainLog): Promise<DecisionReplay> {
   const recomputeWarnings = buildReplayWarnings(log, inspectorCombo.warnings);
   if (alignment === "differs_from_recomputed_top_target") {
     recomputeWarnings.push(
-      "Persisted runtime target differs from the target the inspector would rank first now.",
+      "Persisted runtime target differs from the target the inspector would rank first now."
     );
   } else if (alignment === "runtime_target_missing_from_recompute") {
     recomputeWarnings.push(
-      "Persisted runtime target could not be matched to current combo targets; combo configuration may have changed.",
+      "Persisted runtime target could not be matched to current combo targets; combo configuration may have changed."
     );
   }
 
@@ -657,7 +657,7 @@ async function getRelatedLogs(log: ExplainLog): Promise<ExplainLog[]> {
 }
 
 export async function explainRouteByRequestId(
-  requestId: string,
+  requestId: string
 ): Promise<RouteExplainabilityResponse | null> {
   const log = asExplainLog(await getCallLogById(requestId));
   if (!log) return null;
@@ -667,10 +667,10 @@ export async function explainRouteByRequestId(
   const relatedTargets = relatedLogs
     .map((entry) => buildRelatedTarget(entry, log.id))
     .sort((left, right) =>
-      String(left.timestamp || "").localeCompare(String(right.timestamp || "")),
+      String(left.timestamp || "").localeCompare(String(right.timestamp || ""))
     );
   const fallbacksTriggered = relatedTargets.filter(
-    (target) => target.outcome !== "selected" && target.status >= 400,
+    (target) => target.outcome !== "selected" && target.status >= 400
   );
   const factors = buildFactors(log, targetStats);
   const score = calculateScore(log, targetStats);

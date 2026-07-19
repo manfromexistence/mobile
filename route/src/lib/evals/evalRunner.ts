@@ -212,7 +212,7 @@ export function evaluateCase(evalCase: any, actualOutput: string) {
 export function runSuite(
   suiteId: string,
   outputs: Record<string, string>,
-  caseMetrics: Record<string, { durationMs?: number; error?: string }> = {},
+  caseMetrics: Record<string, { durationMs?: number; error?: string }> = {}
 ) {
   const suite = getSuite(suiteId);
   if (!suite) {

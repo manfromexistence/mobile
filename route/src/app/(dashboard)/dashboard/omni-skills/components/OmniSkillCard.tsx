@@ -88,7 +88,7 @@ export function OmniSkillCard({ skill, selected, onClick }: OmniSkillCardProps):
           <span className={`inline-block size-2 rounded-full ${modeDot}`} />
           <span className={`text-[10px] font-medium ${modeColor}`}>
             {t(
-              effectiveMode === "on" ? "onMode" : effectiveMode === "auto" ? "autoMode" : "offMode",
+              effectiveMode === "on" ? "onMode" : effectiveMode === "auto" ? "autoMode" : "offMode"
             )}
           </span>
         </div>

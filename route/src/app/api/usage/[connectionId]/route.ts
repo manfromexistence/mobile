@@ -13,7 +13,7 @@ import { fetchAndPersistProviderLimits } from "@/lib/usage/providerLimits";
  */
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ connectionId: string }> },
+  { params }: { params: Promise<{ connectionId: string }> }
 ) {
   try {
     const { connectionId } = await params;

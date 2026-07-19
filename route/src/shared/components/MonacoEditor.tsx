@@ -16,7 +16,7 @@ const MonacoEditor = dynamic<EditorProps>(
     loader.config({ monaco });
     return Editor;
   },
-  { ssr: false },
+  { ssr: false }
 );
 
 export type { EditorProps };

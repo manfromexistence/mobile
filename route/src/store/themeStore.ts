@@ -53,8 +53,8 @@ const useThemeStore = create<ThemeState>()(
     }),
     {
       name: THEME_CONFIG.storageKey,
-    },
-  ),
+    }
+  )
 );
 
 export const COLOR_THEMES: Record<string, string> = {

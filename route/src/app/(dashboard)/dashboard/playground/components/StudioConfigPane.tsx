@@ -76,7 +76,7 @@ export default function StudioConfigPane({ configState, setConfigState }: Studio
   // emit models under their node prefix (e.g. "myprefix/gpt-4o"), not under the connection id,
   // so use the option's modelPrefix when present; fall back to the id for built-in providers.
   const selectedProviderOption = providerOptions.find(
-    (opt: { value: string; modelPrefix?: string }) => opt.value === provider,
+    (opt: { value: string; modelPrefix?: string }) => opt.value === provider
   );
   // #3731: a custom OpenAI/Anthropic-compatible connection emits catalog models under a
   // node prefix, NOT under its connection id. When the prefix doesn't resolve, filtering
@@ -88,7 +88,7 @@ export default function StudioConfigPane({ configState, setConfigState }: Studio
   const modelFilterKey = resolveModelFilterKey(
     provider,
     selectedProviderOption?.modelPrefix,
-    isCompatibleConnectionId,
+    isCompatibleConnectionId
   );
   const {
     availableModels,

@@ -116,7 +116,7 @@ export function createRelayToken(input: CreateRelayTokenInput): RelayTokenWithSe
       max_tokens_per_request, max_requests_per_minute, max_requests_per_day, max_cost_per_day,
       enabled, created_at, updated_at, expires_at, metadata)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     id,
     input.name,
@@ -132,7 +132,7 @@ export function createRelayToken(input: CreateRelayTokenInput): RelayTokenWithSe
     now,
     now,
     input.expiresAt || null,
-    JSON.stringify(input.metadata || {}),
+    JSON.stringify(input.metadata || {})
   );
 
   const token = db.prepare("SELECT * FROM relay_tokens WHERE id = ?").get(id) as RelayTokenRow;
@@ -153,14 +153,13 @@ export function getRelayTokens(): RelayToken[] {
 export function getRelayToken(id: string): RelayToken | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM relay_tokens WHERE id = ?").get(id) as
-    | RelayTokenRow
-    | undefined;
+    RelayTokenRow | undefined;
   if (!row) return null;
   return { ...(rowToCamel(row) as unknown as RelayToken), enabled: row.enabled === 1 };
 }
 
 export function getRelayTokenByHash(
-  tokenHash: string,
+  tokenHash: string
 ): (RelayToken & { rawToken?: string }) | null {
   const db = getDbInstance();
   const row = db
@@ -172,7 +171,7 @@ export function getRelayTokenByHash(
 
 export function updateRelayToken(
   id: string,
-  updates: Partial<CreateRelayTokenInput>,
+  updates: Partial<CreateRelayTokenInput>
 ): RelayToken | null {
   const db = getDbInstance();
   const now = Math.floor(Date.now() / 1000);
@@ -228,7 +227,7 @@ export function toggleRelayToken(id: string, enabled: boolean): RelayToken | nul
   db.prepare("UPDATE relay_tokens SET enabled = ?, updated_at = ? WHERE id = ?").run(
     enabled ? 1 : 0,
     now,
-    id,
+    id
   );
   return getRelayToken(id);
 }
@@ -237,7 +236,7 @@ export function toggleRelayToken(id: string, enabled: boolean): RelayToken | nul
 
 export function checkRateLimit(
   tokenId: string,
-  existingToken?: RelayToken,
+  existingToken?: RelayToken
 ): {
   allowed: boolean;
   remaining: number;
@@ -247,8 +246,7 @@ export function checkRateLimit(
   let token = existingToken;
   if (!token) {
     const row = db.prepare("SELECT * FROM relay_tokens WHERE id = ?").get(tokenId) as
-      | RelayTokenRow
-      | undefined;
+      RelayTokenRow | undefined;
     if (!row) return { allowed: false, remaining: 0, resetIn: 0 };
     token = rowToCamel(row) as unknown as RelayToken;
   }
@@ -260,7 +258,7 @@ export function checkRateLimit(
   // Check minute rate
   const minuteRow = db
     .prepare(
-      "SELECT request_count, cost FROM relay_rate_limits WHERE token_id = ? AND window_start = ?",
+      "SELECT request_count, cost FROM relay_rate_limits WHERE token_id = ? AND window_start = ?"
     )
     .get(tokenId, minuteWindow) as { request_count: number; cost: number } | undefined;
 
@@ -272,7 +270,7 @@ export function checkRateLimit(
   // Check daily rate
   const dayRow = db
     .prepare(
-      "SELECT SUM(request_count) as total FROM relay_rate_limits WHERE token_id = ? AND window_start >= ?",
+      "SELECT SUM(request_count) as total FROM relay_rate_limits WHERE token_id = ? AND window_start >= ?"
     )
     .get(tokenId, dayWindow) as { total: number } | undefined;
 
@@ -283,7 +281,7 @@ export function checkRateLimit(
 
   const remaining = Math.min(
     token.maxRequestsPerMinute - minuteCount,
-    token.maxRequestsPerDay - dayCount,
+    token.maxRequestsPerDay - dayCount
   );
 
   return { allowed: true, remaining, resetIn: 60 - (now % 60) };
@@ -302,7 +300,7 @@ export function recordRelayUsage(
     latencyMs?: number;
     clientIp?: string;
     userAgent?: string;
-  },
+  }
 ): void {
   const db = getDbInstance();
   const now = Math.floor(Date.now() / 1000);
@@ -316,7 +314,7 @@ export function recordRelayUsage(
     ON CONFLICT(token_id, window_start) DO UPDATE SET
       request_count = request_count + 1,
       cost = cost + ?
-  `,
+  `
   ).run(tokenId, minuteWindow, params.cost || 0, params.cost || 0);
 
   // Update last_used_at
@@ -328,7 +326,7 @@ export function recordRelayUsage(
     INSERT INTO relay_logs (token_id, request_id, model, prompt_tokens, completion_tokens, cost,
       status, status_code, latency_ms, client_ip, user_agent, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     tokenId,
     params.requestId || null,
@@ -341,18 +339,18 @@ export function recordRelayUsage(
     params.latencyMs || 0,
     params.clientIp || null,
     params.userAgent || null,
-    now,
+    now
   );
 }
 
 export function getRelayUsage(
   tokenId: string,
-  since: number,
+  since: number
 ): { requestCount: number; totalCost: number } {
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT COUNT(*) as request_count, COALESCE(SUM(cost), 0) as total_cost FROM relay_logs WHERE token_id = ? AND created_at >= ?",
+      "SELECT COUNT(*) as request_count, COALESCE(SUM(cost), 0) as total_cost FROM relay_logs WHERE token_id = ? AND created_at >= ?"
     )
     .get(tokenId, since) as { request_count: number; total_cost: number };
   return { requestCount: row.request_count, totalCost: row.total_cost };

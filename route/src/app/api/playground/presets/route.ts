@@ -70,7 +70,7 @@ export async function GET(request: Request): Promise<Response> {
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to list presets",
+      err instanceof Error ? err.message : "Failed to list presets"
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, safeMsg);
   }
@@ -120,7 +120,7 @@ export async function POST(request: Request): Promise<Response> {
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to create preset",
+      err instanceof Error ? err.message : "Failed to create preset"
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, safeMsg);
   }

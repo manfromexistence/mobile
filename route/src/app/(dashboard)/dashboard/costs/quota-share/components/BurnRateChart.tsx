@@ -8,7 +8,7 @@ import type { PoolUsageSnapshot } from "@/lib/quota/types";
 // Lazy-load recharts — do NOT import at module level (B28)
 const RechartsLineChart = dynamic(
   () => import("recharts").then((m) => ({ default: m.LineChart })),
-  { ssr: false },
+  { ssr: false }
 );
 const RechartsLine = dynamic(() => import("recharts").then((m) => ({ default: m.Line })), {
   ssr: false,
@@ -24,7 +24,7 @@ const RechartsTooltip = dynamic(() => import("recharts").then((m) => ({ default:
 });
 const RechartsResponsiveContainer = dynamic(
   () => import("recharts").then((m) => ({ default: m.ResponsiveContainer })),
-  { ssr: false },
+  { ssr: false }
 );
 
 export interface BurnRateChartProps {
@@ -61,7 +61,7 @@ export default function BurnRateChart({ usage }: BurnRateChartProps) {
     const t2 = nowMs + i * intervalMs;
     const projected = Math.min(
       currentConsumed + tokensPerSecond * ((i * intervalMs) / 1000),
-      limit,
+      limit
     );
     return {
       time: new Date(t2).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }),

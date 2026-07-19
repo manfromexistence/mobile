@@ -294,14 +294,14 @@ export default function ConnectionsListPanel({
                       "selectedCount",
                       selectedIds.size,
                       "{count} selected",
-                      "{count} selected",
+                      "{count} selected"
                     )
                   : providerCountText(
                       t,
                       "accountsCount",
                       filtered.length,
                       "{count} account",
-                      "{count} accounts",
+                      "{count} accounts"
                     )}
               </span>
             </label>
@@ -431,14 +431,14 @@ export default function ConnectionsListPanel({
                       "selectedCount",
                       selectedIds.size,
                       "{count} selected",
-                      "{count} selected",
+                      "{count} selected"
                     )
                   : providerCountText(
                       t,
                       "accountsCount",
                       filtered.length,
                       "{count} account",
-                      "{count} accounts",
+                      "{count} accounts"
                     )}
               </span>
             </label>

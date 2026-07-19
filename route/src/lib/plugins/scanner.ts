@@ -34,7 +34,7 @@ export function getDefaultPluginDir(): string {
  * Skips hidden directories (.xxx) and non-directories.
  */
 export async function scanPluginDir(
-  dir: string,
+  dir: string
 ): Promise<{ plugins: DiscoveredPlugin[]; errors: Array<{ name: string; error: string }> }> {
   const plugins: DiscoveredPlugin[] = [];
   const errors: Array<{ name: string; error: string }> = [];

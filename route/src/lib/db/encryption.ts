@@ -68,7 +68,7 @@ function getStaticKey(): Buffer | null {
     const message = err instanceof Error ? err.message : String(err);
     console.error(
       `[Encryption] Failed to derive key from STORAGE_ENCRYPTION_KEY: ${message}. ` +
-        `Generate a valid key with: openssl rand -base64 32`,
+        `Generate a valid key with: openssl rand -base64 32`
     );
     return null;
   }
@@ -122,7 +122,7 @@ export function encrypt(plaintext: string | null | undefined): string | null | u
   const key = getStaticKey();
   if (!key) {
     console.warn(
-      "[Encryption] STORAGE_ENCRYPTION_KEY not set. Storing plaintext (passthrough mode).",
+      "[Encryption] STORAGE_ENCRYPTION_KEY not set. Storing plaintext (passthrough mode)."
     );
     return plaintext; // passthrough mode
   }
@@ -143,7 +143,7 @@ export function encrypt(plaintext: string | null | undefined): string | null | u
     const message = err instanceof Error ? err.message : String(err);
     console.error(
       `[Encryption] Encryption failed: ${message}. ` +
-        `Check your STORAGE_ENCRYPTION_KEY — generate one with: openssl rand -base64 32`,
+        `Check your STORAGE_ENCRYPTION_KEY — generate one with: openssl rand -base64 32`
     );
     return plaintext; // fallback to plaintext rather than crashing
   }
@@ -166,7 +166,7 @@ export function decrypt(ciphertext: string | null | undefined): string | null | 
   const staticKey = getStaticKey();
   if (!staticKey) {
     console.warn(
-      "[Encryption] Found encrypted data but STORAGE_ENCRYPTION_KEY is not set. Cannot decrypt.",
+      "[Encryption] Found encrypted data but STORAGE_ENCRYPTION_KEY is not set. Cannot decrypt."
     );
     return null;
   }
@@ -206,7 +206,7 @@ export function decrypt(ciphertext: string | null | undefined): string | null | 
 
     console.error(
       `[Encryption] Decryption failed. Ciphertext prefix: ${ciphertext.slice(0, 30)}... ` +
-        `Auth tag validation likely failed.`,
+        `Auth tag validation likely failed.`
     );
     return null;
   } catch (err: unknown) {

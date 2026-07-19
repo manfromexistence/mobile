@@ -145,7 +145,7 @@ export function validateManifest(raw: unknown): PluginManifestWithDefaults {
 }
 
 export function safeValidateManifest(
-  raw: unknown,
+  raw: unknown
 ): { success: true; data: PluginManifestWithDefaults } | { success: false; errors: string[] } {
   const result = PluginManifestSchema.safeParse(raw);
   if (result.success) {
@@ -167,7 +167,7 @@ export type ValidatePluginConfigResult = { valid: true } | { valid: false; error
  */
 export function validatePluginConfig(
   config: Record<string, unknown>,
-  schema: Record<string, ConfigField>,
+  schema: Record<string, ConfigField>
 ): ValidatePluginConfigResult {
   const errors: string[] = [];
 

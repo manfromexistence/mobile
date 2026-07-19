@@ -312,7 +312,7 @@ export async function GET(
     params,
   }: {
     params: Promise<{ token: string; slug?: string[] }> | { token: string; slug?: string[] };
-  },
+  }
 ) {
   const resolvedParams = await params;
   const slugPath = (resolvedParams.slug || []).join("/");
@@ -334,7 +334,7 @@ export async function GET(
     }
     return Response.json(
       { models: catalog.data.map(toOllamaTagCombo) },
-      { headers: { ...CORS_HEADERS } },
+      { headers: { ...CORS_HEADERS } }
     );
   }
 
@@ -370,7 +370,7 @@ export async function POST(
     params,
   }: {
     params: Promise<{ token: string; slug?: string[] }> | { token: string; slug?: string[] };
-  },
+  }
 ) {
   const resolvedParams = await params;
   const slugPath = (resolvedParams.slug || []).join("/");
@@ -387,7 +387,7 @@ export async function POST(
   if (!requestedName) {
     return Response.json(
       { error: "Model name is required" },
-      { status: 400, headers: { ...CORS_HEADERS } },
+      { status: 400, headers: { ...CORS_HEADERS } }
     );
   }
 
@@ -400,13 +400,13 @@ export async function POST(
   }
 
   const combo = catalog.data.find((entry) =>
-    [entry.id, entry.name, entry.root].some((value) => value === requestedName),
+    [entry.id, entry.name, entry.root].some((value) => value === requestedName)
   );
 
   if (!combo) {
     return Response.json(
       { error: `Model not found: ${requestedName}` },
-      { status: 404, headers: { ...CORS_HEADERS } },
+      { status: 404, headers: { ...CORS_HEADERS } }
     );
   }
 

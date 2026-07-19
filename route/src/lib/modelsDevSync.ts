@@ -219,7 +219,7 @@ export function saveModelsDevPricing(data: PricingByProvider): void {
   const db = getDbInstance();
   const del = db.prepare("DELETE FROM key_value WHERE namespace = 'models_dev_pricing'");
   const insert = db.prepare(
-    "INSERT INTO key_value (namespace, key, value) VALUES ('models_dev_pricing', ?, ?)",
+    "INSERT INTO key_value (namespace, key, value) VALUES ('models_dev_pricing', ?, ?)"
   );
   const tx = db.transaction(() => {
     del.run();
@@ -346,7 +346,7 @@ const SYNCED_CAPABILITY_FALLBACK_ALIASES: Record<string, string[]> = {
 
 export function getSyncedCapability(
   provider: string,
-  modelId: string,
+  modelId: string
 ): ModelCapabilityEntry | null {
   if (!provider || !modelId) return null;
 
@@ -369,7 +369,7 @@ export function getSyncedCapability(
   const db = getDbInstance();
   ensureCapabilitiesTable();
   const stmt = db.prepare(
-    "SELECT * FROM model_capabilities WHERE provider = ? AND model_id = ? LIMIT 1",
+    "SELECT * FROM model_capabilities WHERE provider = ? AND model_id = ? LIMIT 1"
   );
   const lookupDb = (p: string): ModelCapabilityEntry | null => {
     const row = stmt.get(p, modelId);
@@ -433,7 +433,7 @@ export function saveModelsDevCapabilities(data: CapabilitiesByProvider): void {
           cap.limit_input,
           cap.limit_output,
           cap.interleaved_field,
-          now,
+          now
         );
       }
     }
@@ -486,7 +486,7 @@ export async function syncModelsDev(opts?: {
 
       const modelCount = Object.values(pricing).reduce(
         (sum, models) => sum + Object.keys(models).length,
-        0,
+        0
       );
       const providerCount = Object.keys(pricing).length;
       const capabilityCount = syncCapabilities
@@ -527,7 +527,7 @@ export async function syncModelsDev(opts?: {
         const delayMs = Math.pow(2, attempt) * 1000; // Exponential backoff: 1s, 2s, 4s
         console.warn(
           `[MODELS_DEV] Sync attempt ${attempt + 1} failed, retrying in ${delayMs}ms:`,
-          lastError.message,
+          lastError.message
         );
         try {
           await sleepWithAbort(delayMs, signal);
@@ -593,7 +593,7 @@ export function startPeriodicSync(intervalMs?: number): void {
     .then((result) => {
       if (result.success) {
         console.log(
-          `[MODELS_DEV] Initial sync complete: ${result.modelCount} pricing entries, ${result.capabilityCount} capabilities from ${result.providerCount} providers`,
+          `[MODELS_DEV] Initial sync complete: ${result.modelCount} pricing entries, ${result.capabilityCount} capabilities from ${result.providerCount} providers`
         );
       }
     })

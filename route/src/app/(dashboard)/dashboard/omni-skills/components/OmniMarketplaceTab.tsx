@@ -53,7 +53,7 @@ export function OmniMarketplaceTab({
         setMpError((data as { error?: string }).error || t("marketplaceError"));
       } else {
         setMpResults(
-          Array.isArray(data) ? data : (data as { skills?: MarketplaceSkill[] }).skills || [],
+          Array.isArray(data) ? data : (data as { skills?: MarketplaceSkill[] }).skills || []
         );
       }
     } catch (err) {

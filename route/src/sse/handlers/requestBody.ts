@@ -17,7 +17,7 @@
  */
 export async function resolveChatRequestBody(
   request: { json: () => Promise<unknown> },
-  preParsedBody: unknown = null,
+  preParsedBody: unknown = null
 ): Promise<unknown> {
   if (preParsedBody != null) return preParsedBody;
   return await request.json();

@@ -41,7 +41,7 @@ const HIDDEN_SPEC: ReasoningControlSpec = { show: false, effortOptions: [] };
  *   effort vocabulary when the model omits or empties the tier list.
  */
 export function resolveReasoningControls(
-  caps: ModelReasoningCapabilities | null | undefined,
+  caps: ModelReasoningCapabilities | null | undefined
 ): ReasoningControlSpec {
   if (!caps || caps.supportsThinking !== true) return HIDDEN_SPEC;
   const tiers = Array.isArray(caps.effort_tiers)
@@ -61,7 +61,7 @@ export function resolveReasoningControls(
  */
 export function buildReasoningRequestFields(
   params: ReasoningParams,
-  spec: ReasoningControlSpec,
+  spec: ReasoningControlSpec
 ): { effort?: string; thinking?: boolean } {
   if (!spec.show) return {};
   const out: { effort?: string; thinking?: boolean } = {};

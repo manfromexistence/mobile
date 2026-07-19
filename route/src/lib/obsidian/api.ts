@@ -54,7 +54,7 @@ function obsidianFetch(
   path: string,
   apiKey: string,
   baseUrl: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<unknown> {
   const url = `${baseUrl}${path}`;
   const controller = new AbortController();
@@ -112,7 +112,7 @@ function obsidianFetch(
           `Cannot reach Obsidian at ${baseUrl}. Ensure the Local REST API plugin is running ` +
             `and using the correct port. The REST API uses HTTP on port 27123 — do not use ` +
             `port 27124 (that is a separate MCP endpoint with HTTPS). If connecting via ` +
-            `Tailscale, use http://<tailscale-ip>:27123.`,
+            `Tailscale, use http://<tailscale-ip>:27123.`
         );
       }
       if (retryCount < MAX_RETRIES - 1) {
@@ -208,7 +208,7 @@ export function createObsidianClient(apiKey: string, baseUrl?: string) {
       period: string,
       year?: number,
       month?: number,
-      day?: number,
+      day?: number
     ): Promise<unknown> {
       let url: string;
       if (year && month && day) {
@@ -239,7 +239,7 @@ export function createObsidianClient(apiKey: string, baseUrl?: string) {
       path: string,
       content: string,
       targetType?: TargetType,
-      target?: string,
+      target?: string
     ): Promise<void> {
       const headers: Record<string, string> = { "Content-Type": "text/markdown" };
       if (targetType) headers["Target-Type"] = targetType;
@@ -257,7 +257,7 @@ export function createObsidianClient(apiKey: string, baseUrl?: string) {
       targetType: TargetType,
       target: string,
       content: string,
-      createTargetIfMissing = false,
+      createTargetIfMissing = false
     ): Promise<unknown> {
       const headers: Record<string, string> = {
         Operation: operation,
@@ -325,7 +325,7 @@ export function setSyncToken(token: string | null): void {
     if (token === null) {
       db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
         "sync",
-        SYNC_TOKEN_KEY,
+        SYNC_TOKEN_KEY
       );
     } else {
       const existing = db
@@ -335,13 +335,13 @@ export function setSyncToken(token: string | null): void {
         db.prepare("UPDATE key_value SET value = ? WHERE namespace = ? AND key = ?").run(
           JSON.stringify(token),
           "sync",
-          SYNC_TOKEN_KEY,
+          SYNC_TOKEN_KEY
         );
       } else {
         db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
           "sync",
           SYNC_TOKEN_KEY,
-          JSON.stringify(token),
+          JSON.stringify(token)
         );
       }
     }
@@ -401,7 +401,7 @@ export function createSyncServerClient(syncToken: string, baseUrl?: string) {
     },
     async resolveConflict(
       path: string,
-      resolution: "local" | "remote" | "keep-both",
+      resolution: "local" | "remote" | "keep-both"
     ): Promise<unknown> {
       return request("/vault/sync/resolve", {
         method: "POST",

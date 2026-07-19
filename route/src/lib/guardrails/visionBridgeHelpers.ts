@@ -180,7 +180,7 @@ async function fetchRemoteImageAsDataUri(imageUrl: string, signal: AbortSignal):
 async function normalizeVisionImageInput(
   imageInput: string,
   isAnthropic: boolean,
-  signal: AbortSignal,
+  signal: AbortSignal
 ): Promise<string> {
   const normalizedImage = resolveImageAsDataUri(imageInput);
 
@@ -210,7 +210,7 @@ export async function callVisionModel(
   imageDataUri: string,
   config: VisionModelConfig,
   apiKey?: string,
-  routerConfig?: Partial<import("./visionBridgeRouter").VisionBridgeRouterConfig>,
+  routerConfig?: Partial<import("./visionBridgeRouter").VisionBridgeRouterConfig>
 ): Promise<string> {
   // Auto-select the best vision model if not explicitly configured
   const modelToUse = getBestVisionModel({
@@ -230,7 +230,7 @@ export async function callVisionModel(
       const result = await callVisionModelSingle(
         imageDataUri,
         { ...config, model: currentModel },
-        apiKey,
+        apiKey
       );
       recordLatency(currentModel, Date.now() - attemptStart, true);
       return result;
@@ -251,7 +251,7 @@ export async function callVisionModel(
 async function callVisionModelSingle(
   imageDataUri: string,
   config: VisionModelConfig,
-  apiKey?: string,
+  apiKey?: string
 ): Promise<string> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), config.timeoutMs);
@@ -268,7 +268,7 @@ async function callVisionModelSingle(
     const normalizedImageInput = await normalizeVisionImageInput(
       imageDataUri,
       isAnthropic,
-      controller.signal,
+      controller.signal
     );
 
     let response: Response;
@@ -392,7 +392,7 @@ async function callVisionModelSingle(
 
       if (anthropicData.error) {
         throw new Error(
-          `Vision API error: ${anthropicData.error.message || JSON.stringify(anthropicData.error)}`,
+          `Vision API error: ${anthropicData.error.message || JSON.stringify(anthropicData.error)}`
         );
       }
 
@@ -412,7 +412,7 @@ async function callVisionModelSingle(
 
       if (openaiData.error) {
         throw new Error(
-          `Vision API error: ${openaiData.error.message || JSON.stringify(openaiData.error)}`,
+          `Vision API error: ${openaiData.error.message || JSON.stringify(openaiData.error)}`
         );
       }
 
@@ -448,7 +448,7 @@ export function replaceImageParts(
   body: RequestBody,
   // #4012: a `null` entry means the describe call failed for that image — keep
   // the original image part instead of dropping it / stubbing "(unavailable)".
-  descriptions: (string | null)[],
+  descriptions: (string | null)[]
 ): RequestBody {
   if (!descriptions || descriptions.length === 0) {
     return body;

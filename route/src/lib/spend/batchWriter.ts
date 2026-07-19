@@ -85,7 +85,7 @@ export class SpendBatchWriter {
   getBufferedEntries(
     apiKeyId: string,
     sinceTimestamp = 0,
-    untilTimestamp = Number.POSITIVE_INFINITY,
+    untilTimestamp = Number.POSITIVE_INFINITY
   ) {
     const matchesWindow = (entry: BufferedCostEntry) =>
       entry.apiKeyId === apiKeyId &&
@@ -98,11 +98,11 @@ export class SpendBatchWriter {
   getPendingCostTotal(
     apiKeyId: string,
     sinceTimestamp = 0,
-    untilTimestamp = Number.POSITIVE_INFINITY,
+    untilTimestamp = Number.POSITIVE_INFINITY
   ) {
     return this.getBufferedEntries(apiKeyId, sinceTimestamp, untilTimestamp).reduce(
       (sum, entry) => sum + entry.cost,
-      0,
+      0
     );
   }
 
@@ -127,7 +127,7 @@ export class SpendBatchWriter {
 
     this.flushPromise = (async () => {
       const entriesToPersist = entriesToFlush.filter(
-        (entry) => !this.discardedApiKeyIds.has(entry.apiKeyId),
+        (entry) => !this.discardedApiKeyIds.has(entry.apiKeyId)
       );
       const uniqueKeys = new Set(entriesToPersist.map((entry) => entry.apiKeyId)).size;
 
@@ -138,7 +138,7 @@ export class SpendBatchWriter {
         this.logger.log(
           `[SpendWriter] Flushed ${entriesToPersist.length} cost entr${
             entriesToPersist.length === 1 ? "y" : "ies"
-          } across ${uniqueKeys} key(s)`,
+          } across ${uniqueKeys} key(s)`
         );
         return {
           flushedEntries: entriesToPersist.length,

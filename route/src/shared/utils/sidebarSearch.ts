@@ -19,7 +19,7 @@ export interface SearchableSection<TItem extends SearchableLabeled> {
 }
 
 function isGroupChild<TItem extends SearchableLabeled>(
-  child: SearchableChild<TItem>,
+  child: SearchableChild<TItem>
 ): child is SearchableGroup<TItem> {
   return (
     typeof child === "object" &&

@@ -25,7 +25,7 @@ export async function POST() {
     const { stdout, stderr } = await runRedisRuntimeCommand(
       runtime,
       ["stop", REDIS_CONTAINER_NAME],
-      15_000,
+      15_000
     );
     return NextResponse.json({
       ok: true,
@@ -43,7 +43,7 @@ export async function POST() {
     // Hard Rule #12: never put a raw execFile error (command line + paths) in the body.
     return NextResponse.json(
       { ok: false, runtime, error: sanitizeErrorMessage(err) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

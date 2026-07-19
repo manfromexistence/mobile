@@ -91,7 +91,7 @@ export default function CodexConnectClient({ token }: { token: string }) {
               ? "Authorization timed out. Click Start again to retry."
               : err.code === "aborted"
                 ? "Authentication was cancelled."
-                : err.message,
+                : err.message
         );
       } else {
         setError("Unexpected error during authentication. Please try again.");

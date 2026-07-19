@@ -47,7 +47,7 @@ export async function validateAnthropicLikeProvider({
             ...headers,
           },
         },
-        isLocal,
+        isLocal
       );
     } catch {
       // ignore probe failures
@@ -68,7 +68,7 @@ export async function validateAnthropicLikeProvider({
             ...headers,
           },
         },
-        isLocal,
+        isLocal
       );
 
       if (response.status === 401 || response.status === 403) {
@@ -81,7 +81,7 @@ export async function validateAnthropicLikeProvider({
         "Content-Type": "application/json",
         ...headers,
       },
-      providerSpecificData,
+      providerSpecificData
     );
 
     if (!requestHeaders["x-api-key"] && !requestHeaders["X-API-Key"]) {
@@ -106,7 +106,7 @@ export async function validateAnthropicLikeProvider({
           messages: [{ role: "user", content: "test" }],
         }),
       },
-      isLocal,
+      isLocal
     );
 
     if (chatResponse.status === 401 || chatResponse.status === 403) {
@@ -173,7 +173,7 @@ export async function validateAnthropicCompatibleProvider({
       "anthropic-version": "2023-06-01",
       Authorization: `Bearer ${apiKey}`,
     },
-    providerSpecificData,
+    providerSpecificData
   );
 
   // Step 1: Best-effort GET /models probe. /models is NOT part of the Anthropic API spec
@@ -189,7 +189,7 @@ export async function validateAnthropicCompatibleProvider({
         method: "GET",
         headers,
       },
-      isLocal,
+      isLocal
     );
 
     if (modelsRes.ok) {
@@ -213,7 +213,7 @@ export async function validateAnthropicCompatibleProvider({
           messages: [{ role: "user", content: "test" }],
         }),
       },
-      isLocal,
+      isLocal
     );
 
     if (messagesRes.status === 401 || messagesRes.status === 403) {
@@ -240,7 +240,7 @@ export async function validateClaudeCodeCompatibleProvider({
   const chatPath = providerSpecificData?.chatPath || CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH;
   const defaultHeaders = applyCustomUserAgent(
     buildClaudeCodeCompatibleHeaders(apiKey, false),
-    providerSpecificData,
+    providerSpecificData
   );
 
   try {
@@ -261,7 +261,7 @@ export async function validateClaudeCodeCompatibleProvider({
   }
 
   const payload = buildClaudeCodeCompatibleValidationPayload(
-    providerSpecificData?.validationModelId || "claude-sonnet-4-6",
+    providerSpecificData?.validationModelId || "claude-sonnet-4-6"
   );
   const sessionId = JSON.parse(payload.metadata.user_id as string).session_id;
 
@@ -270,7 +270,7 @@ export async function validateClaudeCodeCompatibleProvider({
       method: "POST",
       headers: applyCustomUserAgent(
         buildClaudeCodeCompatibleHeaders(apiKey, true, sessionId),
-        providerSpecificData,
+        providerSpecificData
       ),
       body: JSON.stringify(payload),
     });

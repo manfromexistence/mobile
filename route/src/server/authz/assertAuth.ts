@@ -53,7 +53,7 @@ export function readRouteClassFromHeaders(headers: HeaderSource): RouteClass | n
 
 export function assertAuth(
   request: Request | { headers: HeaderSource },
-  expected: RouteClass,
+  expected: RouteClass
 ): AuthSubject {
   const headers = request.headers;
 
@@ -66,7 +66,7 @@ export function assertAuth(
     throw new AuthzAssertionError(
       "AUTHZ_NOT_INITIALIZED",
       "Request did not pass through the authz middleware",
-      500,
+      500
     );
   }
 
@@ -74,7 +74,7 @@ export function assertAuth(
     throw new AuthzAssertionError(
       "AUTHZ_ROUTE_CLASS_MISMATCH",
       `Expected ${expected} but got ${actualClass}`,
-      500,
+      500
     );
   }
 

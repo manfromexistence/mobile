@@ -107,7 +107,7 @@ async function attachCosts(rows: ComboForecastUsageRow[]): Promise<CostedUsageRo
         cacheCreation: row.cacheCreationTokens,
         reasoning: row.reasoningTokens,
       },
-      { provider: row.provider, model: row.model, serviceTier: "standard" },
+      { provider: row.provider, model: row.model, serviceTier: "standard" }
     );
     costed.push({ ...row, costUsd, pricingCovered: Boolean(pricing) });
   }
@@ -126,7 +126,7 @@ function snapshotTime(snapshot: QuotaSnapshotRow): string {
 function buildQuotaForecast(
   snapshots: QuotaSnapshotRow[],
   rangeDays: number,
-  horizonDays: number,
+  horizonDays: number
 ): ComboForecastTarget["quota"] {
   if (snapshots.length === 0) {
     return {
@@ -140,7 +140,7 @@ function buildQuotaForecast(
   }
 
   const ordered = [...snapshots].sort((left, right) =>
-    snapshotTime(left).localeCompare(snapshotTime(right)),
+    snapshotTime(left).localeCompare(snapshotTime(right))
   );
   const first = ordered.find((entry) => latestRemaining(entry) !== null);
   const last = [...ordered].reverse().find((entry) => latestRemaining(entry) !== null);
@@ -192,7 +192,7 @@ function rankRisk(level: ComboForecastRiskLevel): number {
 
 function getConfidence(
   requests: number,
-  pricingCoveragePct: number,
+  pricingCoveragePct: number
 ): ComboForecastMetrics["confidence"] {
   if (requests <= 0) return "no_data";
   if (requests >= 100 && pricingCoveragePct >= 80) return "high";
@@ -229,7 +229,7 @@ function summarizeQuotaRisk(targets: ComboForecastTarget[]): ComboForecastQuotaR
 }
 
 function quotaCoverage(
-  targets: ComboForecastTarget[],
+  targets: ComboForecastTarget[]
 ): ComboForecastMetrics["dataQuality"]["quotaCoverage"] {
   if (targets.length === 0) return "none";
   const withConnection = targets.filter((target) => target.quota.scope === "connection").length;
@@ -259,7 +259,7 @@ async function buildComboForecast(
   rangeDays: number,
   horizonDays: number,
   projectionFactor: number,
-  since: string,
+  since: string
 ): Promise<ComboForecastMetrics | null> {
   const comboId = typeof combo.id === "string" ? combo.id : "";
   const comboName = typeof combo.name === "string" ? combo.name : "";
@@ -272,7 +272,7 @@ async function buildComboForecast(
   const totalTokens = rows.reduce((sum, row) => sum + row.totalTokens, 0);
   const pricedRequests = rows.reduce(
     (sum, row) => sum + (row.pricingCovered ? row.requests : 0),
-    0,
+    0
   );
   const pricingCoveragePct = totalRequests > 0 ? (pricedRequests / totalRequests) * 100 : 0;
 
@@ -403,11 +403,11 @@ export async function buildComboForecastResponse(opts: {
   const comboNames = new Set(
     combos
       .map((combo) => (typeof combo.name === "string" ? combo.name : null))
-      .filter((name): name is string => Boolean(name)),
+      .filter((name): name is string => Boolean(name))
   );
   const onlyComboName = comboNames.size === 1 ? Array.from(comboNames)[0] : undefined;
   const usageRows = await attachCosts(
-    getComboForecastUsageRows({ since, comboName: onlyComboName }),
+    getComboForecastUsageRows({ since, comboName: onlyComboName })
   );
   const rowsByCombo = new Map<string, CostedUsageRow[]>();
   for (const row of usageRows) {
@@ -426,9 +426,9 @@ export async function buildComboForecastResponse(opts: {
         rangeDays,
         horizonDays,
         projectionFactor,
-        since,
-      ),
-    ),
+        since
+      )
+    )
   );
 
   return {

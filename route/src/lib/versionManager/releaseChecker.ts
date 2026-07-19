@@ -49,7 +49,7 @@ function parseRelease(raw: any): ReleaseInfo {
 
 export async function getLatestRelease(): Promise<ReleaseInfo> {
   const raw = await cachedFetch(
-    "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/latest",
+    "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/latest"
   );
   return parseRelease(raw);
 }
@@ -58,7 +58,7 @@ export async function getReleaseByVersion(version: string): Promise<ReleaseInfo 
   const tag = version.startsWith("v") ? version : `v${version}`;
   try {
     const raw = await cachedFetch(
-      `https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/tags/${tag}`,
+      `https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/tags/${tag}`
     );
     return parseRelease(raw);
   } catch {
@@ -68,7 +68,7 @@ export async function getReleaseByVersion(version: string): Promise<ReleaseInfo 
 
 export async function getAvailableVersions(): Promise<string[]> {
   const raw = await cachedFetch(
-    "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases?per_page=30",
+    "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases?per_page=30"
   );
   return (Array.isArray(raw) ? raw : []).map((r: any) => r.tag_name);
 }

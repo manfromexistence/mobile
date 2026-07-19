@@ -22,7 +22,7 @@ export type CanonicalEffort = (typeof CANONICAL_EFFORT_VALUES)[number];
 export function extendCodexGpt56EffortValues(
   provider: string | null | undefined,
   model: string | null | undefined,
-  baseValues: readonly string[],
+  baseValues: readonly string[]
 ): string[] {
   const values = [...baseValues];
   const normalizedProvider = provider?.trim().toLowerCase();
@@ -35,7 +35,7 @@ export function extendCodexGpt56EffortValues(
   }
 
   const match = normalizedModel.match(
-    /^gpt-5\.6-(sol|terra|luna)(?:-(?:none|low|medium|high|xhigh|max|ultra))?$/,
+    /^gpt-5\.6-(sol|terra|luna)(?:-(?:none|low|medium|high|xhigh|max|ultra))?$/
   );
   if (!match) return values;
 
@@ -79,7 +79,7 @@ export function normalizeEffort(value: unknown): CanonicalEffort | undefined {
  */
 export const effortRequestSchema = z.preprocess(
   (value) => normalizeEffort(value) ?? value,
-  z.enum(CANONICAL_EFFORT_VALUES),
+  z.enum(CANONICAL_EFFORT_VALUES)
 );
 
 /**

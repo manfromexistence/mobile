@@ -51,7 +51,7 @@ export function verifyCloudSignature(rawBody: string, sigHeader: string | null):
     }
     console.warn(
       "[cloudSync] OMNIROUTE_CLOUD_SYNC_SECRET is not set and the Cloud response carries no X-Cloud-Sig. " +
-        "Token sync runs in legacy unverified mode — set the secret to enforce HMAC verification.",
+        "Token sync runs in legacy unverified mode — set the secret to enforce HMAC verification."
     );
     return true;
   }

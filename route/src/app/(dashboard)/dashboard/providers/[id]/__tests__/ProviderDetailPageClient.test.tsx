@@ -98,7 +98,7 @@ describe("ProviderDetailPageClient (Phase 0 smoke)", () => {
         removeEventListener: vi.fn(),
         addListener: vi.fn(),
         removeListener: vi.fn(),
-      })),
+      }))
     );
     installLocalStorageStub();
   });

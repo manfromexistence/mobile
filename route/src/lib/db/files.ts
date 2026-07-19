@@ -46,7 +46,7 @@ export function createFile(file: Omit<FileRecord, "id" | "createdAt">): FileReco
     `
     INSERT INTO files (id, bytes, created_at, filename, purpose, content, mime_type, api_key_id, expires_at, deleted_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     record.id,
     record.bytes,
@@ -57,7 +57,7 @@ export function createFile(file: Omit<FileRecord, "id" | "createdAt">): FileReco
     record.mimeType,
     record.apiKeyId,
     record.expiresAt,
-    record.deletedAt,
+    record.deletedAt
   );
 
   return record;
@@ -73,9 +73,9 @@ export function getFile(id: string): FileRecord | null {
 
 export function getFileContent(id: string): Buffer | null {
   const db = getDbInstance();
-  const row = db.prepare("SELECT content FROM files WHERE id = ? AND deleted_at IS NULL").get(id) as
-    | { content: Buffer | Uint8Array | string | null }
-    | undefined;
+  const row = db
+    .prepare("SELECT content FROM files WHERE id = ? AND deleted_at IS NULL")
+    .get(id) as { content: Buffer | Uint8Array | string | null } | undefined;
   if (!row?.content) return null;
   return Buffer.isBuffer(row.content) ? row.content : Buffer.from(row.content);
 }
@@ -87,7 +87,7 @@ export function listFiles(
     limit?: number;
     after?: string;
     order?: "asc" | "desc";
-  } = {},
+  } = {}
 ): FileRecord[] {
   const db = getDbInstance();
   const { apiKeyId, purpose, limit = 20, after, order = "desc" } = options;

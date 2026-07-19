@@ -72,10 +72,10 @@ export async function getProviderConnections(filter: JsonRecord = {}) {
       withNullableRateLimitOverrides(
         withNullableQuotaWindowThresholds(
           withNullableMaxConcurrent(cleanNulls(camelRow), camelRow),
-          camelRow,
+          camelRow
         ),
-        camelRow,
-      ),
+        camelRow
+      )
     );
   });
 }
@@ -90,10 +90,10 @@ export async function getProviderConnectionById(id: string) {
     withNullableRateLimitOverrides(
       withNullableQuotaWindowThresholds(
         withNullableMaxConcurrent(cleanNulls(camelRow), camelRow),
-        camelRow,
+        camelRow
       ),
-      camelRow,
-    ),
+      camelRow
+    )
   );
 }
 
@@ -108,14 +108,14 @@ function findExistingCookieConnection(
   db: DbLike,
   provider: unknown,
   name: unknown,
-  normalizedProviderSpecificData: unknown,
+  normalizedProviderSpecificData: unknown
 ): JsonRecord | null {
   // 1) Name-based upsert for parity with the apikey path.
   if (name) {
     const byName =
       (db
         .prepare(
-          "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'cookie' AND name = ?",
+          "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'cookie' AND name = ?"
         )
         .get(provider, name) as JsonRecord | undefined) || null;
     if (byName) return byName;
@@ -138,7 +138,7 @@ export async function createProviderConnection(data: JsonRecord) {
   const now = new Date().toISOString();
   const normalizedProviderSpecificData = normalizeProviderSpecificData(
     toStringOrNull(data.provider),
-    data.providerSpecificData,
+    data.providerSpecificData
   );
 
   // Upsert check
@@ -157,7 +157,7 @@ export async function createProviderConnection(data: JsonRecord) {
       existing =
         (db
           .prepare(
-            "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.workspaceId') = ? AND email = ?",
+            "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.workspaceId') = ? AND email = ?"
           )
           .get(data.provider, workspaceId, data.email) as JsonRecord | undefined) || null;
 
@@ -167,7 +167,7 @@ export async function createProviderConnection(data: JsonRecord) {
         existing =
           (db
             .prepare(
-              "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.workspaceId') = ? AND (email IS NULL OR email = '')",
+              "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.workspaceId') = ? AND (email IS NULL OR email = '')"
             )
             .get(data.provider, workspaceId) as JsonRecord | undefined) || null;
       }
@@ -186,7 +186,7 @@ export async function createProviderConnection(data: JsonRecord) {
         existing =
           (db
             .prepare(
-              "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.chatgptUserId') = ? AND email = ?",
+              "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND json_extract(provider_specific_data, '$.chatgptUserId') = ? AND email = ?"
             )
             .get(data.provider, chatgptUserId, data.email) as JsonRecord | undefined) || null;
       }
@@ -204,13 +204,13 @@ export async function createProviderConnection(data: JsonRecord) {
       const incomingUsername = toStringOrNull(providerSpecificData.username);
       const emailMatches = db
         .prepare(
-          "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND email = ?",
+          "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'oauth' AND email = ?"
         )
         .all(data.provider, data.email) as JsonRecord[];
       existing =
         emailMatches.find((row) => {
           const existingUsername = toStringOrNull(
-            parseProviderSpecificData(row.provider_specific_data)?.username,
+            parseProviderSpecificData(row.provider_specific_data)?.username
           );
           if (incomingUsername && existingUsername) {
             return incomingUsername === existingUsername;
@@ -225,7 +225,7 @@ export async function createProviderConnection(data: JsonRecord) {
       existing =
         (db
           .prepare(
-            "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'apikey' AND name = ?",
+            "SELECT * FROM provider_connections WHERE provider = ? AND auth_type = 'apikey' AND name = ?"
           )
           .get(data.provider, data.name) as JsonRecord | undefined) || null;
     }
@@ -252,7 +252,7 @@ export async function createProviderConnection(data: JsonRecord) {
       db,
       data.provider,
       data.name,
-      normalizedProviderSpecificData,
+      normalizedProviderSpecificData
     );
   } else if (data.authType === "access_token") {
     // #1290 — bare access-token imports (e.g. a raw ChatGPT website access
@@ -270,16 +270,16 @@ export async function createProviderConnection(data: JsonRecord) {
     const merged: JsonRecord = { ...toRecord(rowToCamel(existing)), ...data, updatedAt: now };
     merged.providerSpecificData = normalizeProviderSpecificData(
       toStringOrNull(merged.provider),
-      merged.providerSpecificData,
+      merged.providerSpecificData
     );
     _updateConnectionRow(db, existingId, merged);
     backupDbFile("pre-write");
     return withNullableRateLimitOverrides(
       withNullableQuotaWindowThresholds(
         withNullableMaxConcurrent(cleanNulls(merged), merged),
-        merged,
+        merged
       ),
-      merged,
+      merged
     );
   }
 
@@ -366,7 +366,7 @@ export async function createProviderConnection(data: JsonRecord) {
   // UI can tell "field was read, no overrides" apart from "field absent."
   if ("quotaWindowThresholds" in connection) {
     connection.quotaWindowThresholds = sanitizeQuotaWindowThresholds(
-      connection.quotaWindowThresholds,
+      connection.quotaWindowThresholds
     );
   }
 
@@ -387,9 +387,9 @@ export async function createProviderConnection(data: JsonRecord) {
   return withNullableRateLimitOverrides(
     withNullableQuotaWindowThresholds(
       withNullableMaxConcurrent(cleanNulls(connection), connection),
-      connection,
+      connection
     ),
-    connection,
+    connection
   );
 }
 
@@ -419,7 +419,7 @@ function _insertConnectionRow(db: DbLike, conn: JsonRecord) {
       @proxyEnabled, @perKeyProxyEnabled, @quotaWindowThresholdsJson, @rateLimitOverridesJson,
       @createdAt, @updatedAt
     )
-  `,
+  `
   ).run({
     id: conn.id,
     provider: conn.provider,
@@ -497,7 +497,7 @@ function _updateConnectionRow(db: DbLike, id: string, data: JsonRecord) {
       rate_limit_overrides_json = @rateLimitOverridesJson,
       updated_at = @updatedAt
     WHERE id = @id
-  `,
+  `
   ).run({
     id,
     provider: data.provider,
@@ -559,7 +559,7 @@ export async function updateProviderConnection(id: string, data: JsonRecord) {
   };
   merged.providerSpecificData = normalizeProviderSpecificData(
     toStringOrNull(merged.provider),
-    merged.providerSpecificData,
+    merged.providerSpecificData
   );
   // Mirror the sanitization the create path applies — keep the returned
   // object in lockstep with what we persist.
@@ -589,9 +589,9 @@ export async function updateProviderConnection(id: string, data: JsonRecord) {
   return withNullableRateLimitOverrides(
     withNullableQuotaWindowThresholds(
       withNullableMaxConcurrent(cleanNulls(merged), merged),
-      merged,
+      merged
     ),
-    merged,
+    merged
   );
 }
 
@@ -614,7 +614,7 @@ export async function clearConnectionErrorIfUnchanged(
     testStatus: string | null | undefined;
     lastErrorAt: string | null | undefined;
     rateLimitedUntil: string | null | undefined;
-  },
+  }
 ): Promise<boolean> {
   const db = getDbInstance() as unknown as DbLike;
   const result = db
@@ -634,14 +634,14 @@ export async function clearConnectionErrorIfUnchanged(
       AND IFNULL(test_status, '') = ?
       AND IFNULL(last_error_at, '') = ?
       AND IFNULL(rate_limited_until, '') = ?
-    `,
+    `
     )
     .run(
       new Date().toISOString(),
       id,
       expected.testStatus ?? "",
       expected.lastErrorAt ?? "",
-      expected.rateLimitedUntil ?? "",
+      expected.rateLimitedUntil ?? ""
     );
   const applied = (result.changes ?? 0) > 0;
   if (applied) {
@@ -720,7 +720,7 @@ export async function reorderProviderConnections(providerId: string) {
 function _reorderConnections(db: DbLike, providerId: string) {
   const rows = db
     .prepare(
-      "SELECT id, priority, updated_at FROM provider_connections WHERE provider = ? ORDER BY priority ASC, updated_at DESC",
+      "SELECT id, priority, updated_at FROM provider_connections WHERE provider = ? ORDER BY priority ASC, updated_at DESC"
     )
     .all(providerId);
 
@@ -739,7 +739,7 @@ export async function getDistinctGroups(): Promise<string[]> {
   const db = getDbInstance() as unknown as DbLike;
   const rows = db
     .prepare(
-      'SELECT DISTINCT "group" FROM provider_connections WHERE "group" IS NOT NULL ORDER BY "group"',
+      'SELECT DISTINCT "group" FROM provider_connections WHERE "group" IS NOT NULL ORDER BY "group"'
     )
     .all() as Array<{ group?: string }>;
   return rows.map((r) => String(r.group ?? "")).filter(Boolean);
@@ -784,7 +784,7 @@ export function autoMigrateLegacyEncryptedConnections(): number {
       // Let's modify the DB directly so we don't double encrypt.
 
       db.prepare(
-        "UPDATE provider_connections SET api_key = @apiKey, id_token = @idToken, access_token = @accessToken, refresh_token = @refreshToken, updated_at = @updatedAt WHERE id = @id",
+        "UPDATE provider_connections SET api_key = @apiKey, id_token = @idToken, access_token = @accessToken, refresh_token = @refreshToken, updated_at = @updatedAt WHERE id = @id"
       ).run({
         id: camelRow.id,
         apiKey: camelRow.apiKey ?? null,

@@ -10,7 +10,7 @@ import type { AgentBridgeServerState } from "../AgentBridgePageClient";
 interface AgentBridgeServerCardProps {
   serverState: AgentBridgeServerState;
   onAction: (
-    action: "start" | "stop" | "restart" | "trust-cert" | "regenerate-cert",
+    action: "start" | "stop" | "restart" | "trust-cert" | "regenerate-cert"
   ) => Promise<void>;
   onUpstreamCaSave: (path: string) => Promise<void>;
   onBypassSave: (patterns: string[]) => Promise<void>;
@@ -34,7 +34,7 @@ export function AgentBridgeServerCard({
   const [upstreamCa, setUpstreamCa] = useState(serverState.upstreamCa ?? "");
 
   const runAction = async (
-    action: "start" | "stop" | "restart" | "trust-cert" | "regenerate-cert",
+    action: "start" | "stop" | "restart" | "trust-cert" | "regenerate-cert"
   ) => {
     setLoading(action);
     try {

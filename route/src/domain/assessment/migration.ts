@@ -101,7 +101,7 @@ export async function runAssessmentMigration(dbPath: string): Promise<void> {
     .get("assessment_engine") as { count: number };
   if (versionRow.count === 0) {
     db.prepare(
-      "INSERT INTO _omniroute_migrations (name, applied_at) VALUES (?, datetime('now'))",
+      "INSERT INTO _omniroute_migrations (name, applied_at) VALUES (?, datetime('now'))"
     ).run("assessment_engine");
   }
 

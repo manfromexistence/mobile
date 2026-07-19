@@ -58,7 +58,7 @@ function proxyRequest(req: IncomingMessage, res: ServerResponse, dashboardPort: 
 
       res.writeHead(targetRes.statusCode || 502, targetRes.headers);
       targetRes.pipe(res);
-    },
+    }
   );
 
   targetReq.on("timeout", () => {
@@ -69,7 +69,7 @@ function proxyRequest(req: IncomingMessage, res: ServerResponse, dashboardPort: 
       JSON.stringify({
         error: "api_bridge_timeout",
         detail: `Proxy request timed out after ${proxyTimeoutMs}ms`,
-      }),
+      })
     );
   });
 
@@ -80,7 +80,7 @@ function proxyRequest(req: IncomingMessage, res: ServerResponse, dashboardPort: 
       JSON.stringify({
         error: "api_bridge_unavailable",
         detail: String(error.message || error),
-      }),
+      })
     );
   });
 
@@ -111,7 +111,7 @@ function proxyUpgrade(
   req: IncomingMessage,
   socket: net.Socket,
   head: Buffer,
-  dashboardPort: number,
+  dashboardPort: number
 ) {
   const upstream = net.connect(dashboardPort, "127.0.0.1");
 
@@ -151,7 +151,7 @@ function proxyUpgrade(
       JSON.stringify({
         error: "api_bridge_upgrade_failed",
         detail: String(error.message || error),
-      }),
+      })
     );
   });
 
@@ -186,7 +186,7 @@ export function initApiBridgeServer(): void {
         JSON.stringify({
           error: "not_found",
           message: "API port only serves OpenAI-compatible routes.",
-        }),
+        })
       );
       return;
     }
@@ -208,7 +208,7 @@ export function initApiBridgeServer(): void {
         JSON.stringify({
           error: "not_found",
           message: "API port only serves OpenAI-compatible routes.",
-        }),
+        })
       );
       return;
     }
@@ -219,7 +219,7 @@ export function initApiBridgeServer(): void {
   server.on("error", (error: NodeJS.ErrnoException) => {
     if (error?.code === "EADDRINUSE") {
       console.warn(
-        `[API Bridge] Port ${apiPort} is already in use. API bridge disabled. (dashboard: ${dashboardPort})`,
+        `[API Bridge] Port ${apiPort} is already in use. API bridge disabled. (dashboard: ${dashboardPort})`
       );
       return;
     }

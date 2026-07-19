@@ -7,7 +7,7 @@ export type JsonRecord = Record<string, unknown>;
 
 export function withNullableMaxConcurrent(
   record: JsonRecord,
-  source: JsonRecord | null | undefined,
+  source: JsonRecord | null | undefined
 ): JsonRecord {
   if (!source || !Object.hasOwn(source, "maxConcurrent")) {
     return record;
@@ -33,7 +33,7 @@ export function withNullableMaxConcurrent(
 // stripped or carried forward.
 export function withNullableQuotaWindowThresholds(
   record: JsonRecord,
-  source: JsonRecord | null | undefined,
+  source: JsonRecord | null | undefined
 ): JsonRecord {
   return {
     ...record,
@@ -45,7 +45,7 @@ export function withNullableQuotaWindowThresholds(
 // used by withNullableMaxConcurrent and withNullableQuotaWindowThresholds.
 export function withNullableRateLimitOverrides(
   record: JsonRecord,
-  source: JsonRecord | null | undefined,
+  source: JsonRecord | null | undefined
 ): JsonRecord {
   return {
     ...record,

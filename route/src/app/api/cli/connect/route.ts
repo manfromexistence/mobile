@@ -72,7 +72,7 @@ export async function POST(request: Request) {
           headers: guardCheck.retryAfterSeconds
             ? { "Retry-After": String(guardCheck.retryAfterSeconds) }
             : {},
-        },
+        }
       );
     }
 
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     if (!storedHash) {
       return NextResponse.json(
         { error: "No password configured. Complete onboarding first.", needsSetup: true },
-        { status: 403 },
+        { status: 403 }
       );
     }
 
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
             headers: failureDecision.retryAfterSeconds
               ? { "Retry-After": String(failureDecision.retryAfterSeconds) }
               : {},
-          },
+          }
         );
       }
       return NextResponse.json({ error: "Invalid password" }, { status: 401 });

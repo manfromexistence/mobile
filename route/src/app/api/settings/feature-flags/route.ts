@@ -102,7 +102,7 @@ export async function PUT(request: NextRequest) {
         {
           error: `Invalid value "${value}" for enum flag ${key}. Allowed: ${definition.enumValues.join(", ")}`,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
   }

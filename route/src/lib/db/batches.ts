@@ -127,7 +127,7 @@ export function createBatch(
     | "requestCountsCompleted"
     | "requestCountsFailed"
     | "status"
-  > & { status?: BatchRecord["status"] },
+  > & { status?: BatchRecord["status"] }
 ): BatchRecord {
   const db = getDbInstance();
   const id = "batch_" + uuidv4().replaceAll("-", "").substring(0, 24);
@@ -194,7 +194,7 @@ export function updateBatch(id: string, updates: Partial<BatchRecord>): boolean 
 
 export function ensureBatchItemCheckpoints(
   batchId: string,
-  items: Array<{ lineNumber: number; customId: string | null }>,
+  items: Array<{ lineNumber: number; customId: string | null }>
 ): void {
   if (items.length === 0) return;
 
@@ -239,7 +239,7 @@ export function listBatchItemCheckpoints(batchId: string): BatchItemCheckpoint[]
       FROM batch_item_checkpoints
       WHERE batch_id = ?
       ORDER BY line_number ASC
-    `,
+    `
     )
     .all(batchId);
   return rows.map((row) => parseBatchItemCheckpoint(row));
@@ -247,7 +247,7 @@ export function listBatchItemCheckpoints(batchId: string): BatchItemCheckpoint[]
 
 export function markBatchItemProcessing(
   batchId: string,
-  item: { lineNumber: number; customId: string | null },
+  item: { lineNumber: number; customId: string | null }
 ): void {
   const db = getDbInstance();
   const now = Math.floor(Date.now() / 1000);
@@ -270,14 +270,14 @@ export function markBatchItemProcessing(
       result_json = NULL,
       error_json = NULL,
       updated_at = excluded.updated_at
-  `,
+  `
   ).run(batchId, item.lineNumber, item.customId, now, now);
 }
 
 export function markBatchItemResult(
   batchId: string,
   item: { lineNumber: number; customId: string | null },
-  result: any,
+  result: any
 ): void {
   const db = getDbInstance();
   const now = Math.floor(Date.now() / 1000);
@@ -290,14 +290,14 @@ export function markBatchItemResult(
         error_json = NULL,
         updated_at = ?
     WHERE batch_id = ? AND line_number = ?
-  `,
+  `
   ).run(item.customId, JSON.stringify(result), now, batchId, item.lineNumber);
 }
 
 export function markBatchItemError(
   batchId: string,
   item: { lineNumber: number; customId: string | null },
-  error: any,
+  error: any
 ): void {
   const db = getDbInstance();
   const now = Math.floor(Date.now() / 1000);
@@ -310,7 +310,7 @@ export function markBatchItemError(
         error_json = ?,
         updated_at = ?
     WHERE batch_id = ? AND line_number = ?
-  `,
+  `
   ).run(item.customId, JSON.stringify(error), now, batchId, item.lineNumber);
 }
 
@@ -322,20 +322,20 @@ export function listBatches(apiKeyId?: string, limit: number = 20, after?: strin
     if (afterBatch) {
       rows = db
         .prepare(
-          "SELECT * FROM batches WHERE api_key_id = ? AND (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?",
+          "SELECT * FROM batches WHERE api_key_id = ? AND (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?"
         )
         .all(apiKeyId, afterBatch.createdAt, afterBatch.createdAt, after, limit);
     } else {
       rows = db
         .prepare(
-          "SELECT * FROM batches WHERE api_key_id = ? ORDER BY created_at DESC, id DESC LIMIT ?",
+          "SELECT * FROM batches WHERE api_key_id = ? ORDER BY created_at DESC, id DESC LIMIT ?"
         )
         .all(apiKeyId, limit);
     }
   } else if (afterBatch) {
     rows = db
       .prepare(
-        "SELECT * FROM batches WHERE (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?",
+        "SELECT * FROM batches WHERE (created_at < ? OR (created_at = ? AND id < ?)) ORDER BY created_at DESC, id DESC LIMIT ?"
       )
       .all(afterBatch.createdAt, afterBatch.createdAt, after, limit);
   } else {
@@ -361,7 +361,7 @@ export function getPendingBatches(): BatchRecord[] {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT * FROM batches WHERE status IN ('validating', 'in_progress', 'finalizing', 'cancelling')",
+      "SELECT * FROM batches WHERE status IN ('validating', 'in_progress', 'finalizing', 'cancelling')"
     )
     .all();
   return rows.map((row) => parseBatchRow(row));
@@ -371,7 +371,7 @@ export function getTerminalBatches(): BatchRecord[] {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT * FROM batches WHERE status IN ('completed', 'failed', 'cancelled', 'expired') ORDER BY created_at ASC",
+      "SELECT * FROM batches WHERE status IN ('completed', 'failed', 'cancelled', 'expired') ORDER BY created_at ASC"
     )
     .all();
   return rows.map((row) => parseBatchRow(row));
@@ -417,7 +417,7 @@ export function deleteCompletedBatches(): { deletedBatches: number; deletedFiles
   // Collect unique file IDs from all completed batches
   const rows = db
     .prepare(
-      "SELECT input_file_id, output_file_id, error_file_id FROM batches WHERE status = 'completed'",
+      "SELECT input_file_id, output_file_id, error_file_id FROM batches WHERE status = 'completed'"
     )
     .all() as Array<{
     input_file_id: string | null;
@@ -442,7 +442,7 @@ export function deleteCompletedBatches(): { deletedBatches: number; deletedFiles
   }
 
   db.prepare(
-    "DELETE FROM batch_item_checkpoints WHERE batch_id IN (SELECT id FROM batches WHERE status = 'completed')",
+    "DELETE FROM batch_item_checkpoints WHERE batch_id IN (SELECT id FROM batches WHERE status = 'completed')"
   ).run();
 
   const result = db.prepare("DELETE FROM batches WHERE status = 'completed'").run();

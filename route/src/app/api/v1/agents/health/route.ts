@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       { providers: results },
-      { headers: getCloudAgentCorsHeaders(request) },
+      { headers: getCloudAgentCorsHeaders(request) }
     );
   } catch (error) {
     logger.error({ err: error }, "Failed to check cloud agent health");
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) },
+      { status: 500, headers: getCloudAgentCorsHeaders(request) }
     );
   }
 }

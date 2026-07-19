@@ -33,11 +33,11 @@ export async function GET(request: NextRequest) {
     const providerCount = Object.keys(pricing).length;
     const modelCount = Object.values(pricing).reduce(
       (sum, models) => sum + Object.keys(models).length,
-      0,
+      0
     );
     const capabilityCount = Object.values(caps).reduce(
       (sum, models) => sum + Object.keys(models).length,
-      0,
+      0
     );
 
     return NextResponse.json({

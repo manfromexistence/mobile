@@ -38,7 +38,7 @@ export function getClineAuthorizationHeader(token: unknown): string {
  */
 export function buildClineHeaders(
   token: unknown,
-  extraHeaders: Record<string, string> = {},
+  extraHeaders: Record<string, string> = {}
 ): Record<string, string> {
   const authorization = getClineAuthorizationHeader(token);
   const headers: Record<string, string> = {
@@ -70,7 +70,7 @@ export function buildClineHeaders(
  */
 export function buildClinepassHeaders(
   credentials: { accessToken?: unknown; apiKey?: unknown } | null | undefined,
-  effectiveKey?: string,
+  effectiveKey?: string
 ): Record<string, string> {
   if (credentials?.accessToken) {
     return buildClineHeaders(credentials.accessToken);

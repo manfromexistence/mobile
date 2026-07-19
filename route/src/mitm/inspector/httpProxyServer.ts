@@ -134,7 +134,7 @@ function handleHttp(req: http.IncomingMessage, res: http.ServerResponse): void {
       const totalLatencyMs = performance.now() - startedAt;
 
       intercepted.responseHeaders = sanitizeHeaders(
-        Object.fromEntries(upstream.headers) as Record<string, string>,
+        Object.fromEntries(upstream.headers) as Record<string, string>
       );
       intercepted.responseBody = maskSecret(respBuf.toString("utf8"));
       intercepted.responseSize = respBuf.length;

@@ -16,7 +16,7 @@ import { detectEmbeddingDimensionConflict } from "@omniroute/open-sse/config/emb
  */
 export function findEmbeddingComboDimensionConflict(
   combo: Parameters<typeof resolveComboTargets>[0],
-  allCombos: Parameters<typeof resolveComboTargets>[1],
+  allCombos: Parameters<typeof resolveComboTargets>[1]
 ): ReturnType<typeof detectEmbeddingDimensionConflict> {
   const targets = resolveComboTargets(combo, allCombos);
   const modelStrs = targets.map((t) => t.modelStr).filter(Boolean);

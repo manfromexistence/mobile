@@ -110,7 +110,10 @@ const STEP_LABELS: Record<number, string> = {
 function StepIndicator({
   current,
   t,
-}: { current: 1 | 2 | 3 | 4; t: ReturnType<typeof useTranslations<"common">> }) {
+}: {
+  current: 1 | 2 | 3 | 4;
+  t: ReturnType<typeof useTranslations<"common">>;
+}) {
   return (
     <div className="flex items-center gap-1 sm:gap-2">
       {STEPS.map((s) => {
@@ -176,7 +179,7 @@ export default function NewBatchWizard({
         // on a non-interactive element (the modal body).
         if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON") return;
         const nextBtn = document.querySelector<HTMLButtonElement>(
-          'button[data-wizard-next="true"]',
+          'button[data-wizard-next="true"]'
         );
         if (nextBtn && !nextBtn.disabled) nextBtn.click();
       }
@@ -214,7 +217,7 @@ export default function NewBatchWizard({
       formData.append(
         "file",
         new Blob([state.input.rawContent], { type: "application/jsonl" }),
-        "batch-input.jsonl",
+        "batch-input.jsonl"
       );
 
       const fileRes = await fetch("/api/v1/files", { method: "POST", body: formData });

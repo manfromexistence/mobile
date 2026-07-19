@@ -29,14 +29,14 @@ export async function GET(request: Request) {
   if (!command) {
     return NextResponse.json(
       { error: { message: "The 'command' query parameter is required.", type: "invalid_request" } },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
   const limit = parseLimit(url.searchParams.get("limit"));
   const targetId = commandToId(command);
   const matching = listRtkCommandSamples({ limit }).filter(
-    (sample) => commandToId(sample.command) === targetId,
+    (sample) => commandToId(sample.command) === targetId
   );
   const filter = suggestFilter(command, matching);
 

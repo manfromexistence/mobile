@@ -54,7 +54,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error)?.message || "Failed to inspect env defaults" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error)?.message || "Failed to repair env defaults" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

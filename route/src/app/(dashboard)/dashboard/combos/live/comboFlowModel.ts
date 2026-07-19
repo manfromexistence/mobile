@@ -143,7 +143,7 @@ export function reduceComboEvent(run: ComboRunModel | null, ev: ComboEventInput)
       existingTargets.set(ev.targetIndex, updatedTarget);
 
       const sortedTargets = [...existingTargets.values()].sort(
-        (a, b) => a.targetIndex - b.targetIndex,
+        (a, b) => a.targetIndex - b.targetIndex
       );
 
       return {
@@ -186,7 +186,7 @@ export function reduceComboEvent(run: ComboRunModel | null, ev: ComboEventInput)
               error: ev.error,
               failKind: classifyFailKind(ev.error),
             }
-          : t,
+          : t
       );
 
       return {
@@ -221,7 +221,7 @@ export function reduceComboEvent(run: ComboRunModel | null, ev: ComboEventInput)
               state: "succeeded" as TargetState,
               latencyMs: ev.latencyMs,
             }
-          : t,
+          : t
       );
 
       return {
@@ -397,7 +397,7 @@ function normalizeCbState(state: string | undefined): CbState | undefined {
  */
 export function enrichRunWithBreakers(
   run: ComboRunModel | null,
-  providerHealth: Record<string, ProviderBreakerSnapshot> | null | undefined,
+  providerHealth: Record<string, ProviderBreakerSnapshot> | null | undefined
 ): ComboRunModel | null {
   if (!run) return null;
   if (!providerHealth) return run;
@@ -455,7 +455,7 @@ export interface ConnectionCooldownSnapshot {
  */
 export function enrichRunWithConnectionCooldown(
   run: ComboRunModel | null,
-  connectionHealth: Record<string, ConnectionCooldownSnapshot> | null | undefined,
+  connectionHealth: Record<string, ConnectionCooldownSnapshot> | null | undefined
 ): ComboRunModel | null {
   if (!run) return null;
   if (!connectionHealth) return run;

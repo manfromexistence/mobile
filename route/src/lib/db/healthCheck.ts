@@ -5,10 +5,7 @@ type SqliteDatabase = SqliteAdapter;
 type JsonRecord = Record<string, unknown>;
 
 export type DbHealthIssueType =
-  | "integrity_check_failed"
-  | "broken_reference"
-  | "stale_snapshot"
-  | "invalid_state";
+  "integrity_check_failed" | "broken_reference" | "stale_snapshot" | "invalid_state";
 
 export interface DbHealthIssue {
   type: DbHealthIssueType;
@@ -136,7 +133,7 @@ function repairComboRows(
   db: SqliteDatabase,
   rows: ComboRow[],
   checkedAt: string,
-  options: { autoRepair: boolean },
+  options: { autoRepair: boolean }
 ): ComboRepairResult {
   if (rows.length === 0) return { issueCount: 0, repairedCount: 0 };
 
@@ -236,7 +233,7 @@ function repairComboRows(
         ]
           .filter(Boolean)
           .join(" "),
-        checkedAt,
+        checkedAt
       ),
       ...(nextModels.length === 0 ? { isActive: false } : {}),
     };
@@ -287,14 +284,14 @@ function repairQuotaSnapshots(db: SqliteDatabase): number {
 
 function countOrphanDomainRows(
   db: SqliteDatabase,
-  table: "domain_budgets" | "domain_cost_history",
+  table: "domain_budgets" | "domain_cost_history"
 ) {
   if (!hasRows(db, table)) return 0;
   const row = db
     .prepare(
       `SELECT COUNT(*) AS count
        FROM ${table}
-       WHERE api_key_id NOT IN (SELECT id FROM api_keys)`,
+       WHERE api_key_id NOT IN (SELECT id FROM api_keys)`
     )
     .get() as { count?: number } | undefined;
   return row?.count || 0;
@@ -302,7 +299,7 @@ function countOrphanDomainRows(
 
 function repairOrphanDomainRows(
   db: SqliteDatabase,
-  table: "domain_budgets" | "domain_cost_history",
+  table: "domain_budgets" | "domain_cost_history"
 ): number {
   if (!hasRows(db, table)) return 0;
   return db.prepare(`DELETE FROM ${table} WHERE api_key_id NOT IN (SELECT id FROM api_keys)`).run()
@@ -312,7 +309,7 @@ function repairOrphanDomainRows(
 function countInvalidJsonRows(
   db: SqliteDatabase,
   table: "domain_fallback_chains" | "domain_lockout_state" | "domain_circuit_breakers",
-  column: "chain" | "attempts" | "options",
+  column: "chain" | "attempts" | "options"
 ): number {
   if (!hasRows(db, table)) return 0;
   const rows = db.prepare(`SELECT ${column} FROM ${table}`).all() as Array<Record<string, unknown>>;
@@ -336,7 +333,7 @@ function countInvalidJsonRows(
 function repairInvalidJsonRows(
   db: SqliteDatabase,
   table: "domain_fallback_chains" | "domain_lockout_state" | "domain_circuit_breakers",
-  column: "chain" | "attempts" | "options",
+  column: "chain" | "attempts" | "options"
 ): number {
   if (!hasRows(db, table)) return 0;
 
@@ -347,7 +344,7 @@ function repairInvalidJsonRows(
 
   const deleteByRowId = db.prepare(`DELETE FROM ${table} WHERE rowid = ?`);
   const clearOptionsByRowId = db.prepare(
-    "UPDATE domain_circuit_breakers SET options = NULL WHERE rowid = ?",
+    "UPDATE domain_circuit_breakers SET options = NULL WHERE rowid = ?"
   );
   let repaired = 0;
 
@@ -383,8 +380,7 @@ function repairInvalidJsonRows(
 function getSchemaVersionIssueCount(db: SqliteDatabase, expectedSchemaVersion: string): number {
   if (!hasRows(db, "db_meta")) return 0;
   const row = db.prepare("SELECT value FROM db_meta WHERE key = 'schema_version'").get() as
-    | { value?: string | null }
-    | undefined;
+    { value?: string | null } | undefined;
   const current = typeof row?.value === "string" ? row.value : null;
   return current === expectedSchemaVersion ? 0 : 1;
 }
@@ -398,7 +394,7 @@ function repairSchemaVersion(db: SqliteDatabase, expectedSchemaVersion: string):
 
 export function runDbHealthCheck(
   db: SqliteDatabase,
-  options: RunDbHealthCheckOptions = {},
+  options: RunDbHealthCheckOptions = {}
 ): DbHealthCheckResult {
   const autoRepair = options.autoRepair === true;
   const expectedSchemaVersion = options.expectedSchemaVersion || "1";
@@ -436,7 +432,7 @@ export function runDbHealthCheck(
   if (hasRows(db, "combos")) {
     const comboRows = db
       .prepare(
-        "SELECT id, name, data, sort_order, created_at, updated_at FROM combos ORDER BY name COLLATE NOCASE ASC",
+        "SELECT id, name, data, sort_order, created_at, updated_at FROM combos ORDER BY name COLLATE NOCASE ASC"
       )
       .all() as ComboRow[];
     const comboRepair = repairComboRows(db, comboRows, checkedAt, { autoRepair });

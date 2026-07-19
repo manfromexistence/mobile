@@ -29,7 +29,7 @@ export default function DocsSidebar({ sections, currentPath, className }: DocsSi
       className={cn(
         "flex flex-col h-full bg-sidebar border-r border-border transition-all duration-300",
         collapsed ? "w-16" : "w-64",
-        className,
+        className
       )}
     >
       <div className="p-4 flex items-center justify-between border-b border-border">
@@ -62,7 +62,7 @@ export default function DocsSidebar({ sections, currentPath, className }: DocsSi
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
                     isActive(item.href)
                       ? "bg-primary/10 text-primary font-medium"
-                      : "text-text-main hover:bg-bg-subtle",
+                      : "text-text-main hover:bg-bg-subtle"
                   )}
                 >
                   <span className="truncate">{item.title}</span>

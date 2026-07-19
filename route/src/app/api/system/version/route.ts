@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   if (!latest) {
     return NextResponse.json(
       { success: false, error: "Could not reach npm registry" },
-      { status: 503 },
+      { status: 503 }
     );
   }
 
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: validation.reason || "Auto-update is not supported in this environment.",
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
           channel: launched.channel,
           logPath: launched.logPath,
         },
-        { status: 503 },
+        { status: 503 }
       );
     }
 
@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
           await execFileAsync(
             "npm",
             ["install", "--legacy-peer-deps"],
-            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 }),
+            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 })
           );
           send({ step: "rebuild", status: "done", message: "Dependencies installed" });
 
@@ -236,7 +236,7 @@ export async function POST(req: NextRequest) {
           await execFileAsync(
             "npm",
             ["run", "build"],
-            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 600_000 }),
+            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 600_000 })
           );
           send({ step: "rebuild", status: "done", message: "Build complete" });
 
@@ -304,7 +304,7 @@ export async function POST(req: NextRequest) {
         await execFileAsync(
           "npm",
           ["install", "-g", `omniroute@${latest}`, "--ignore-scripts", "--legacy-peer-deps"],
-          buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 }),
+          buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 })
         );
         send({ step: "install", status: "done", message: `Installed omniroute@${latest}` });
 
@@ -318,7 +318,7 @@ export async function POST(req: NextRequest) {
         await execFileAsync(
           "npm",
           ["rebuild", "better-sqlite3"],
-          buildNpmExecOptions(process.platform, { cwd: omniPath, timeoutMs: 120_000 }),
+          buildNpmExecOptions(process.platform, { cwd: omniPath, timeoutMs: 120_000 })
         );
         send({ step: "rebuild", status: "done", message: "Native modules rebuilt" });
 

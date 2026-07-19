@@ -16,7 +16,7 @@ export function collectReferencedArtifacts(): Set<string> {
   const db = getDbInstance();
   const referenced = new Set<string>();
   const stmt = db.prepare(
-    "SELECT artifact_relpath FROM call_logs WHERE artifact_relpath IS NOT NULL LIMIT ? OFFSET ?",
+    "SELECT artifact_relpath FROM call_logs WHERE artifact_relpath IS NOT NULL LIMIT ? OFFSET ?"
   );
   for (let offset = 0; ; offset += CALL_LOG_QUERY_PAGE) {
     const rows = stmt.all(CALL_LOG_QUERY_PAGE, offset) as Array<{

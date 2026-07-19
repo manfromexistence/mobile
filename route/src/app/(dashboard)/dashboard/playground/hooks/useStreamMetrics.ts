@@ -73,7 +73,7 @@ export function useStreamMetrics(modelPricing?: {
         tokensIn: 0,
         tokensOut: 0,
         pricing: modelPricing ? { ...modelPricing, estimated: true } : undefined,
-      }),
+      })
     );
   }
 
@@ -88,7 +88,7 @@ export function useStreamMetrics(modelPricing?: {
       computeMetrics({
         ...refs.current,
         pricing: modelPricing ? { ...modelPricing, estimated: true } : undefined,
-      }),
+      })
     );
   }
 
@@ -114,7 +114,7 @@ export function useStreamMetrics(modelPricing?: {
       computeMetrics({
         ...refs.current,
         pricing: modelPricing ? { ...modelPricing, estimated: true } : undefined,
-      }),
+      })
     );
   }
 

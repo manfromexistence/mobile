@@ -43,12 +43,12 @@ export function useExternalLinkFlow({
       } else {
         setExternalLinkError(
           data?.error ||
-            providerText(t, "codexExternalLinkCreateFailed", "Failed to generate the link."),
+            providerText(t, "codexExternalLinkCreateFailed", "Failed to generate the link.")
         );
       }
     } catch {
       setExternalLinkError(
-        providerText(t, "codexExternalLinkNetworkError", "Could not contact the server."),
+        providerText(t, "codexExternalLinkNetworkError", "Could not contact the server.")
       );
     } finally {
       setExternalLinkLoading(false);
@@ -64,7 +64,7 @@ export function useExternalLinkFlow({
       if (!active) return;
       try {
         const res = await fetch(
-          `/api/oauth/${providerId}/public-link-status?token=${encodeURIComponent(externalLinkToken)}`,
+          `/api/oauth/${providerId}/public-link-status?token=${encodeURIComponent(externalLinkToken)}`
         );
         const data = await res.json().catch(() => ({}));
         if (!active) return;
@@ -75,8 +75,8 @@ export function useExternalLinkFlow({
             providerText(
               t,
               "codexExternalLinkConnected",
-              "Codex account connected through the external link.",
-            ),
+              "Codex account connected through the external link."
+            )
           );
           fetchConnections();
           setExternalLinkModalOpen(false);
@@ -85,7 +85,7 @@ export function useExternalLinkFlow({
           active = false;
           clearInterval(interval);
           setExternalLinkError(
-            providerText(t, "codexExternalLinkExpired", "The link expired before completion."),
+            providerText(t, "codexExternalLinkExpired", "The link expired before completion.")
           );
         }
       } catch {

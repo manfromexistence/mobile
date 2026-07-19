@@ -767,7 +767,7 @@ export default function HealthPage() {
                       const providerInfo = AI_PROVIDERS[provider];
                       const displayName = getProviderDisplayName(
                         provider,
-                        nodeMap.get(provider) ?? providerInfo,
+                        nodeMap.get(provider) ?? providerInfo
                       );
                       return (
                         <div
@@ -828,7 +828,7 @@ export default function HealthPage() {
                         const providerInfo = AI_PROVIDERS[provider];
                         const displayName = getProviderDisplayName(
                           provider,
-                          nodeMap.get(provider) ?? providerInfo,
+                          nodeMap.get(provider) ?? providerInfo
                         );
                         return (
                           <div
@@ -1041,7 +1041,7 @@ export default function HealthPage() {
                         )}
                       </div>
                     );
-                  },
+                  }
                 )}
               </div>
             </Card>

@@ -156,7 +156,7 @@ export interface DashboardEventMap {
 // ── Event Bus Listener ────────────────────────────────────────────────────
 
 export type DashboardEventListener<E extends DashboardEventName> = (
-  payload: DashboardEventMap[E],
+  payload: DashboardEventMap[E]
 ) => void;
 
 // ── Channel Definitions ───────────────────────────────────────────────────

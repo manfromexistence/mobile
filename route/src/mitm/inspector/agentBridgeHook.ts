@@ -40,7 +40,7 @@ export interface RecordRequestCompleteOpts {
  * with the same reference once the upstream call resolves.
  */
 export async function recordRequestStart(
-  opts: RecordRequestStartOpts,
+  opts: RecordRequestStartOpts
 ): Promise<InterceptedRequest> {
   const requestBody = opts.body.length > 0 ? maskSecret(opts.body.toString("utf8")) : null;
 
@@ -106,7 +106,7 @@ export async function recordRequestStart(
  */
 export function recordRequestComplete(
   intercepted: InterceptedRequest,
-  opts: RecordRequestCompleteOpts,
+  opts: RecordRequestCompleteOpts
 ): void {
   intercepted.status = opts.status;
   // SECURITY_AUDIT M6: mask secret-bearing upstream response headers (Set-Cookie,

@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     console.error("Error reading auto-disable accounts config:", error);
     return NextResponse.json(
       { error: "Failed to read auto-disable accounts config" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -61,7 +61,7 @@ export async function PUT(request: Request) {
     console.error("Error updating auto-disable accounts config:", error);
     return NextResponse.json(
       { error: "Failed to update auto-disable accounts config" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

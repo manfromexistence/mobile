@@ -25,7 +25,7 @@ const activeTimers = new Map<string, ReturnType<typeof setInterval>>();
 export async function syncServiceModels(
   tool: string,
   baseUrl: string,
-  apiKey: string,
+  apiKey: string
 ): Promise<number> {
   try {
     const res = await fetch(`${baseUrl}/v1/models`, {
@@ -45,7 +45,7 @@ export async function syncServiceModels(
         (m): m is ServiceModel =>
           typeof m === "object" &&
           m !== null &&
-          typeof (m as Record<string, unknown>).id === "string",
+          typeof (m as Record<string, unknown>).id === "string"
       )
       .map((m) => ({
         ...m,
@@ -74,7 +74,7 @@ export function scheduleServiceModelSync(
   tool: string,
   baseUrl: string,
   apiKey: string,
-  intervalMs = SYNC_INTERVAL_MS,
+  intervalMs = SYNC_INTERVAL_MS
 ): void {
   if (activeTimers.has(tool)) return;
 

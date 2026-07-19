@@ -90,12 +90,12 @@ export function ApiKeyUsageLimitCard({
     setDailyLimit(
       typeof payload.key.dailyUsageLimitUsd === "number"
         ? String(payload.key.dailyUsageLimitUsd)
-        : "",
+        : ""
     );
     setWeeklyLimit(
       typeof payload.key.weeklyUsageLimitUsd === "number"
         ? String(payload.key.weeklyUsageLimitUsd)
-        : "",
+        : ""
     );
     setError(null);
   }, [payload]);

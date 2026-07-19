@@ -74,7 +74,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
           "let the user pick which credentials to import, then POST the chosen list as " +
           "{ confirmedAccounts: [{ service, account, fingerprint }, ...] }.",
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -89,7 +89,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
           zedInstalled: false,
           zedDockerEnvironment: true,
         },
-        { status: 422 },
+        { status: 422 }
       );
     }
 
@@ -102,7 +102,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
           zedInstalled: false,
           zedDockerEnvironment: false,
         },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -121,7 +121,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
       toImport = filterCredentialsByConfirmation(importable, confirmed);
     } else if (LEGACY_ONE_STEP_ENABLED) {
       console.warn(
-        "[Zed Import] OMNIROUTE_ZED_IMPORT_LEGACY_ONE_STEP=true — importing all keychain credentials without per-account confirmation. This mode is deprecated and will be removed in v3.9.",
+        "[Zed Import] OMNIROUTE_ZED_IMPORT_LEGACY_ONE_STEP=true — importing all keychain credentials without per-account confirmation. This mode is deprecated and will be removed in v3.9."
       );
     }
 
@@ -129,7 +129,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
       if (allCredentials.length > 0) {
         console.warn(
           "[Zed Import] %d keychain credential(s) found, but the confirmed-accounts list did not match any supported entry",
-          allCredentials.length,
+          allCredentials.length
         );
       }
       return NextResponse.json({
@@ -161,7 +161,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
       console.log(
         "[Zed Import] Skipped %d unsupported credential(s) and dropped %d duplicate credential(s)",
         skipped.length,
-        duplicatesDropped,
+        duplicatesDropped
       );
     }
 
@@ -180,7 +180,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
       allCredentials.length,
       toImport.length,
       savedCount,
-      uniqueProviders.length,
+      uniqueProviders.length
     );
 
     return NextResponse.json({
@@ -199,7 +199,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
           success: false,
           error: "Keychain access denied. Please grant permission when prompted by your OS.",
         },
-        { status: 403 },
+        { status: 403 }
       );
     }
 
@@ -210,7 +210,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
           error:
             "Keychain service not available on this system. On Linux, install libsecret-1-dev.",
         },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -219,7 +219,7 @@ export async function POST(request: Request): Promise<NextResponse<ImportRespons
         success: false,
         error: "Failed to import credentials",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

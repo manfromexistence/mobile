@@ -7,7 +7,7 @@ let initialized = false;
 
 function isAutomatedTestProcess(
   env: NodeJS.ProcessEnv = process.env,
-  argv: string[] = process.argv,
+  argv: string[] = process.argv
 ): boolean {
   return (
     env.NODE_ENV === "test" || env.VITEST !== undefined || argv.some((arg) => arg.includes("test"))
@@ -16,7 +16,7 @@ function isAutomatedTestProcess(
 
 export function shouldSkipCloudSyncInitialization(
   env: NodeJS.ProcessEnv = process.env,
-  argv: string[] = process.argv,
+  argv: string[] = process.argv
 ): boolean {
   if (env.NEXT_PHASE === "phase-production-build") {
     return true;

@@ -214,8 +214,8 @@ function sanitizeComboRuntimeConfig(config) {
   return Object.fromEntries(
     Object.entries(config).filter(
       ([key, value]) =>
-        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key),
-    ),
+        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key)
+    )
   );
 }
 
@@ -223,7 +223,7 @@ function updateFusionTuning(config, field, rawValue) {
   const value = rawValue === "" ? undefined : Number(rawValue);
   const next = { ...(config.fusionTuning || {}), [field]: value };
   const pruned = Object.fromEntries(
-    Object.entries(next).filter(([, v]) => typeof v === "number" && Number.isFinite(v)),
+    Object.entries(next).filter(([, v]) => typeof v === "number" && Number.isFinite(v))
   );
   return { ...config, fusionTuning: Object.keys(pruned).length > 0 ? pruned : undefined };
 }
@@ -499,7 +499,7 @@ function getStrategyDescription(t, strategy) {
   return getI18nOrFallback(
     t,
     key,
-    STRATEGY_DESC_FALLBACK[strategy] || STRATEGY_DESC_FALLBACK.priority || strategy,
+    STRATEGY_DESC_FALLBACK[strategy] || STRATEGY_DESC_FALLBACK.priority || strategy
   );
 }
 
@@ -544,14 +544,14 @@ function getStrategyRecommendationText(t, strategy, field) {
 
   if (field === "tips") {
     return strategyFallback.tips.map((tip, index) =>
-      getI18nOrFallback(t, `strategyRecommendations.${strategy}.tip${index + 1}`, tip),
+      getI18nOrFallback(t, `strategyRecommendations.${strategy}.tip${index + 1}`, tip)
     );
   }
 
   return getI18nOrFallback(
     t,
     `strategyRecommendations.${strategy}.${field}`,
-    strategyFallback[field],
+    strategyFallback[field]
   );
 }
 
@@ -579,7 +579,7 @@ function getModelString(entry) {
 
 function findProviderNodeByIdentifier(providerNodes, providerIdentifier) {
   return (providerNodes || []).find(
-    (node) => node.id === providerIdentifier || node.prefix === providerIdentifier,
+    (node) => node.id === providerIdentifier || node.prefix === providerIdentifier
   );
 }
 
@@ -588,7 +588,7 @@ function findBuilderProviderByIdentifier(builderProviders, providerIdentifier) {
     (provider) =>
       provider.providerId === providerIdentifier ||
       provider.alias === providerIdentifier ||
-      provider.prefix === providerIdentifier,
+      provider.prefix === providerIdentifier
   );
 }
 
@@ -622,7 +622,7 @@ function formatComboEntryDisplay(
     builderProviders?: any[];
     includeConnection?: boolean;
     showFullEmails?: boolean;
-  } = {},
+  } = {}
 ) {
   const normalizedEntry = normalizeModelEntry(entry);
   if (normalizedEntry.kind === "combo-ref") {
@@ -696,11 +696,11 @@ export default function CombosPage() {
   const activeFilter = normalizeIntelligentRoutingFilter(searchParams.get("filter"));
   const intelligentCombos = useMemo(
     () => combos.filter((combo) => isIntelligentStrategy(combo?.strategy)),
-    [combos],
+    [combos]
   );
   const filteredCombos = useMemo(
     () => filterCombosByStrategyCategory(combos, activeFilter),
-    [combos, activeFilter],
+    [combos, activeFilter]
   );
   const selectedIntelligentCombo = useMemo(() => {
     if (intelligentCombos.length === 0) return null;
@@ -771,7 +771,7 @@ export default function CombosPage() {
       if (combosRes.ok) setCombos((combosData.combos || []).filter((c) => !c.isHidden));
       if (providersRes.ok) {
         const active = (providersData.connections || []).filter(
-          (c) => c.testStatus === "active" || c.testStatus === "success",
+          (c) => c.testStatus === "active" || c.testStatus === "success"
         );
         setActiveProviders(active);
       }
@@ -891,14 +891,14 @@ export default function CombosPage() {
         // of silently reverting with a generic toast — never swallow the error.
         const errorBody = await res.json().catch(() => null);
         setCombos((prev) =>
-          prev.map((c) => (c.id === combo.id ? { ...c, isActive: previousActive } : c)),
+          prev.map((c) => (c.id === combo.id ? { ...c, isActive: previousActive } : c))
         );
         notify.error(resolveServerErrorMessage(errorBody, t("failedToggle")));
       }
     } catch (error) {
       // Revert on network error
       setCombos((prev) =>
-        prev.map((c) => (c.id === combo.id ? { ...c, isActive: previousActive } : c)),
+        prev.map((c) => (c.id === combo.id ? { ...c, isActive: previousActive } : c))
       );
       notify.error(t("failedToggle"));
     }
@@ -933,7 +933,7 @@ export default function CombosPage() {
 
   const handleIntelligentComboUpdated = (updatedCombo) => {
     setCombos((previousCombos) =>
-      previousCombos.map((combo) => (combo.id === updatedCombo?.id ? updatedCombo : combo)),
+      previousCombos.map((combo) => (combo.id === updatedCombo?.id ? updatedCombo : combo))
     );
   };
 
@@ -1059,7 +1059,7 @@ export default function CombosPage() {
                 {getI18nOrFallback(
                   t,
                   "quickTestTitle",
-                  `Combo "${recentlyCreatedCombo}" ready to validate`,
+                  `Combo "${recentlyCreatedCombo}" ready to validate`
                 )}
               </p>
               <code className="inline-block text-[11px] mt-0.5 px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">
@@ -1069,7 +1069,7 @@ export default function CombosPage() {
                 {getI18nOrFallback(
                   t,
                   "quickTestDescription",
-                  "Run a test now to confirm fallback and latency behavior.",
+                  "Run a test now to confirm fallback and latency behavior."
                 )}
               </p>
             </div>
@@ -1112,7 +1112,7 @@ export default function CombosPage() {
             icon: "sort",
             label: getI18nOrFallback(t, "filterDeterministic", "Deterministic"),
             count: combos.filter(
-              (combo) => getStrategyCategory(combo?.strategy) === "deterministic",
+              (combo) => getStrategyCategory(combo?.strategy) === "deterministic"
             ).length,
           },
         ].map((tab) => {
@@ -1170,12 +1170,12 @@ export default function CombosPage() {
                 ? getI18nOrFallback(
                     t,
                     "filterEmptyIntelligentDescription",
-                    "Create an auto or LKGP combo to populate the intelligent routing dashboard.",
+                    "Create an auto or LKGP combo to populate the intelligent routing dashboard."
                   )
                 : getI18nOrFallback(
                     t,
                     "filterEmptyDeterministicDescription",
-                    "Only auto and LKGP combos exist right now. Switch back to All or create a deterministic combo.",
+                    "Only auto and LKGP combos exist right now. Switch back to All or create a deterministic combo."
                   )}
             </p>
             <div>
@@ -1319,7 +1319,7 @@ function ComboUsageGuide({ onHide, onHideForever, onCreateCombo }) {
               {getI18nOrFallback(
                 t,
                 "wizardGuideDesc",
-                "Create model combos to route AI traffic intelligently",
+                "Create model combos to route AI traffic intelligently"
               )}
             </p>
           </div>
@@ -1457,7 +1457,7 @@ function StrategyRecommendationsPanel({ strategy, onApply, showNudge }) {
           {getI18nOrFallback(
             t,
             "recommendationsUpdated",
-            "Recommendations updated for {strategy}.",
+            "Recommendations updated for {strategy}."
           ).replace("{strategy}", strategyLabel)}
         </div>
       )}
@@ -1498,7 +1498,7 @@ function ComboReadinessPanel({ checks, blockers, showDescription = true }) {
           {getI18nOrFallback(
             t,
             "readinessDescription",
-            "Review the checklist before creating or updating this combo.",
+            "Review the checklist before creating or updating this combo."
           )}
         </p>
       )}
@@ -1530,7 +1530,7 @@ function ComboReadinessPanel({ checks, blockers, showDescription = true }) {
             {getI18nOrFallback(
               t,
               "saveBlockedTitle",
-              "Save is blocked until the following items are fixed:",
+              "Save is blocked until the following items are fixed:"
             )}
           </p>
           <div className="mt-1 flex flex-col gap-0.5">
@@ -1656,7 +1656,7 @@ function ComboCard({
               <Tooltip content={strategyDescription}>
                 <span
                   className={`text-[9px] uppercase font-semibold px-1.5 py-0.5 rounded-full ${getStrategyBadgeClass(
-                    strategy,
+                    strategy
                   )}`}
                 >
                   {getStrategyLabel(t, strategy)}
@@ -1941,7 +1941,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       agentContextCache: false,
       contextLength: undefined,
     }),
-    [],
+    []
   );
 
   const t = useTranslations("combos");
@@ -1983,16 +1983,16 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
   const [agentSystemMessage, setAgentSystemMessage] = useState<string>(combo?.system_message || "");
   const [agentToolFilter, setAgentToolFilter] = useState<string>(combo?.tool_filter_regex || "");
   const [agentContextCache, setAgentContextCache] = useState<boolean>(
-    !!combo?.context_cache_protection,
+    !!combo?.context_cache_protection
   );
   const [contextLength, setContextLength] = useState<number | undefined>(
-    combo?.context_length || undefined,
+    combo?.context_length || undefined
   );
   const [contextLengthError, setContextLengthError] = useState<string>("");
   const comboBuilderStages = useMemo(() => getComboBuilderStages({ strategy }), [strategy]);
   const visibleStageMeta = useMemo(
     () => COMBO_FORM_STAGE_META.filter((stageMeta) => comboBuilderStages.includes(stageMeta.id)),
-    [comboBuilderStages],
+    [comboBuilderStages]
   );
   const usesIntelligentBuilderStage = isIntelligentBuilderStrategy(strategy);
   const intelligentConfig = useMemo(() => normalizeIntelligentRoutingConfig(config), [config]);
@@ -2008,7 +2008,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       const nextConfig = nextCombo?.config
         ? sanitizeComboRuntimeConfig(nextCombo.config)
         : sanitizeComboRuntimeConfig(
-            Object.fromEntries(Object.entries(nextDefaults).filter(([key]) => key !== "strategy")),
+            Object.fromEntries(Object.entries(nextDefaults).filter(([key]) => key !== "strategy"))
           );
 
       setName(nextCombo?.name || "");
@@ -2024,7 +2024,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       setAgentContextCache(!!nextCombo?.context_cache_protection);
       setContextLength(nextCombo?.context_length || undefined);
     },
-    [isExpertMode, setAgentContextCache, setContextLength],
+    [isExpertMode, setAgentContextCache, setContextLength]
   );
 
   useEffect(() => {
@@ -2073,17 +2073,17 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
 
       return providerCandidates.some((candidate) => !!pricingByProvider?.[candidate]?.[modelId]);
     },
-    [pricingByProvider, providerNodes],
+    [pricingByProvider, providerNodes]
   );
 
   const [dragIndex, setDragIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
   const builderProviders = useMemo(
     () => builderOptions.providers || [],
-    [builderOptions.providers],
+    [builderOptions.providers]
   );
   const builderComboRefs = (builderOptions.comboRefs || []).filter(
-    (comboRef) => comboRef.name !== combo?.name && comboRef.name !== name.trim(),
+    (comboRef) => comboRef.name !== combo?.name && comboRef.name !== name.trim()
   );
   const selectedBuilderProvider =
     builderProviders.find((provider) => provider.providerId === builderProviderId) || null;
@@ -2098,7 +2098,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
   // Defensive: only carry allowlist ids that still belong to the selected provider's
   // connections, so stale ids from a previous provider can never leak into a step.
   const builderEffectiveAllowedConnectionIds = builderAllowedConnectionIds.filter((id) =>
-    selectedBuilderConnections.some((connection) => connection.id === id),
+    selectedBuilderConnections.some((connection) => connection.id === id)
   );
   const builderCandidateStep =
     selectedBuilderProvider && selectedBuilderModel
@@ -2122,7 +2122,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
   const weightTotal = models.reduce((sum, modelEntry) => sum + (modelEntry.weight || 0), 0);
   const pricedModelCount = models.reduce(
     (count, modelEntry) => count + (hasPricingForModel(modelEntry.model) ? 1 : 0),
-    0,
+    0
   );
   const pricingCoveragePercent =
     models.length > 0 ? Math.round((pricedModelCount / models.length) * 100) : 0;
@@ -2153,7 +2153,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
           ? true
           : true;
   const currentStageIndex = visibleStageMeta.findIndex(
-    (stageMeta) => stageMeta.id === builderStage,
+    (stageMeta) => stageMeta.id === builderStage
   );
   const pinnedAccountCount = models.filter((entry) => Boolean(entry?.connectionId)).length;
   const comboRefCount = models.filter((entry) => entry?.kind === "combo-ref").length;
@@ -2164,7 +2164,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         const parsed = parseQualifiedModel(target);
         return entry?.providerId || parsed?.providerId || null;
       })
-      .filter(Boolean),
+      .filter(Boolean)
   ).size;
   const saveBlocked =
     !name.trim() ||
@@ -2215,7 +2215,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
     saveBlockers.push(
       typeof t.has === "function" && t.has("saveBlockWeighted")
         ? t("saveBlockWeighted", { total: weightTotal })
-        : `Set weights to 100% (current: ${weightTotal}%).`,
+        : `Set weights to 100% (current: ${weightTotal}%).`
     );
   }
   if (hasCostOptimizedWithoutPricing) {
@@ -2223,8 +2223,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       getI18nOrFallback(
         t,
         "saveBlockPricing",
-        "Add pricing for at least one model or choose a different strategy.",
-      ),
+        "Add pricing for at least one model or choose a different strategy."
+      )
     );
   }
   const showInlineReadinessPanel = !isExpertMode || saveBlockers.length > 0;
@@ -2241,7 +2241,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
 
       if (!aliasesRes.ok || !nodesRes.ok) {
         throw new Error(
-          `Failed to fetch data: aliases=${aliasesRes.status}, nodes=${nodesRes.status}`,
+          `Failed to fetch data: aliases=${aliasesRes.status}, nodes=${nodesRes.status}`
         );
       }
       const pricingData = pricingRes.ok ? await pricingRes.json() : {};
@@ -2251,7 +2251,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       setPricingByProvider(
         pricingData && typeof pricingData === "object" && !Array.isArray(pricingData)
           ? pricingData
-          : {},
+          : {}
       );
       setModelAliases(aliasesData.aliases || {});
       setProviderNodes(nodesData.nodes || []);
@@ -2383,7 +2383,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
     setBuilderAllowedConnectionIds((prev) =>
       prev.includes(connectionId)
         ? prev.filter((id) => id !== connectionId)
-        : [...prev, connectionId],
+        : [...prev, connectionId]
     );
     setBuilderError("");
   };
@@ -2403,8 +2403,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         models,
         selectedBuilderProvider.providerId,
         nextModelId,
-        selectedBuilderProvider.connections || [],
-      ),
+        selectedBuilderProvider.connections || []
+      )
     );
   };
 
@@ -2440,8 +2440,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         getI18nOrFallback(
           t,
           "builderDuplicateExact",
-          "This exact provider/model/account step is already in the combo.",
-        ),
+          "This exact provider/model/account step is already in the combo."
+        )
       );
       return;
     }
@@ -2455,8 +2455,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         nextModels,
         selectedBuilderProvider.providerId,
         selectedBuilderModel.id,
-        selectedBuilderConnections,
-      ),
+        selectedBuilderConnections
+      )
     );
   };
 
@@ -2464,18 +2464,18 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
     const parsedManualModel = parseQualifiedModel(manualModelInput);
     if (!parsedManualModel) {
       setManualModelError(
-        getI18nOrFallback(t, "manualModelInvalid", "Enter a model as provider/model."),
+        getI18nOrFallback(t, "manualModelInvalid", "Enter a model as provider/model.")
       );
       return;
     }
 
     const resolvedProviderId = resolveComboBuilderProviderId(
       parsedManualModel.providerId,
-      builderProviders,
+      builderProviders
     );
     if (!resolvedProviderId) {
       setManualModelError(
-        getI18nOrFallback(t, "manualModelUnknownProvider", "Unknown provider prefix."),
+        getI18nOrFallback(t, "manualModelUnknownProvider", "Unknown provider prefix.")
       );
       return;
     }
@@ -2487,7 +2487,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
 
     if (!nextStep) {
       setManualModelError(
-        getI18nOrFallback(t, "manualModelInvalid", "Enter a model as provider/model."),
+        getI18nOrFallback(t, "manualModelInvalid", "Enter a model as provider/model.")
       );
       return;
     }
@@ -2497,8 +2497,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         getI18nOrFallback(
           t,
           "builderDuplicateExact",
-          "This exact provider/model/account step is already in the combo.",
-        ),
+          "This exact provider/model/account step is already in the combo."
+        )
       );
       return;
     }
@@ -2542,8 +2542,8 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         getI18nOrFallback(
           t,
           "builderDuplicateExact",
-          "This exact provider/model/account step is already in the combo.",
-        ),
+          "This exact provider/model/account step is already in the combo."
+        )
       );
       return;
     }
@@ -2587,7 +2587,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
       models.map((m, i) => ({
         ...m,
         weight: weight + (i === 0 ? remainder : 0),
-      })),
+      }))
     );
   };
 
@@ -2632,7 +2632,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
     }
 
     notify.success(
-      getI18nOrFallback(t, "recommendationsApplied", "Recommendations applied to this combo."),
+      getI18nOrFallback(t, "recommendationsApplied", "Recommendations applied to this combo.")
     );
   };
 
@@ -2675,7 +2675,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
         showFullEmails: emailsVisible,
       });
     },
-    [builderProviders, emailsVisible, providerNodes],
+    [builderProviders, emailsVisible, providerNodes]
   );
 
   const handleMoveUp = (index) => {
@@ -2837,7 +2837,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "builderStagesDescription",
-                      "Move through the stages in order to define the combo, build the steps, choose the routing strategy and review the result.",
+                      "Move through the stages in order to define the combo, build the steps, choose the routing strategy and review the result."
                     )}
                   </p>
                 </div>
@@ -2897,7 +2897,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           {getI18nOrFallback(
                             t,
                             `builderStage.${stageMeta.id}.label`,
-                            stageMeta.fallbackLabel,
+                            stageMeta.fallbackLabel
                           )}
                         </span>
                       </div>
@@ -2905,7 +2905,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         {getI18nOrFallback(
                           t,
                           `builderStage.${stageMeta.id}.description`,
-                          stageMeta.fallbackDescription,
+                          stageMeta.fallbackDescription
                         )}
                       </p>
                       <p className="text-[9px] uppercase tracking-wide mt-1 text-text-muted">
@@ -2954,7 +2954,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                   placeholder={getI18nOrFallback(
                     t,
                     "comboDescriptionPlaceholder",
-                    "Optional note describing this combo",
+                    "Optional note describing this combo"
                   )}
                   className="w-full text-xs py-1.5 px-2 rounded border border-black/10 dark:border-white/10 bg-transparent focus:border-primary focus:outline-none resize-none"
                 />
@@ -2970,7 +2970,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                       {getI18nOrFallback(
                         t,
                         "templatesDescription",
-                        COMBO_TEMPLATE_FALLBACK.description,
+                        COMBO_TEMPLATE_FALLBACK.description
                       )}
                     </p>
                   </div>
@@ -3120,7 +3120,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         {getI18nOrFallback(
                           t,
                           "builderStepsDescription",
-                          "Build each combo step in sequence: provider, model, then account. This allows repeating the same provider and model with different accounts.",
+                          "Build each combo step in sequence: provider, model, then account. This allows repeating the same provider and model with different accounts."
                         )}
                       </p>
                     )}
@@ -3174,7 +3174,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           getI18nOrFallback(
                             t,
                             "builderDuplicateExact",
-                            "This exact provider/model/account step is already in the combo.",
+                            "This exact provider/model/account step is already in the combo."
                           )}
                       </div>
                     )}
@@ -3246,7 +3246,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         {getI18nOrFallback(
                           t,
                           "autoSelectAccount",
-                          "Auto-select account at runtime",
+                          "Auto-select account at runtime"
                         )}
                       </option>
                       {selectedBuilderConnections.map((connection) => (
@@ -3266,7 +3266,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                       {getI18nOrFallback(
                         t,
                         "builderRestrictAccounts",
-                        "Restrict to accounts (optional)",
+                        "Restrict to accounts (optional)"
                       )}
                     </label>
                     <div className="flex flex-wrap gap-1.5" data-testid="combo-builder-allowlist">
@@ -3293,7 +3293,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                       {getI18nOrFallback(
                         t,
                         "builderRestrictAccountsHint",
-                        "Leave empty to use the whole active pool. When selected, round-robin / weighted picks stay within this subset of accounts.",
+                        "Leave empty to use the whole active pool. When selected, round-robin / weighted picks stay within this subset of accounts."
                       )}
                     </p>
                   </div>
@@ -3314,7 +3314,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         {getI18nOrFallback(
                           t,
                           "builderDuplicateExact",
-                          "This exact provider/model/account step is already in the combo.",
+                          "This exact provider/model/account step is already in the combo."
                         )}
                       </span>
                     )}
@@ -3330,7 +3330,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         : getI18nOrFallback(
                             t,
                             "previewNextStep",
-                            "Choose provider and model to preview the next step.",
+                            "Choose provider and model to preview the next step."
                           )}
                     </p>
                     <div className="flex flex-wrap items-center gap-1.5 mt-2">
@@ -3347,7 +3347,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           {getI18nOrFallback(
                             t,
                             "builderDuplicateExact",
-                            "This exact provider/model/account step is already in the combo.",
+                            "This exact provider/model/account step is already in the combo."
                           )}
                         </span>
                       )}
@@ -3369,7 +3369,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         {getI18nOrFallback(
                           t,
                           "selectComboToReference",
-                          "Select an existing combo to reference",
+                          "Select an existing combo to reference"
                         )}
                       </option>
                       {builderComboRefs.map((comboRef) => (
@@ -3444,7 +3444,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                                 ? getI18nOrFallback(
                                     t,
                                     "builderDynamicAccountShort",
-                                    "Dynamic account",
+                                    "Dynamic account"
                                   )
                                 : getI18nOrFallback(t, "builderLegacyEntry", "Legacy model entry")}
                         </div>
@@ -3551,7 +3551,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                       {getI18nOrFallback(
                         t,
                         "pricingCoverageHint",
-                        "Cost-optimized works best when all combo models have pricing.",
+                        "Cost-optimized works best when all combo models have pricing."
                       )}
                     </p>
                   )}
@@ -3581,7 +3581,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "warningRoundRobinSingleModel",
-                      "Round-robin is most useful with at least 2 models.",
+                      "Round-robin is most useful with at least 2 models."
                     )}
                   </span>
                 </div>
@@ -3608,7 +3608,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "warningCostOptimizedNoPricing",
-                      "No pricing data found for this combo. Cost-optimized may route unexpectedly.",
+                      "No pricing data found for this combo. Cost-optimized may route unexpectedly."
                     )}
                   </span>
                 </div>
@@ -3659,7 +3659,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.maxRetries",
-                          ADVANCED_FIELD_HELP_FALLBACK.maxRetries,
+                          ADVANCED_FIELD_HELP_FALLBACK.maxRetries
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -3684,7 +3684,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.retryDelay",
-                          ADVANCED_FIELD_HELP_FALLBACK.retryDelay,
+                          ADVANCED_FIELD_HELP_FALLBACK.retryDelay
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -3710,7 +3710,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.targetTimeoutMs",
-                          ADVANCED_FIELD_HELP_FALLBACK.targetTimeoutMs,
+                          ADVANCED_FIELD_HELP_FALLBACK.targetTimeoutMs
                         )}
                         showHelp={!isExpertMode}
                         htmlFor="combo-target-timeout-ms"
@@ -3759,7 +3759,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           content={getI18nOrFallback(
                             t,
                             "advancedHelp.failoverBeforeRetry",
-                            ADVANCED_FIELD_HELP_FALLBACK.failoverBeforeRetry,
+                            ADVANCED_FIELD_HELP_FALLBACK.failoverBeforeRetry
                           )}
                         >
                           <span className="material-symbols-outlined text-[12px] text-text-muted cursor-help">
@@ -3777,7 +3777,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.maxSetRetries",
-                          ADVANCED_FIELD_HELP_FALLBACK.maxSetRetries,
+                          ADVANCED_FIELD_HELP_FALLBACK.maxSetRetries
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -3802,7 +3802,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.setRetryDelayMs",
-                          ADVANCED_FIELD_HELP_FALLBACK.setRetryDelayMs,
+                          ADVANCED_FIELD_HELP_FALLBACK.setRetryDelayMs
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -3831,7 +3831,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "advancedHelp.concurrencyPerModel",
-                            ADVANCED_FIELD_HELP_FALLBACK.concurrencyPerModel,
+                            ADVANCED_FIELD_HELP_FALLBACK.concurrencyPerModel
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -3858,7 +3858,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "advancedHelp.queueTimeout",
-                            ADVANCED_FIELD_HELP_FALLBACK.queueTimeout,
+                            ADVANCED_FIELD_HELP_FALLBACK.queueTimeout
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -3884,7 +3884,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "advancedHelp.stickyLimit",
-                            ADVANCED_FIELD_HELP_FALLBACK.stickyLimit,
+                            ADVANCED_FIELD_HELP_FALLBACK.stickyLimit
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -3914,12 +3914,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           label={getI18nOrFallback(
                             t,
                             "stickyWeightedLimit",
-                            "Sticky Weighted Limit",
+                            "Sticky Weighted Limit"
                           )}
                           help={getI18nOrFallback(
                             t,
                             "advancedHelp.stickyWeightedLimit",
-                            ADVANCED_FIELD_HELP_FALLBACK.stickyWeightedLimit,
+                            ADVANCED_FIELD_HELP_FALLBACK.stickyWeightedLimit
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -3949,7 +3949,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.nestedComboMode",
-                          ADVANCED_FIELD_HELP_FALLBACK.nestedComboMode,
+                          ADVANCED_FIELD_HELP_FALLBACK.nestedComboMode
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -3974,12 +3974,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                         label={getI18nOrFallback(
                           t,
                           "disableSessionStickiness",
-                          "Disable session stickiness",
+                          "Disable session stickiness"
                         )}
                         help={getI18nOrFallback(
                           t,
                           "advancedHelp.disableSessionStickiness",
-                          "Rotate to a different connection on every request instead of pinning a whole conversation to one connection by the first-message hash. Overrides the global default. Leave on Inherit to preserve prompt-cache hits for multi-turn chats.",
+                          "Rotate to a different connection on every request instead of pinning a whole conversation to one connection by the first-message hash. Overrides the global default. Leave on Inherit to preserve prompt-cache hits for multi-turn chats."
                         )}
                         showHelp={!isExpertMode}
                       />
@@ -4023,12 +4023,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           label={getI18nOrFallback(
                             t,
                             "contextRelayHandoffThreshold",
-                            "Handoff Threshold",
+                            "Handoff Threshold"
                           )}
                           help={getI18nOrFallback(
                             t,
                             "contextRelayHandoffThresholdHelp",
-                            "When quota usage reaches this threshold, OmniRoute generates a structured handoff summary before the account is exhausted.",
+                            "When quota usage reaches this threshold, OmniRoute generates a structured handoff summary before the account is exhausted."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4053,12 +4053,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           label={getI18nOrFallback(
                             t,
                             "contextRelayMaxMessages",
-                            "Max Messages For Summary",
+                            "Max Messages For Summary"
                           )}
                           help={getI18nOrFallback(
                             t,
                             "contextRelayMaxMessagesHelp",
-                            "Limits how much recent history is condensed into the relay summary.",
+                            "Limits how much recent history is condensed into the relay summary."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4085,7 +4085,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "contextRelaySummaryModelHelp",
-                            "Optional override model used only for generating the handoff summary. Leave empty to reuse the active combo model.",
+                            "Optional override model used only for generating the handoff summary. Leave empty to reuse the active combo model."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4108,7 +4108,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                             {getI18nOrFallback(
                               t,
                               "contextRelayProviderNote",
-                              "Context Relay currently generates handoffs for Codex account rotation. Pair it with multiple accounts of the same provider for the best continuity.",
+                              "Context Relay currently generates handoffs for Codex account rotation. Pair it with multiple accounts of the same provider for the best continuity."
                             )}
                           </p>
                         </div>
@@ -4123,7 +4123,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "fusionJudgeModelHelp",
-                            "Model that synthesizes the panel answers into one final response. Leave empty to use the first panel model.",
+                            "Model that synthesizes the panel answers into one final response. Leave empty to use the first panel model."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4143,7 +4143,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           help={getI18nOrFallback(
                             t,
                             "fusionMinPanelHelp",
-                            "Successful panel answers required before stragglers get a grace window (default 2).",
+                            "Successful panel answers required before stragglers get a grace window (default 2)."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4164,12 +4164,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           label={getI18nOrFallback(
                             t,
                             "fusionStragglerGraceMs",
-                            "Straggler grace (ms)",
+                            "Straggler grace (ms)"
                           )}
                           help={getI18nOrFallback(
                             t,
                             "fusionStragglerGraceMsHelp",
-                            "How long to wait for slow panel models once quorum is reached (default 8000).",
+                            "How long to wait for slow panel models once quorum is reached (default 8000)."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4181,7 +4181,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           placeholder="8000"
                           onChange={(e) =>
                             setConfig(
-                              updateFusionTuning(config, "stragglerGraceMs", e.target.value),
+                              updateFusionTuning(config, "stragglerGraceMs", e.target.value)
                             )
                           }
                           className="w-full text-xs py-1.5 px-2 rounded border border-black/10 dark:border-white/10 bg-transparent focus:border-primary focus:outline-none"
@@ -4192,12 +4192,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           label={getI18nOrFallback(
                             t,
                             "fusionPanelHardTimeoutMs",
-                            "Panel hard timeout (ms)",
+                            "Panel hard timeout (ms)"
                           )}
                           help={getI18nOrFallback(
                             t,
                             "fusionPanelHardTimeoutMsHelp",
-                            "Absolute cap so one hung model can't stall the whole panel (default 90000).",
+                            "Absolute cap so one hung model can't stall the whole panel (default 90000)."
                           )}
                           showHelp={!isExpertMode}
                         />
@@ -4209,7 +4209,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                           placeholder="90000"
                           onChange={(e) =>
                             setConfig(
-                              updateFusionTuning(config, "panelHardTimeoutMs", e.target.value),
+                              updateFusionTuning(config, "panelHardTimeoutMs", e.target.value)
                             )
                           }
                           className="w-full text-xs py-1.5 px-2 rounded border border-black/10 dark:border-white/10 bg-transparent focus:border-primary focus:outline-none"
@@ -4257,7 +4257,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "agentFeaturesDescription",
-                      "Tune agent prompts and tool access for this combo.",
+                      "Tune agent prompts and tool access for this combo."
                     )}
                   </span>
                 )}
@@ -4269,7 +4269,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                   {getI18nOrFallback(
                     t,
                     "agentFeaturesSystemMessageOverride",
-                    "System message override",
+                    "System message override"
                   )}
                 </label>
                 <textarea
@@ -4279,7 +4279,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                   placeholder={getI18nOrFallback(
                     t,
                     "agentFeaturesSystemMessagePlaceholder",
-                    "Optional system instructions for this combo",
+                    "Optional system instructions for this combo"
                   )}
                   className="w-full text-xs py-1.5 px-2 rounded border border-black/10 dark:border-white/10 bg-transparent focus:border-primary focus:outline-none resize-none"
                 />
@@ -4288,7 +4288,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "agentFeaturesSystemMessageHint",
-                      "Applied only when this combo is used as an agent.",
+                      "Applied only when this combo is used as an agent."
                     )}
                   </p>
                 )}
@@ -4311,7 +4311,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "agentFeaturesToolFilterHint",
-                      "Limit agent tools by name with a regular expression.",
+                      "Limit agent tools by name with a regular expression."
                     )}
                   </p>
                 )}
@@ -4324,7 +4324,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "agentFeaturesContextCacheProtection",
-                      "Context cache protection",
+                      "Context cache protection"
                     )}
                   </label>
                   {!isExpertMode && (
@@ -4332,7 +4332,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                       {getI18nOrFallback(
                         t,
                         "agentFeaturesContextCacheHint",
-                        "Keep cached context isolated when provider state changes.",
+                        "Keep cached context isolated when provider state changes."
                       )}
                     </p>
                   )}
@@ -4377,7 +4377,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                   placeholder={getI18nOrFallback(
                     t,
                     "agentFeaturesContextLengthPlaceholder",
-                    "e.g. 128000",
+                    "e.g. 128000"
                   )}
                   className="w-full text-xs py-1.5 px-2 rounded border border-black/10 dark:border-white/10 bg-transparent focus:border-primary focus:outline-none"
                 />
@@ -4389,7 +4389,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                     {getI18nOrFallback(
                       t,
                       "agentFeaturesContextLengthHint",
-                      "Defines the context window for this combo in /v1/models.",
+                      "Defines the context window for this combo in /v1/models."
                     )}
                   </p>
                 )}
@@ -4550,7 +4550,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                                 ? getI18nOrFallback(
                                     t,
                                     "builderComboRefStep",
-                                    "Nested combo reference",
+                                    "Nested combo reference"
                                   )
                                 : entry.connectionId
                                   ? getI18nOrFallback(t, "builderPinnedAccount", "Pinned account")
@@ -4558,12 +4558,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                                     ? getI18nOrFallback(
                                         t,
                                         "builderDynamicAccountShort",
-                                        "Dynamic account",
+                                        "Dynamic account"
                                       )
                                     : getI18nOrFallback(
                                         t,
                                         "builderLegacyEntry",
-                                        "Legacy model entry",
+                                        "Legacy model entry"
                                       )}
                               {strategy === "weighted" && entry.weight > 0
                                 ? ` · ${entry.weight}%`
@@ -4625,12 +4625,12 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, combo
                 ? getI18nOrFallback(
                     t,
                     "builderNeedValidName",
-                    "Define a valid combo name before continuing.",
+                    "Define a valid combo name before continuing."
                   )
                 : getI18nOrFallback(
                     t,
                     "addStepBeforeContinue",
-                    "Add at least one step before continuing to the next stage.",
+                    "Add at least one step before continuing to the next stage."
                   )}
             </div>
           )}

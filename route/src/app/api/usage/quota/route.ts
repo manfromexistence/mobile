@@ -43,7 +43,7 @@ function deriveTokenStatus(connection: ProviderConnectionRecord): QuotaTokenStat
 function buildQuotaEntry(
   connection: ProviderConnectionRecord,
   learnedLimit: unknown,
-  rateStatus: Record<string, unknown>,
+  rateStatus: Record<string, unknown>
 ): QuotaProviderEntry {
   const provider =
     typeof connection.provider === "string" && connection.provider.trim()
@@ -163,7 +163,7 @@ export async function GET(request: Request) {
       {
         provider: providerFilter,
         connectionId: connectionIdFilter,
-      },
+      }
     );
 
     return NextResponse.json(response);

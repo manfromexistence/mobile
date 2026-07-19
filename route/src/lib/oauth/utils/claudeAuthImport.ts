@@ -56,7 +56,7 @@ export function parseAndValidateClaudeAuth(raw: unknown): ParsedClaudeAuth {
     throw new ClaudeAuthFileError(
       "accessToken is missing or empty in claudeAiOauth",
       400,
-      "missing_access_token",
+      "missing_access_token"
     );
   }
 
@@ -64,7 +64,7 @@ export function parseAndValidateClaudeAuth(raw: unknown): ParsedClaudeAuth {
     throw new ClaudeAuthFileError(
       "refreshToken is missing or empty in claudeAiOauth",
       400,
-      "missing_refresh_token",
+      "missing_refresh_token"
     );
   }
 
@@ -98,7 +98,7 @@ export function parseAndValidateClaudeAuth(raw: unknown): ParsedClaudeAuth {
 export async function enrichWithBootstrap(
   parsed: ParsedClaudeAuth,
   // proxyConfig reserved for future authenticated-proxy support
-  proxyConfig?: null,
+  proxyConfig?: null
 ): Promise<EnrichedClaudeAuth> {
   const base: EnrichedClaudeAuth = {
     ...parsed,
@@ -156,7 +156,7 @@ export async function enrichWithBootstrap(
 // ──── Lookup ──────────────────────────────────────────────────────────────────
 
 export async function findExistingClaudeConnection(
-  accountUUID: string,
+  accountUUID: string
 ): Promise<JsonRecord | null> {
   const connections = await getProviderConnections({ provider: "claude" });
   const lower = accountUUID.toLowerCase();
@@ -173,7 +173,7 @@ export async function findExistingClaudeConnection(
 
 export async function createConnectionFromAuthFile(
   enriched: EnrichedClaudeAuth,
-  options: CreateConnectionOptions,
+  options: CreateConnectionOptions
 ): Promise<{ connection: JsonRecord; created: boolean }> {
   // Duplicate detection by accountUUID (skipped when bootstrap failed)
   if (enriched.accountUUID) {
@@ -184,7 +184,7 @@ export async function createConnectionFromAuthFile(
         throw new ClaudeAuthFileError(
           "A Claude connection for this account already exists. Pass overwriteExisting: true to replace it.",
           409,
-          "duplicate_account",
+          "duplicate_account"
         );
       }
 
@@ -225,7 +225,7 @@ export async function createConnectionFromAuthFile(
     throw new ClaudeAuthFileError(
       "Could not verify the account identity (bootstrap failed and no email/accountUUID available). Pass overwriteExisting: true to import anyway.",
       409,
-      "identity_unverified",
+      "identity_unverified"
     );
   }
 

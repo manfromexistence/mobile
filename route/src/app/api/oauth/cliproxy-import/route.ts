@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   try {
     const { candidates, skipped, scanned } = await scanCliProxyAuthDir(
       cliProxyConfigDir(),
-      Date.now(),
+      Date.now()
     );
     // Sanitize: never return access/refresh tokens to the client.
     const accounts = candidates.map((c) => ({
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   try {
     const { candidates, skipped, scanned } = await scanCliProxyAuthDir(
       cliProxyConfigDir(),
-      Date.now(),
+      Date.now()
     );
     let imported = 0;
     const results: Array<{ provider: string; email: string | null; ok: boolean; error?: string }> =
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

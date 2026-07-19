@@ -40,7 +40,7 @@ export function buildAliasEnvVar(alias: string): string | null {
 
 function getValidMappings(aliasMappings: CustomCliAliasMapping[] = []): CustomCliAliasMapping[] {
   return aliasMappings.filter(
-    (mapping) => mapping.alias.trim().length > 0 && mapping.model.trim().length > 0,
+    (mapping) => mapping.alias.trim().length > 0 && mapping.model.trim().length > 0
   );
 }
 
@@ -120,7 +120,7 @@ export function buildCustomCliJsonConfig({
     ...(mappings.length > 0
       ? {
           modelAliases: Object.fromEntries(
-            mappings.map((mapping) => [mapping.alias.trim(), mapping.model.trim()]),
+            mappings.map((mapping) => [mapping.alias.trim(), mapping.model.trim()])
           ),
         }
       : {}),

@@ -99,7 +99,7 @@ export function upsertHandoff(payload: HandoffPayload): void {
        warning_threshold_pct = excluded.warning_threshold_pct,
        generated_at = excluded.generated_at,
        expires_at = excluded.expires_at,
-       created_at = excluded.created_at`,
+       created_at = excluded.created_at`
   ).run(
     payload.sessionId,
     payload.comboName,
@@ -114,7 +114,7 @@ export function upsertHandoff(payload: HandoffPayload): void {
     payload.warningThresholdPct,
     payload.generatedAt,
     payload.expiresAt,
-    createdAt,
+    createdAt
   );
 }
 
@@ -127,7 +127,7 @@ export function getHandoff(sessionId: string, comboName: string): HandoffPayload
        FROM context_handoffs
        WHERE session_id = ? AND combo_name = ? AND expires_at > ?
        ORDER BY created_at DESC
-       LIMIT 1`,
+       LIMIT 1`
     )
     .get(sessionId, comboName, now);
 
@@ -138,7 +138,7 @@ export function deleteHandoff(sessionId: string, comboName: string): void {
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("DELETE FROM context_handoffs WHERE session_id = ? AND combo_name = ?").run(
     sessionId,
-    comboName,
+    comboName
   );
 }
 
@@ -163,7 +163,7 @@ export function hasActiveHandoff(sessionId: string, comboName: string): boolean 
       `SELECT 1
        FROM context_handoffs
        WHERE session_id = ? AND combo_name = ? AND expires_at > ?
-       LIMIT 1`,
+       LIMIT 1`
     )
     .get(sessionId, comboName, now);
 
@@ -184,13 +184,13 @@ export function recordSessionModelUsage(
   comboName: string,
   modelStr: string,
   provider: string,
-  connectionId?: string,
+  connectionId?: string
 ): void {
   const db = getDbInstance() as unknown as DbLike;
   db.prepare(
     `INSERT INTO session_model_history
       (session_id, combo_name, model_str, provider, connection_id)
-     VALUES (?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?)`
   ).run(sessionId, comboName, modelStr, provider, connectionId || null);
 }
 
@@ -210,7 +210,7 @@ export function getLastSessionModel(sessionId: string, comboName: string): strin
        FROM session_model_history
        WHERE session_id = ? AND combo_name = ?
        ORDER BY used_at DESC, id DESC
-       LIMIT 1`,
+       LIMIT 1`
     )
     .get(sessionId, comboName) as { model_str: string } | undefined;
 

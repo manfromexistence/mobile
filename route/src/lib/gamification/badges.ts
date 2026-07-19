@@ -324,7 +324,7 @@ async function getActionCount(apiKeyId: string, action: string): Promise<number>
         END
       ), 0) AS total
       FROM xp_audit_log
-      WHERE api_key_id = ? AND action = ?`,
+      WHERE api_key_id = ? AND action = ?`
     )
     .get(apiKeyId, action) as { total: number } | undefined;
 
@@ -345,7 +345,7 @@ async function getUniqueCount(apiKeyId: string, type: string): Promise<number> {
     .prepare(
       `SELECT COUNT(DISTINCT json_extract(metadata, '$.' || ?)) AS total
       FROM xp_audit_log
-      WHERE api_key_id = ? AND metadata IS NOT NULL`,
+      WHERE api_key_id = ? AND metadata IS NOT NULL`
     )
     .get(type, apiKeyId) as { total: number } | undefined;
 
@@ -404,7 +404,7 @@ async function getRank(apiKeyId: string, scope: string): Promise<number> {
 export async function evaluateBadges(
   apiKeyId: string,
   action: string,
-  metadata?: Record<string, unknown>,
+  metadata?: Record<string, unknown>
 ): Promise<string[]> {
   // Import DB functions dynamically to avoid circular deps
   const { getBadgeDefinitions, unlockBadge, getBadges } = await import("../db/gamification");
@@ -493,7 +493,7 @@ export async function evaluateBadges(
       case "hidden": {
         // Secret badge: unlocked by having earned all other badges
         const allOtherDefs = definitions.filter(
-          (d) => d.id !== def.id && !JSON.parse(d.criteria).type?.toString().includes("hidden"),
+          (d) => d.id !== def.id && !JSON.parse(d.criteria).type?.toString().includes("hidden")
         );
         const allOtherEarned = allOtherDefs.every((d) => earnedIds.has(d.id));
         unlocked = allOtherEarned;
@@ -520,7 +520,7 @@ export async function seedBuiltinBadges(): Promise<void> {
 
   const insert = db.prepare(
     `INSERT OR IGNORE INTO badge_definitions (id, name, description, icon, category, rarity, criteria, hidden)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   );
 
   const insertMany = db.transaction((badges: typeof BUILTIN_BADGES) => {
@@ -533,7 +533,7 @@ export async function seedBuiltinBadges(): Promise<void> {
         badge.category,
         badge.rarity,
         badge.criteria,
-        badge.hidden,
+        badge.hidden
       );
     }
   });

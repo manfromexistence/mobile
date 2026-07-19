@@ -14,7 +14,7 @@ export type UserDatabaseSettings = Omit<DatabaseSettings, "location" | "stats">;
 type DatabaseSettingsSection = keyof UserDatabaseSettings;
 
 const DATABASE_SETTINGS_SECTIONS = Object.keys(
-  DEFAULT_DATABASE_SETTINGS,
+  DEFAULT_DATABASE_SETTINGS
 ) as DatabaseSettingsSection[];
 
 const LEGACY_FLAT_KEYS: {
@@ -120,7 +120,7 @@ function readNamespace(namespace: string): Record<string, unknown> {
 function mergeSectionObject(
   target: UserDatabaseSettings,
   section: DatabaseSettingsSection,
-  value: unknown,
+  value: unknown
 ) {
   if (!isRecord(value)) return;
 
@@ -154,7 +154,7 @@ function mergeRuntimeLogSettings(target: UserDatabaseSettings, values: Record<st
 
 function mergeDatabaseSettingsNamespace(
   target: UserDatabaseSettings,
-  values: Record<string, unknown>,
+  values: Record<string, unknown>
 ) {
   for (const section of DATABASE_SETTINGS_SECTIONS) {
     const defaultSection = DEFAULT_DATABASE_SETTINGS[section] as Record<string, unknown>;
@@ -259,7 +259,7 @@ export function getDatabaseSettings(): DatabaseSettings {
 }
 
 export function updateDatabaseSettings(
-  updates: Partial<UserDatabaseSettings>,
+  updates: Partial<UserDatabaseSettings>
 ): UserDatabaseSettings {
   const nextSettings = getUserDatabaseSettings();
   const optimizationUpdated = updates.optimization !== undefined;
@@ -273,10 +273,10 @@ export function updateDatabaseSettings(
 
   const db = getDbInstance();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
   );
   const settingsInsert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)"
   );
 
   const requestedLogs = updates.logs as Partial<UserDatabaseSettings["logs"]> | undefined;

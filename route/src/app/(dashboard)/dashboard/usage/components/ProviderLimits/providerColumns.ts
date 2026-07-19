@@ -54,12 +54,12 @@ export interface ResolvedSchema {
 function matchQuotaByKey(quotas: any[], key: string): any | null {
   // Exact match on quota.name first
   const exact = quotas.find(
-    (q) => q && typeof q.name === "string" && q.name.toLowerCase() === key.toLowerCase(),
+    (q) => q && typeof q.name === "string" && q.name.toLowerCase() === key.toLowerCase()
   );
   if (exact) return exact;
   // Then exact match on modelKey (for antigravity etc.)
   const byModel = quotas.find(
-    (q) => q && typeof q.modelKey === "string" && q.modelKey.toLowerCase() === key.toLowerCase(),
+    (q) => q && typeof q.modelKey === "string" && q.modelKey.toLowerCase() === key.toLowerCase()
   );
   if (byModel) return byModel;
   // Finally, normalized label match — handles "session (5h)" → "session"
@@ -67,7 +67,7 @@ function matchQuotaByKey(quotas: any[], key: string): any | null {
   return (
     quotas.find(
       (q) =>
-        q && typeof q.name === "string" && formatQuotaLabel(q.name).toLowerCase() === normalized,
+        q && typeof q.name === "string" && formatQuotaLabel(q.name).toLowerCase() === normalized
     ) || null
   );
 }
@@ -116,7 +116,7 @@ export function getProviderColumns(provider: string, quotas: any[] = []): Resolv
  * the caller via `PROVIDER_ORDER` in index.tsx).
  */
 export function groupConnectionsByProvider<T extends { provider: string }>(
-  connections: T[],
+  connections: T[]
 ): Map<string, T[]> {
   const groups = new Map<string, T[]>();
   for (const conn of connections) {

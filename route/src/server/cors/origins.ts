@@ -142,7 +142,7 @@ export function getCorsStatus(): CorsStatus {
 export function applyCorsHeaders(
   response: Response,
   request: Request,
-  relaxForTokenAuth: boolean = false,
+  relaxForTokenAuth: boolean = false
 ): void {
   const requestOrigin = request.headers.get("origin");
   let allowed = resolveAllowedOrigin(requestOrigin);

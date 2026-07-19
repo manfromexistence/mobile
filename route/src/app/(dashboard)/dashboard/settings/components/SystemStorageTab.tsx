@@ -497,7 +497,7 @@ export default function SystemStorageTab() {
   const fetchAndDownload = async (
     apiUrl: string,
     fallbackFilename: string,
-    errorMessage: string,
+    errorMessage: string
   ) => {
     const res = await fetch(apiUrl);
     if (!res.ok) {
@@ -516,7 +516,7 @@ export default function SystemStorageTab() {
       await fetchAndDownload(
         "/api/settings/export-json",
         `omniroute-legacy-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.json`,
-        "JSON Export failed",
+        "JSON Export failed"
       );
     } catch (err) {
       console.error("Export JSON failed:", err);
@@ -581,7 +581,7 @@ export default function SystemStorageTab() {
       await fetchAndDownload(
         "/api/db-backups/export",
         `omniroute-backup-${new Date().toISOString().replace(/[:.]/g, "-")}.sqlite`,
-        t("exportFailed"),
+        t("exportFailed")
       );
     } catch (err) {
       console.error("Export failed:", err);
@@ -626,7 +626,7 @@ export default function SystemStorageTab() {
           method: "POST",
           headers: { "Content-Type": "application/octet-stream" },
           body: arrayBuffer,
-        },
+        }
       );
       const data = await res.json();
       if (res.ok) {
@@ -1286,7 +1286,7 @@ export default function SystemStorageTab() {
                 await fetchAndDownload(
                   "/api/db-backups/exportAll",
                   "omniroute-full-backup.tar.gz",
-                  t("exportFailed"),
+                  t("exportFailed")
                 );
               } catch (err) {
                 setImportStatus({

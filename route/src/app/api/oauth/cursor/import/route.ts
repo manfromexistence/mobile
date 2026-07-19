@@ -37,7 +37,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 
     // Validate token by making API call (through proxy if configured)
     const tokenData = await runWithProxyContext(proxy, () =>
-      cursorService.validateImportToken(accessToken.trim(), machineId?.trim()),
+      cursorService.validateImportToken(accessToken.trim(), machineId?.trim())
     );
 
     // Try to extract user info from token (JWT decode, no API call)
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     // same WorkOS session cookie format we use for usage limits.
     const profile = jwtInfo?.userId
       ? await runWithProxyContext(proxy, () =>
-          cursorService.fetchUserInfo(tokenData.accessToken, jwtInfo.userId),
+          cursorService.fetchUserInfo(tokenData.accessToken, jwtInfo.userId)
         )
       : null;
 

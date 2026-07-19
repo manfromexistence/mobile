@@ -17,7 +17,7 @@ import path from "node:path";
 export function mergeShellPath(
   basePath: string,
   extraPath: string,
-  delimiter: string = path.delimiter,
+  delimiter: string = path.delimiter
 ): string {
   const seen = new Set<string>();
   const out: string[] = [];

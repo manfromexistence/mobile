@@ -310,9 +310,8 @@ export async function validateGrokWebProvider({ apiKey, providerSpecificData = {
     // Use the TLS-impersonating client — Cloudflare on grok.com pins
     // cf_clearance to JA3/JA4 + HTTP/2 SETTINGS, so plain Node fetch always
     // gets "Request rejected by anti-bot rules." regardless of cookies (#3180).
-    const { tlsFetchGrok, TlsClientUnavailableError, isCloudflareChallenge } = await import(
-      "@omniroute/open-sse/services/grokTlsClient.ts"
-    );
+    const { tlsFetchGrok, TlsClientUnavailableError, isCloudflareChallenge } =
+      await import("@omniroute/open-sse/services/grokTlsClient.ts");
 
     // Generate the same Cloudflare-bypass headers the GrokWebExecutor uses.
     const randomHex = (n: number) => {
@@ -353,7 +352,7 @@ export async function validateGrokWebProvider({ apiKey, providerSpecificData = {
             "x-xai-request-id": crypto.randomUUID(),
             traceparent: `00-${traceId}-${spanId}-00`,
           },
-          providerSpecificData,
+          providerSpecificData
         ),
         body: JSON.stringify({
           temporary: true,
@@ -494,9 +493,8 @@ export async function validateChatGptWebProvider({ apiKey, providerSpecificData 
     // Use the TLS-impersonating client — Cloudflare on chatgpt.com pins
     // cf_clearance to JA3/JA4 + HTTP/2 SETTINGS, so plain Node fetch always
     // gets cf-mitigated: challenge regardless of cookies.
-    const { tlsFetchChatGpt, TlsClientUnavailableError } = await import(
-      "@omniroute/open-sse/services/chatgptTlsClient.ts"
-    );
+    const { tlsFetchChatGpt, TlsClientUnavailableError } =
+      await import("@omniroute/open-sse/services/chatgptTlsClient.ts");
 
     let response;
     try {
@@ -517,7 +515,7 @@ export async function validateChatGptWebProvider({ apiKey, providerSpecificData 
             "User-Agent":
               "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:152.0) Gecko/20100101 Firefox/152.0",
           },
-          providerSpecificData,
+          providerSpecificData
         ),
         timeoutMs: 30_000,
       });
@@ -619,16 +617,15 @@ export async function validatePerplexityWebProvider({ apiKey, providerSpecificDa
             ? { Cookie: `__Secure-next-auth.session-token=${sessionToken}` }
             : {}),
       },
-      providerSpecificData,
+      providerSpecificData
     );
 
     // Perplexity is behind Cloudflare Enterprise which pins JA3/JA4 to a real
     // browser handshake — plain fetch is challenged with a 403 page from
     // VPS/datacenter IPs even with a valid cookie. Use the Firefox-fingerprinted
     // TLS client so the validator's verdict reflects the cookie, not the IP (issue #2459).
-    const { tlsFetchPerplexity, isCloudflareChallenge, TlsClientUnavailableError } = await import(
-      "@omniroute/open-sse/services/perplexityTlsClient.ts"
-    );
+    const { tlsFetchPerplexity, isCloudflareChallenge, TlsClientUnavailableError } =
+      await import("@omniroute/open-sse/services/perplexityTlsClient.ts");
 
     let response: { status: number; text: string | null };
     try {
@@ -710,7 +707,7 @@ export async function validateBlackboxWebProvider({ apiKey, providerSpecificData
         "User-Agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
       },
-      providerSpecificData,
+      providerSpecificData
     );
 
     const sessionResponse = await validationRead("https://app.blackbox.ai/api/auth/session", {
@@ -740,7 +737,7 @@ export async function validateBlackboxWebProvider({ apiKey, providerSpecificData
         "User-Agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
       },
-      providerSpecificData,
+      providerSpecificData
     );
 
     const subscriptionResponse = await validationWrite(
@@ -749,7 +746,7 @@ export async function validateBlackboxWebProvider({ apiKey, providerSpecificData
         method: "POST",
         headers: subscriptionHeaders,
         body: JSON.stringify({ email: userEmail }),
-      },
+      }
     );
 
     const subscriptionText = await subscriptionResponse.text();

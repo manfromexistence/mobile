@@ -75,7 +75,7 @@ export async function createProviderNode(data: JsonRecord) {
     `
     INSERT INTO provider_nodes (id, type, name, prefix, api_type, base_url, chat_path, models_path, icon_url, custom_headers_json, created_at, updated_at)
     VALUES (@id, @type, @name, @prefix, @apiType, @baseUrl, @chatPath, @modelsPath, @iconUrl, @customHeadersJson, @createdAt, @updatedAt)
-  `,
+  `
   ).run(node);
 
   backupDbFile("pre-write");
@@ -124,7 +124,7 @@ export async function updateProviderNode(id: string, data: JsonRecord) {
     models_path = @modelsPath, icon_url = @iconUrl,
     custom_headers_json = @customHeadersJson, updated_at = @updatedAt
     WHERE id = @id
-  `,
+  `
   ).run({
     id,
     type: merged["type"],

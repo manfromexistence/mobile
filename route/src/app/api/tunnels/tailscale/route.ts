@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       {
         error: error instanceof Error ? error.message : "Failed to load Tailscale status",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

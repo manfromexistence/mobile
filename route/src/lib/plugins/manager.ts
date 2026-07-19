@@ -79,7 +79,7 @@ function assertWithinPluginDir(pluginRoot: string, target: string): void {
   const t = resolve(target);
   if (t !== root && !t.startsWith(root + sep)) {
     throw new Error(
-      `Refusing to delete a path outside the plugin directory: "${t}" is not under "${root}"`,
+      `Refusing to delete a path outside the plugin directory: "${t}" is not under "${root}"`
     );
   }
 }
@@ -97,7 +97,7 @@ function assertEntryPointWithinDest(destDir: string, entryPoint: string): void {
   const ep = resolve(entryPoint);
   if (!ep.startsWith(root + sep)) {
     throw new Error(
-      `Plugin manifest.main resolves outside plugin directory: "${ep}" escapes "${root}"`,
+      `Plugin manifest.main resolves outside plugin directory: "${ep}" escapes "${root}"`
     );
   }
 }
@@ -156,7 +156,7 @@ class PluginManager {
 
     if (plugins.length === 0) {
       throw new Error(
-        `No valid plugin found in ${sourceDir}: ${errors.map((e) => e.error).join(", ")}`,
+        `No valid plugin found in ${sourceDir}: ${errors.map((e) => e.error).join(", ")}`
       );
     }
 
@@ -171,7 +171,7 @@ class PluginManager {
         return this.upgrade(sourceDir);
       }
       throw new Error(
-        `Plugin '${name}' is already installed (${existing.version}) and source version ${manifest.version} is not newer`,
+        `Plugin '${name}' is already installed (${existing.version}) and source version ${manifest.version} is not newer`
       );
     }
 
@@ -273,7 +273,7 @@ class PluginManager {
       const { plugins, errors } = await scanPluginDir(sourceDir);
       if (plugins.length === 0) {
         throw new Error(
-          `No valid plugin found in ${sourceDir}: ${errors.map((e) => e.error).join(", ")}`,
+          `No valid plugin found in ${sourceDir}: ${errors.map((e) => e.error).join(", ")}`
         );
       }
       discovered = plugins[0];
@@ -291,7 +291,7 @@ class PluginManager {
     // Source must be strictly newer
     if (compareSemver(manifest.version, existing.version) <= 0) {
       throw new Error(
-        `Plugin '${name}' upgrade rejected: source version ${manifest.version} is not newer than installed ${existing.version}`,
+        `Plugin '${name}' upgrade rejected: source version ${manifest.version} is not newer than installed ${existing.version}`
       );
     }
 

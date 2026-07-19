@@ -37,7 +37,7 @@ function invalidManagementTokenResponse(options: RequireManagementAuthOptions): 
 
 export async function requireManagementAuth(
   request: Request,
-  options: RequireManagementAuthOptions = {},
+  options: RequireManagementAuthOptions = {}
 ): Promise<Response | null> {
   if (!options.alwaysRequireAuth && !(await isAuthRequired(request))) {
     return null;

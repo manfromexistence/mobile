@@ -143,8 +143,8 @@ export const updateSettingsSchema = z.object({
           {
             message:
               "BYPASS_PREFIX_NOT_ALLOWED: spawn-capable prefixes cannot be added to the manage-scope bypass list",
-          },
-        ),
+          }
+        )
     )
     .optional(),
   customBannedSignals: z.array(z.string().max(200)).optional(),
@@ -192,7 +192,7 @@ export const updateSettingsSchema = z.object({
       z.object({
         fallbackStrategy: z.enum(ACCOUNT_FALLBACK_STRATEGY_VALUES).optional(),
         stickyRoundRobinLimit: z.number().int().min(1).max(1000).optional(),
-      }),
+      })
     )
     .optional(),
   // #6168: global session-stickiness opt-out (per-combo config overrides this).
@@ -243,10 +243,10 @@ export const updateSettingsSchema = z.object({
               z.discriminatedUnion("kind", [
                 ...commonSystemTransformOperationSchemas,
                 transformObfuscateWordsSchema,
-              ]),
+              ])
             )
             .max(50),
-        }),
+        })
       ),
     })
     .optional(),
@@ -271,7 +271,7 @@ export const updateSettingsSchema = z.object({
         providerAlias: z.string().max(50),
         spawnArgs: z.array(z.string().max(200)),
         protocol: z.enum(["stdio", "http"]),
-      }),
+      })
     )
     .optional(),
   // SkillsMP marketplace API key

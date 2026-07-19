@@ -379,7 +379,7 @@ function OpEditor({
             size="sm"
             disabled={disabled}
           />
-        </div>,
+        </div>
       );
     case "drop_paragraph_if_starts_with":
       return wrap(
@@ -399,7 +399,7 @@ function OpEditor({
             size="sm"
             disabled={disabled}
           />
-        </div>,
+        </div>
       );
     case "replace_text":
       return wrap(
@@ -426,7 +426,7 @@ function OpEditor({
             size="sm"
             disabled={disabled}
           />
-        </div>,
+        </div>
       );
     case "replace_regex":
       return wrap(
@@ -452,7 +452,7 @@ function OpEditor({
             disabled={disabled}
             onChange={(e) => updateField("replacement", e.target.value)}
           />
-        </div>,
+        </div>
       );
     case "drop_block_if_contains":
       return wrap(
@@ -462,7 +462,7 @@ function OpEditor({
           items={op.needles || []}
           onChange={(next) => updateField("needles", next)}
           disabled={disabled}
-        />,
+        />
       );
     case "prepend_system_block":
     case "append_system_block":
@@ -486,7 +486,7 @@ function OpEditor({
             disabled={disabled}
             onChange={(e) => updateField("idempotencyKey", e.target.value)}
           />
-        </div>,
+        </div>
       );
     case "inject_billing_header":
       return wrap(
@@ -521,7 +521,7 @@ function OpEditor({
               { value: "static-zero", label: "static-zero (00000 placeholder)" },
             ]}
           />
-        </div>,
+        </div>
       );
     case "obfuscate_words":
       return wrap(
@@ -558,7 +558,7 @@ function OpEditor({
               })}
             </div>
           </div>
-        </div>,
+        </div>
       );
     default:
       return <p className="text-xs text-text-muted">Unknown op kind: {op?.kind}</p>;
@@ -708,7 +708,7 @@ export default function RoutingTab() {
           const details = Array.isArray(body?.error?.details)
             ? body.error.details
                 .map((d: { field?: string; message?: string }) =>
-                  d.field ? `${d.field}: ${d.message ?? "invalid"}` : d.message,
+                  d.field ? `${d.field}: ${d.message ?? "invalid"}` : d.message
                 )
                 .filter(Boolean)
                 .join("; ")
@@ -735,10 +735,10 @@ export default function RoutingTab() {
     () =>
       Array.isArray(settings.cliCompatProviders)
         ? settings.cliCompatProviders.map((providerId: string) =>
-            normalizeCliCompatProviderId(providerId),
+            normalizeCliCompatProviderId(providerId)
           )
         : [],
-    [settings.cliCompatProviders],
+    [settings.cliCompatProviders]
   );
   const cliCompatProviderSet = useMemo(() => new Set(cliCompatProviders), [cliCompatProviders]);
 
@@ -778,7 +778,7 @@ export default function RoutingTab() {
 
   const updateProviderTransforms = (
     providerId: string,
-    next: { enabled: boolean; pipeline: any[] },
+    next: { enabled: boolean; pipeline: any[] }
   ) => {
     const merged = {
       providers: {
@@ -790,7 +790,7 @@ export default function RoutingTab() {
     // state. If the server rejects, the callback below will repopulate it.
     setProviderSaveErrors((prev) => ({ ...prev, [providerId]: null }));
     updateSetting({ systemTransforms: merged }, (msg) =>
-      setProviderSaveErrors((prev) => ({ ...prev, [providerId]: msg })),
+      setProviderSaveErrors((prev) => ({ ...prev, [providerId]: msg }))
     );
   };
 
@@ -861,7 +861,7 @@ export default function RoutingTab() {
 
   const availableProvidersToAdd = useMemo(
     () => PROVIDER_CATALOG.filter((p) => !systemTransforms.providers[p.id]),
-    [systemTransforms.providers],
+    [systemTransforms.providers]
   );
 
   const addProvider = () => {
@@ -1043,7 +1043,7 @@ export default function RoutingTab() {
             const errorMsg = jsonErrors[providerId] ?? null;
             const opCount = Array.isArray(providerCfg.pipeline) ? providerCfg.pipeline.length : 0;
             const hasDefault = Boolean(
-              (DEFAULT_SYSTEM_TRANSFORMS_CLIENT.providers as Record<string, unknown>)[providerId],
+              (DEFAULT_SYSTEM_TRANSFORMS_CLIENT.providers as Record<string, unknown>)[providerId]
             );
             const isJsonOpen = showJsonEditor[providerId] ?? false;
             const enabled = providerCfg.enabled !== false;

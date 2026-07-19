@@ -77,7 +77,7 @@ process.on("message", async (msg) => {
  */
 export async function loadPlugin(
   entryPoint: string,
-  manifest: PluginManifestWithDefaults,
+  manifest: PluginManifestWithDefaults
 ): Promise<LoadedPlugin> {
   // Integrity check: if the manifest declares an integrity field, verify the entry point.
   // Missing integrity is OK for backward compatibility; mismatched integrity is a fatal error.
@@ -88,13 +88,13 @@ export async function loadPlugin(
       source = await readFile(entryPoint, "utf-8");
     } catch (err: unknown) {
       throw new Error(
-        `Plugin '${manifest.name}' integrity check failed: cannot read entry point — ${err instanceof Error ? err.message : String(err)}`,
+        `Plugin '${manifest.name}' integrity check failed: cannot read entry point — ${err instanceof Error ? err.message : String(err)}`
       );
     }
     const actual = computeIntegrity(source);
     if (actual !== integrityField) {
       throw new Error(
-        `Plugin '${manifest.name}' integrity mismatch: expected ${integrityField}, got ${actual}`,
+        `Plugin '${manifest.name}' integrity mismatch: expected ${integrityField}, got ${actual}`
       );
     }
   }
@@ -165,7 +165,7 @@ export async function loadPlugin(
           }
         }
       }
-    },
+    }
   );
 
   child.on("error", (err) => {
@@ -186,7 +186,7 @@ export async function loadPlugin(
   const callHook = (
     hook: string,
     payload: unknown,
-    timeout = DEFAULT_HOOK_TIMEOUT,
+    timeout = DEFAULT_HOOK_TIMEOUT
   ): Promise<unknown> => {
     return new Promise((resolve, reject) => {
       const id = String(++callCounter);

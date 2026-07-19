@@ -8,7 +8,7 @@ export interface SlackPayload {
 
 export function buildSlackPayload(
   event: WebhookEvent,
-  data: Record<string, unknown>,
+  data: Record<string, unknown>
 ): SlackPayload {
   const desc = EVENT_DESCRIPTIONS[event];
   const model = typeof data.model === "string" ? data.model : null;

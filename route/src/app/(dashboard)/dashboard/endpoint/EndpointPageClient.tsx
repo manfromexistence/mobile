@@ -19,12 +19,7 @@ const CLOUD_ACTION_TIMEOUT_MS = 15000;
 
 type TranslationValues = Record<string, string | number | boolean | Date>;
 type CloudflaredTunnelPhase =
-  | "unsupported"
-  | "not_installed"
-  | "stopped"
-  | "starting"
-  | "running"
-  | "error";
+  "unsupported" | "not_installed" | "stopped" | "starting" | "running" | "error";
 
 type CloudflaredTunnelStatus = {
   supported: boolean;
@@ -43,12 +38,7 @@ type CloudflaredTunnelStatus = {
 };
 
 type TailscaleTunnelPhase =
-  | "unsupported"
-  | "not_installed"
-  | "needs_login"
-  | "stopped"
-  | "running"
-  | "error";
+  "unsupported" | "not_installed" | "needs_login" | "stopped" | "running" | "error";
 
 type TailscaleTunnelStatus = {
   supported: boolean;
@@ -70,13 +60,7 @@ type TailscaleTunnelStatus = {
 };
 
 type NgrokTunnelPhase =
-  | "unsupported"
-  | "not_installed"
-  | "stopped"
-  | "needs_auth"
-  | "starting"
-  | "running"
-  | "error";
+  "unsupported" | "not_installed" | "stopped" | "needs_auth" | "starting" | "running" | "error";
 
 type NgrokTunnelStatus = {
   supported: boolean;
@@ -207,7 +191,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   const fetchSearchProviders = async () => {
@@ -232,8 +216,8 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
             data?.error ||
               translateOrFallback(
                 "cloudflaredRequestFailed",
-                "Failed to load Cloudflare tunnel status",
-              ),
+                "Failed to load Cloudflare tunnel status"
+              )
           );
         }
 
@@ -248,14 +232,14 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                 ? error.message
                 : translateOrFallback(
                     "cloudflaredRequestFailed",
-                    "Failed to load Cloudflare tunnel status",
+                    "Failed to load Cloudflare tunnel status"
                   ),
           });
         }
         return null;
       }
     },
-    [translateOrFallback],
+    [translateOrFallback]
   );
 
   const fetchTailscaleStatus = useCallback(
@@ -266,7 +250,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         if (!res.ok) {
           throw new Error(
             data?.error ||
-              translateOrFallback("tailscaleRequestFailed", "Failed to load Tailscale status"),
+              translateOrFallback("tailscaleRequestFailed", "Failed to load Tailscale status")
           );
         }
 
@@ -285,7 +269,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         return null;
       }
     },
-    [translateOrFallback],
+    [translateOrFallback]
   );
 
   const fetchNgrokStatus = useCallback(
@@ -295,7 +279,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         const data = await res.json().catch(() => null);
         if (!res.ok) {
           throw new Error(
-            data?.error || translateOrFallback("ngrokRequestFailed", "Failed to load ngrok status"),
+            data?.error || translateOrFallback("ngrokRequestFailed", "Failed to load ngrok status")
           );
         }
 
@@ -314,7 +298,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         return null;
       }
     },
-    [translateOrFallback],
+    [translateOrFallback]
   );
 
   useEffect(() => {
@@ -404,10 +388,10 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
     const video = allModels.filter((m) => m.type === "video" && !m.parent);
     const rerank = allModels.filter((m) => m.type === "rerank" && !m.parent);
     const audioTranscription = allModels.filter(
-      (m) => m.type === "audio" && m.subtype === "transcription" && !m.parent,
+      (m) => m.type === "audio" && m.subtype === "transcription" && !m.parent
     );
     const audioSpeech = allModels.filter(
-      (m) => m.type === "audio" && m.subtype === "speech" && !m.parent,
+      (m) => m.type === "audio" && m.subtype === "speech" && !m.parent
     );
     const moderation = allModels.filter((m) => m.type === "moderation" && !m.parent);
     const music = allModels.filter((m) => m.type === "music" && !m.parent);
@@ -426,7 +410,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
 
   const totalEndpointModelCount = useMemo(
     () => Object.values(endpointData).reduce((acc, models) => acc + models.length, 0),
-    [endpointData],
+    [endpointData]
   );
 
   const availableEndpointCount = useMemo(() => {
@@ -469,7 +453,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
   };
 
   const loadCloudSettings = async (
-    shouldApplyState: () => boolean = () => true,
+    shouldApplyState: () => boolean = () => true
   ): Promise<EndpointTunnelVisibility> => {
     try {
       const res = await fetch("/api/settings");
@@ -718,7 +702,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       if (!res.ok) {
         throw new Error(
           data?.error ||
-            translateOrFallback("cloudflaredRequestFailed", "Failed to update Cloudflare tunnel"),
+            translateOrFallback("cloudflaredRequestFailed", "Failed to update Cloudflare tunnel")
         );
       }
 
@@ -761,7 +745,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
 
       if (!res.ok) {
         throw new Error(
-          data?.error || translateOrFallback("ngrokRequestFailed", "Failed to update ngrok tunnel"),
+          data?.error || translateOrFallback("ngrokRequestFailed", "Failed to update ngrok tunnel")
         );
       }
 
@@ -801,7 +785,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
     async (
       predicate: (status: TailscaleTunnelStatus) => boolean,
       attempts = 40,
-      delayMs = 3000,
+      delayMs = 3000
     ) => {
       for (let attempt = 0; attempt < attempts; attempt += 1) {
         await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -812,7 +796,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       }
       return null;
     },
-    [fetchTailscaleStatus],
+    [fetchTailscaleStatus]
   );
 
   const requestTailscaleEnable = useCallback(async (payload: Record<string, unknown> = {}) => {
@@ -836,7 +820,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       if (!res.ok) {
         throw new Error(
           data?.error ||
-            translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel"),
+            translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel")
         );
       }
 
@@ -846,14 +830,14 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
           type: "info",
           message: translateOrFallback(
             "tailscaleWaitingForLogin",
-            "Complete the Tailscale login in the opened browser tab. OmniRoute will retry automatically.",
+            "Complete the Tailscale login in the opened browser tab. OmniRoute will retry automatically."
           ),
         });
 
         const loggedIn = await waitForTailscale((status) => status.loggedIn);
         if (!loggedIn) {
           throw new Error(
-            translateOrFallback("tailscaleLoginTimedOut", "Timed out waiting for Tailscale login"),
+            translateOrFallback("tailscaleLoginTimedOut", "Timed out waiting for Tailscale login")
           );
         }
 
@@ -863,7 +847,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
         if (!res.ok) {
           throw new Error(
             data?.error ||
-              translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel"),
+              translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel")
           );
         }
       }
@@ -874,7 +858,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
           type: "info",
           message: translateOrFallback(
             "tailscaleWaitingForFunnel",
-            "Enable Funnel for this device in the opened browser tab. OmniRoute will keep polling.",
+            "Enable Funnel for this device in the opened browser tab. OmniRoute will keep polling."
           ),
         });
 
@@ -887,7 +871,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
           if (!next.res.ok) {
             throw new Error(
               next.data?.error ||
-                translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel"),
+                translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel")
             );
           }
           if (next.data?.success) {
@@ -904,8 +888,8 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
           throw new Error(
             translateOrFallback(
               "tailscaleFunnelTimedOut",
-              "Timed out waiting for Tailscale Funnel to be enabled",
-            ),
+              "Timed out waiting for Tailscale Funnel to be enabled"
+            )
           );
         }
 
@@ -915,7 +899,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       if (!data?.success) {
         throw new Error(
           data?.error ||
-            translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel"),
+            translateOrFallback("tailscaleEnableFailed", "Failed to enable Tailscale Funnel")
         );
       }
 
@@ -961,7 +945,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       if (!res.ok) {
         throw new Error(
           data?.error ||
-            translateOrFallback("tailscaleDisableFailed", "Failed to disable Tailscale Funnel"),
+            translateOrFallback("tailscaleDisableFailed", "Failed to disable Tailscale Funnel")
         );
       }
 
@@ -1000,7 +984,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
 
       if (!res.body) {
         throw new Error(
-          translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale"),
+          translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale")
         );
       }
 
@@ -1046,7 +1030,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
             throw new Error(
               typeof payload.error === "string"
                 ? payload.error
-                : translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale"),
+                : translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale")
             );
           }
         }
@@ -1054,7 +1038,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
 
       if (!installSucceeded) {
         throw new Error(
-          translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale"),
+          translateOrFallback("tailscaleInstallFailed", "Failed to install Tailscale")
         );
       }
 
@@ -1122,7 +1106,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       : []),
   ];
   const visibleTunnelCount = [showCloudflaredTunnel, showTailscaleFunnel, showNgrokTunnel].filter(
-    Boolean,
+    Boolean
   ).length;
   const activeTunnelCount = [
     showCloudflaredTunnel && cloudflaredStatus?.running,
@@ -1169,7 +1153,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       : translateOrFallback("cloudflaredInstallAndEnable", "Install & Enable");
   const cloudflaredUrlNotice = translateOrFallback(
     "cloudflaredUrlNotice",
-    "Creates a temporary Cloudflare Quick Tunnel. The URL changes after every restart.",
+    "Creates a temporary Cloudflare Quick Tunnel. The URL changes after every restart."
   );
   const tailscalePhase = tailscaleStatus?.phase || "not_installed";
   const tailscalePhaseMeta: Record<TailscaleTunnelPhase, { label: string; className: string }> = {
@@ -1207,7 +1191,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
       : translateOrFallback("tailscaleInstallAndEnable", "Install & Enable");
   const tailscaleUrlNotice = translateOrFallback(
     "tailscaleUrlNotice",
-    "Uses your Tailscale .ts.net address. Login and Funnel approval may be required on first use.",
+    "Uses your Tailscale .ts.net address. Login and Funnel approval may be required on first use."
   );
 
   const ngrokPhase = ngrokStatus?.phase || "not_installed";
@@ -1455,7 +1439,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                     loading={cloudflaredBusy}
                     onClick={() => {
                       void handleCloudflaredAction(
-                        cloudflaredStatus?.running ? "disable" : "enable",
+                        cloudflaredStatus?.running ? "disable" : "enable"
                       );
                     }}
                     className={`shrink-0 ${cloudflaredStatus?.running ? "border-border/70! text-text-muted! hover:text-text!" : ""}`}
@@ -1610,7 +1594,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                     <p className="text-xs text-blue-400">
                       {translateOrFallback(
                         "tailscaleNeedsLoginHint",
-                        "Authenticate this machine with Tailscale, then enable Funnel.",
+                        "Authenticate this machine with Tailscale, then enable Funnel."
                       )}
                     </p>
                   )}
@@ -1619,7 +1603,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                       <label className="text-xs text-text-muted">
                         {translateOrFallback(
                           "tailscaleSudoLabel",
-                          "Sudo Password (required on macOS/Linux)",
+                          "Sudo Password (required on macOS/Linux)"
                         )}
                       </label>
                       <Input
@@ -1628,7 +1612,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                         onChange={(event) => setTailscalePassword(event.target.value)}
                         placeholder={translateOrFallback(
                           "tailscaleSudoPlaceholder",
-                          "Optional sudo password",
+                          "Optional sudo password"
                         )}
                         disabled={tailscaleBusy}
                         className="font-mono text-sm"
@@ -1744,7 +1728,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                       <label className="text-xs text-text-muted">
                         {translateOrFallback(
                           "ngrokAuthTokenLabel",
-                          "Authtoken (Required if NGROK_AUTHTOKEN not set in environment)",
+                          "Authtoken (Required if NGROK_AUTHTOKEN not set in environment)"
                         )}
                       </label>
                       <Input
@@ -1753,7 +1737,7 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
                         onChange={(event) => setNgrokToken(event.target.value)}
                         placeholder={translateOrFallback(
                           "ngrokAuthTokenPlaceholder",
-                          "Enter your ngrok authtoken",
+                          "Enter your ngrok authtoken"
                         )}
                         disabled={ngrokBusy}
                         className="font-mono text-sm"
@@ -2243,13 +2227,13 @@ export default function APIPageClient({ machineId }: Readonly<APIPageClientProps
             <p className="text-sm font-medium text-blue-300">
               {translateOrFallback(
                 "tailscaleInstallIntro",
-                "Installs Tailscale on this machine and prepares OmniRoute to enable Funnel.",
+                "Installs Tailscale on this machine and prepares OmniRoute to enable Funnel."
               )}
             </p>
             <p className="mt-2 text-sm text-blue-200/80">
               {translateOrFallback(
                 "tailscaleInstallPasswordHint",
-                "On macOS and Linux, sudo may be required for the package install and daemon start.",
+                "On macOS and Linux, sudo may be required for the package install and daemon start."
               )}
             </p>
           </div>
@@ -2334,7 +2318,7 @@ function ProviderModelsModal({
   const providerAlias = provider.provider.alias || provider.id;
   const providerModels = useMemo(() => {
     return models.filter(
-      (m) => !m.parent && (m.owned_by === providerAlias || m.owned_by === provider.id),
+      (m) => !m.parent && (m.owned_by === providerAlias || m.owned_by === provider.id)
     );
   }, [models, providerAlias, provider.id]);
 

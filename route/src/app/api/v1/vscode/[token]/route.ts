@@ -10,7 +10,7 @@ export async function OPTIONS() {
 
 export async function GET(
   request: Request,
-  context?: { params: Promise<VscodeTokenParams> | VscodeTokenParams },
+  context?: { params: Promise<VscodeTokenParams> | VscodeTokenParams }
 ) {
   const modelsRoute = await import("@/app/api/v1/vscode/[token]/models/route");
   const requestUrl = new URL(request.url);

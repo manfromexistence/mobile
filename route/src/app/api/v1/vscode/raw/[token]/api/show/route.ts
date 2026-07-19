@@ -147,7 +147,7 @@ function buildShowPayload(model: OpenAiCatalogModel, responseModelId?: string) {
       canonicalMetadata?.provider ||
       model.owned_by ||
       family ||
-      "model",
+      "model"
   );
   const architecture = normalizeArchitectureKey(architectureSource);
   const reasoningEffortValues = getReasoningEffortValues(model as VscodeCatalogModel);
@@ -265,7 +265,7 @@ export async function OPTIONS() {
 
 export async function POST(
   request: Request,
-  { params }: { params?: Promise<{ token: string }> | { token: string } } = {},
+  { params }: { params?: Promise<{ token: string }> | { token: string } } = {}
 ) {
   const resolvedParams = params ? await params : undefined;
   const authorizedRequest = withPathTokenApiKey(request, resolvedParams?.token);
@@ -285,7 +285,7 @@ export async function POST(
         headers: {
           ...CORS_HEADERS,
         },
-      },
+      }
     );
   }
 
@@ -322,7 +322,7 @@ export async function POST(
         headers: {
           ...CORS_HEADERS,
         },
-      },
+      }
     );
   }
 

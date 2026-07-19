@@ -203,7 +203,7 @@ export async function enforceQuotaShare(input: EnforceInput): Promise<EnforceDec
 
     // Global saturation signal — fail-open: 0 (generous mode)
     const globalUsedPercent = await getSaturation(input.connectionId, input.provider, dim).catch(
-      () => 0,
+      () => 0
     );
 
     // Effective limit = per-account plan limit × number of accounts in the pool.

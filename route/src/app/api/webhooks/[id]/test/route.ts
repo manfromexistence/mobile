@@ -25,7 +25,7 @@ const MAX_RESPONSE_BODY = 2048;
 async function testFetch(
   url: string,
   body: Record<string, unknown>,
-  headers: Record<string, string>,
+  headers: Record<string, string>
 ): Promise<{
   success: boolean;
   status: number;

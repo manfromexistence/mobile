@@ -31,7 +31,7 @@ export function getMemoryVecMeta(): MemoryVecMeta {
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT active_dim, embedding_signature, last_reset_at, vec_loaded FROM memory_vec_meta WHERE id = 1",
+      "SELECT active_dim, embedding_signature, last_reset_at, vec_loaded FROM memory_vec_meta WHERE id = 1"
     )
     .get() as
     | {
@@ -79,7 +79,7 @@ export function setMemoryVecMeta(meta: Partial<MemoryVecMeta>): void {
   db.prepare(
     `INSERT OR REPLACE INTO memory_vec_meta
        (id, active_dim, embedding_signature, last_reset_at, vec_loaded)
-     VALUES (1, ?, ?, ?, ?)`,
+     VALUES (1, ?, ?, ?, ?)`
   ).run(activeDim, embeddingSignature, lastResetAt, vecLoaded);
 }
 
@@ -108,7 +108,7 @@ export function markAllMemoriesNeedReindex(): number {
  * Returns id, content, and key for each memory so the vector can be regenerated.
  */
 export function getMemoryReindexQueue(
-  limit: number,
+  limit: number
 ): Array<{ id: string; content: string; key: string }> {
   const db = getDbInstance();
   return db
@@ -117,7 +117,7 @@ export function getMemoryReindexQueue(
        FROM memories
        WHERE needs_reindex = 1
        ORDER BY created_at ASC
-       LIMIT ?`,
+       LIMIT ?`
     )
     .all(limit) as Array<{ id: string; content: string; key: string }>;
 }

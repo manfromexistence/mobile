@@ -56,7 +56,7 @@ export async function POST(request) {
       modelInfo.provider,
       null,
       null,
-      modelInfo.model,
+      modelInfo.model
     );
     if (!credentials || credentials.allRateLimited) {
       return estimated;
@@ -72,7 +72,7 @@ export async function POST(request) {
         body,
         credentials,
         log,
-      }),
+      })
     );
 
     if (!counted || !Number.isFinite(counted.input_tokens)) {
@@ -88,12 +88,12 @@ export async function POST(request) {
       }),
       {
         headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-      },
+      }
     );
   } catch (error) {
     log.debug(
       "COUNT_TOKENS",
-      `Falling back to estimate for ${requestedModel}: ${error instanceof Error ? error.message : String(error)}`,
+      `Falling back to estimate for ${requestedModel}: ${error instanceof Error ? error.message : String(error)}`
     );
     return estimated;
   }
@@ -186,6 +186,6 @@ function buildEstimatedCountResponse(body) {
     }),
     {
       headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-    },
+    }
   );
 }

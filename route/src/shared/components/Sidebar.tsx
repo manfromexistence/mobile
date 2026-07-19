@@ -99,7 +99,7 @@ export default function Sidebar({
   const [customAppName, setCustomAppName] = useState<string | null>(null);
   const [customLogo, setCustomLogo] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<Set<SidebarSectionId>>(
-    new Set([DEFAULT_EXPANDED]),
+    new Set([DEFAULT_EXPANDED])
   );
   const [pinnedSections, setPinnedSections] = useState<Set<SidebarSectionId>>(new Set());
   const [hoveredItem, setHoveredItem] = useState<HoveredItem>(null);
@@ -123,7 +123,7 @@ export default function Sidebar({
         : (SIDEBAR_SECTIONS.filter((s) => s.defaultPinned).map((s) => s.id) as SidebarSectionId[]);
 
     const initialExpanded = new Set<SidebarSectionId>(
-      storedExpanded.length > 0 ? storedExpanded : [DEFAULT_EXPANDED],
+      storedExpanded.length > 0 ? storedExpanded : [DEFAULT_EXPANDED]
     );
     const initialPinned = new Set<SidebarSectionId>(storedPinned);
     // Pinned sections must also be expanded
@@ -138,7 +138,7 @@ export default function Sidebar({
       setShowDebug(data?.debugMode === true);
       setHiddenSidebarItems(normalizeHiddenSidebarItems(data?.[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY]));
       setHiddenSidebarGroupLabels(
-        normalizeHiddenSidebarGroupLabels(data?.[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY]),
+        normalizeHiddenSidebarGroupLabels(data?.[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY])
       );
       setCustomAppName(data?.instanceName || null);
       setCustomLogo(data?.customLogoBase64 || data?.customLogoUrl || null);
@@ -162,12 +162,12 @@ export default function Sidebar({
       if ("debugMode" in detail) setShowDebug(detail.debugMode === true);
       if (HIDDEN_SIDEBAR_ITEMS_SETTING_KEY in detail) {
         setHiddenSidebarItems(
-          normalizeHiddenSidebarItems(detail[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY]),
+          normalizeHiddenSidebarItems(detail[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY])
         );
       }
       if (HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY in detail) {
         setHiddenSidebarGroupLabels(
-          normalizeHiddenSidebarGroupLabels(detail[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY]),
+          normalizeHiddenSidebarGroupLabels(detail[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY])
         );
       }
       if (SIDEBAR_SECTION_ORDER_KEY in detail && Array.isArray(detail[SIDEBAR_SECTION_ORDER_KEY])) {
@@ -192,7 +192,7 @@ export default function Sidebar({
     return () =>
       window.removeEventListener(
         SIDEBAR_SETTINGS_UPDATED_EVENT,
-        handleSettingsUpdated as EventListener,
+        handleSettingsUpdated as EventListener
       );
   }, []);
 
@@ -216,14 +216,14 @@ export default function Sidebar({
 
   const orderedSections = applySectionOrder(
     SIDEBAR_SECTIONS.filter((section) => section.visibility !== "debug" || showDebug),
-    sidebarSectionOrder,
+    sidebarSectionOrder
   );
 
   const visibleSections = orderedSections
     .map((section) => {
       const orderedChildren = applyItemOrder(
         section.children,
-        sidebarItemOrder[section.id as SidebarSectionId] ?? [],
+        sidebarItemOrder[section.id as SidebarSectionId] ?? []
       );
 
       const children = orderedChildren
@@ -258,13 +258,13 @@ export default function Sidebar({
     })
     .filter((section) => {
       const allItems = section.children.flatMap((child: any) =>
-        child.type === "group" ? child.items : [child],
+        child.type === "group" ? child.items : [child]
       );
       return allItems.length > 0;
     });
 
   const allVisibleItems = visibleSections.flatMap((section) =>
-    section.children.flatMap((child: any) => (child.type === "group" ? child.items : [child])),
+    section.children.flatMap((child: any) => (child.type === "group" ? child.items : [child]))
   );
 
   const activeHref = getActiveSidebarHref(pathname, allVisibleItems);
@@ -279,7 +279,7 @@ export default function Sidebar({
     if (collapsed) return;
     for (const section of visibleSections) {
       const sectionItems = section.children.flatMap((child: any) =>
-        child.type === "group" ? child.items : [child],
+        child.type === "group" ? child.items : [child]
       );
       if (sectionItems.some((item: any) => !item.external && item.href === activeHref)) {
         setExpandedSections((prev) => {
@@ -317,7 +317,7 @@ export default function Sidebar({
         return next;
       });
     },
-    [pinnedSections],
+    [pinnedSections]
   );
 
   const togglePin = useCallback((sectionId: SidebarSectionId) => {
@@ -378,7 +378,7 @@ export default function Sidebar({
         y: rect.top + rect.height / 2,
       });
     },
-    [collapsed],
+    [collapsed]
   );
 
   const handleMouseLeave = useCallback(() => setHoveredItem(null), []);
@@ -390,11 +390,11 @@ export default function Sidebar({
       collapsed ? "justify-center px-2 py-2.5" : "px-3 py-1.5",
       active
         ? "bg-primary/10 text-primary"
-        : "text-text-muted hover:bg-surface/50 hover:text-text-main",
+        : "text-text-muted hover:bg-surface/50 hover:text-text-main"
     );
     const iconClassName = cn(
       "material-symbols-outlined text-[18px] shrink-0",
-      active ? "fill-1" : "group-hover:text-primary transition-colors",
+      active ? "fill-1" : "group-hover:text-primary transition-colors"
     );
     const content = (
       <>
@@ -451,7 +451,7 @@ export default function Sidebar({
         ref={sidebarRef}
         className={cn(
           "flex h-full min-h-0 flex-col border-r border-black/5 bg-sidebar transition-all duration-300 ease-in-out dark:border-white/5",
-          collapsed ? "w-16" : "w-[220px]",
+          collapsed ? "w-16" : "w-[220px]"
         )}
         style={{ paddingTop: isMacElectron ? "var(--desktop-safe-top)" : undefined }}
       >
@@ -467,7 +467,7 @@ export default function Sidebar({
             className={cn(
               "flex items-center gap-2 pb-2",
               isMacElectron ? "pt-3" : "pt-5",
-              collapsed ? "px-3 justify-center" : "px-4",
+              collapsed ? "px-3 justify-center" : "px-4"
             )}
             aria-hidden="true"
           >
@@ -488,7 +488,7 @@ export default function Sidebar({
                 className={cn(
                   "rounded-md p-1 text-text-muted/50 transition-colors hover:bg-black/5 hover:text-text-muted dark:hover:bg-white/5",
                   collapsed && !isMacElectron && "mt-2",
-                  isMacElectron && "ms-auto",
+                  isMacElectron && "ms-auto"
                 )}
               >
                 <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
@@ -545,7 +545,7 @@ export default function Sidebar({
           aria-label="Main navigation"
           className={cn(
             "min-h-0 flex-1 overflow-y-auto py-1 custom-scrollbar",
-            collapsed ? "px-2 space-y-0.5" : "px-3",
+            collapsed ? "px-2 space-y-0.5" : "px-3"
           )}
         >
           {isSearching && displaySections.length === 0 && (
@@ -557,7 +557,7 @@ export default function Sidebar({
             const isPinned = pinnedSections.has(sectionId);
             const isFirst = idx === 0;
             const sectionItems = section.children.flatMap((child: any) =>
-              child.type === "group" ? child.items : [child],
+              child.type === "group" ? child.items : [child]
             );
 
             // Collapsed (mini) mode: flat items with dividers between sections
@@ -605,7 +605,7 @@ export default function Sidebar({
                       "p-0.5 rounded transition-all shrink-0",
                       isPinned
                         ? "text-primary opacity-100"
-                        : "text-text-muted/30 opacity-0 group-hover/header:opacity-100 hover:text-text-muted/70",
+                        : "text-text-muted/30 opacity-0 group-hover/header:opacity-100 hover:text-text-muted/70"
                     )}
                   >
                     <span
@@ -622,7 +622,7 @@ export default function Sidebar({
                   <span
                     className={cn(
                       "material-symbols-outlined text-[14px] text-text-muted/40 transition-all duration-200 group-hover/header:text-text-muted/70 shrink-0",
-                      isExpanded && "rotate-180",
+                      isExpanded && "rotate-180"
                     )}
                   >
                     expand_more
@@ -663,7 +663,7 @@ export default function Sidebar({
         <div
           className={cn(
             "shrink-0 border-t border-black/5 dark:border-white/5",
-            collapsed ? "p-2 flex flex-col gap-1" : "p-2 flex gap-2",
+            collapsed ? "p-2 flex flex-col gap-1" : "p-2 flex gap-2"
           )}
           style={{
             paddingBottom: isMacElectron ? "calc(0.5rem + var(--desktop-safe-bottom))" : undefined,
@@ -675,7 +675,7 @@ export default function Sidebar({
             className={cn(
               "flex items-center justify-center gap-2 rounded-lg font-medium transition-all",
               "text-amber-500 hover:bg-amber-500/10 border border-amber-500/20 hover:border-amber-500/40",
-              collapsed ? "p-2" : "flex-1 min-w-0 px-2 py-1.5 text-xs",
+              collapsed ? "p-2" : "flex-1 min-w-0 px-2 py-1.5 text-xs"
             )}
           >
             <span className="material-symbols-outlined text-[16px]">restart_alt</span>
@@ -687,7 +687,7 @@ export default function Sidebar({
             className={cn(
               "flex items-center justify-center gap-2 rounded-lg font-medium transition-all",
               "text-red-500 hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/40",
-              collapsed ? "p-2" : "flex-1 min-w-0 px-2 py-1.5 text-xs",
+              collapsed ? "p-2" : "flex-1 min-w-0 px-2 py-1.5 text-xs"
             )}
           >
             <span className="material-symbols-outlined text-[16px]">power_settings_new</span>

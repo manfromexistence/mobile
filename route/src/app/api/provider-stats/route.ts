@@ -22,9 +22,8 @@ export async function GET() {
 
     let toolLatency: Record<string, unknown> = {};
     try {
-      const { getToolLatencyByProvider } = await import(
-        "@omniroute/open-sse/services/toolLatencyTracker"
-      );
+      const { getToolLatencyByProvider } =
+        await import("@omniroute/open-sse/services/toolLatencyTracker");
       toolLatency = getToolLatencyByProvider() as Record<string, unknown>;
     } catch {}
 

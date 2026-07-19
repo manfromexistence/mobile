@@ -10,7 +10,7 @@ import { sanitizeProviderSpecificDataForResponse } from "@/lib/providers/request
 import { commandCodeApplySchema, noStoreJson, stateHashFromState } from "../shared";
 
 function safeConnection(
-  connection: Record<string, unknown> | null,
+  connection: Record<string, unknown> | null
 ): Record<string, unknown> | null {
   if (!connection) return null;
   const result = { ...connection };
@@ -20,7 +20,7 @@ function safeConnection(
   delete result.idToken;
   if (result.providerSpecificData) {
     result.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-      result.providerSpecificData,
+      result.providerSpecificData
     );
   }
   return result;
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
   if (!consumed) {
     return noStoreJson(
       { error: "No received Command Code API key for this state" },
-      { status: 409 },
+      { status: 409 }
     );
   }
 

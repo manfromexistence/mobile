@@ -30,7 +30,7 @@ export function validateVersionManagerToolBody(rawBody: unknown): VersionManager
 }
 
 export async function parseVersionManagerToolRequest(
-  request: Request,
+  request: Request
 ): Promise<VersionManagerToolRequest> {
   const authError = await requireManagementAuth(request);
   if (authError) {

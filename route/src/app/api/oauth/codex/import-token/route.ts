@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       buildErrorBody(400, parsed.error.issues[0]?.message ?? "Invalid request body"),
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -60,9 +60,9 @@ export async function POST(request: Request) {
     return NextResponse.json(
       buildErrorBody(
         400,
-        "Could not decode any account info from the access token and no name was provided",
+        "Could not decode any account info from the access token and no name was provided"
       ),
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -95,9 +95,9 @@ export async function POST(request: Request) {
     return NextResponse.json(
       buildErrorBody(
         500,
-        sanitizeErrorMessage(error instanceof Error ? error.message : String(error)),
+        sanitizeErrorMessage(error instanceof Error ? error.message : String(error))
       ),
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

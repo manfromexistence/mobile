@@ -207,7 +207,7 @@ export default function ApiTab(_props: ApiTabProps) {
       { value: "rerank", label: t("endpointOptions.rerank") },
       { value: "search", label: t("endpointOptions.search") },
     ],
-    [t],
+    [t]
   );
 
   const [models, setModels] = useState<ModelInfo[]>([]);
@@ -319,7 +319,7 @@ export default function ApiTab(_props: ApiTabProps) {
     setSelectedConnection("");
     const providerModels = models
       .filter(
-        (m) => typeof m?.id === "string" && (!newProvider || m.id.startsWith(newProvider + "/")),
+        (m) => typeof m?.id === "string" && (!newProvider || m.id.startsWith(newProvider + "/"))
       )
       .map((m) => m.id);
     const firstModel = providerModels[0] || "";
@@ -364,7 +364,7 @@ export default function ApiTab(_props: ApiTabProps) {
 
   const buildChatBodyWithImages = (
     parsed: Record<string, unknown>,
-    imageBase64s: string[],
+    imageBase64s: string[]
   ): Record<string, unknown> => {
     if (!imageBase64s.length) return parsed;
     const messages = [...((parsed.messages as Array<Record<string, unknown>>) || [])];
@@ -466,7 +466,7 @@ export default function ApiTab(_props: ApiTabProps) {
         }
         if (isTranscriptionEndpoint && typeof (data as { text?: string })?.text === "string") {
           setTranscriptionText(
-            (data as { text?: string }).text || "(empty result — check provider credentials)",
+            (data as { text?: string }).text || "(empty result — check provider credentials)"
           );
         }
       }

@@ -112,10 +112,10 @@ describe("useModelVisibilityHandlers", () => {
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
       "/api/models/test",
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({ method: "POST" })
     );
     expect(
-      fetchMock.mock.calls.some(([url]) => String(url).startsWith("/api/provider-models")),
+      fetchMock.mock.calls.some(([url]) => String(url).startsWith("/api/provider-models"))
     ).toBe(false);
     expect(hook.get().modelTestStatus["claude-opus-4-8"]).toBe("error");
   });

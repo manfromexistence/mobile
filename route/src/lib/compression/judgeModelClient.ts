@@ -16,7 +16,7 @@ import { calculateCost } from "@/lib/usage/costCalculator";
  */
 export function createPricedJudgeClient(
   provider: string,
-  credentials: ProviderCredentials,
+  credentials: ProviderCredentials
 ): ModelClient {
   const executor = getExecutor(provider);
   return {

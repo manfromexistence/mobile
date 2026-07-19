@@ -88,7 +88,7 @@ export function stableAccountSuffix(account: string | null | undefined): string 
  */
 export function formatApiKeyLabel(
   apiKeyName: string | null | undefined,
-  apiKeyId: string | null | undefined,
+  apiKeyId: string | null | undefined
 ) {
   if (!apiKeyName && !apiKeyId) return "—";
   const displayName = apiKeyName || "key";

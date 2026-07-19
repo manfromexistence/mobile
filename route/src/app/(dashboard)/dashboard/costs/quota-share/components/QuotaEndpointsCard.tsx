@@ -180,7 +180,7 @@ export default function QuotaEndpointsCard({
   >(() => {
     return groups.map((group) => {
       const groupPools = pools.filter(
-        (p) => ((p as { groupId?: string }).groupId ?? "group-demo") === group.id,
+        (p) => ((p as { groupId?: string }).groupId ?? "group-demo") === group.id
       );
 
       // Collect unique providers for this group
@@ -229,7 +229,7 @@ export default function QuotaEndpointsCard({
       })
       .filter(
         (g): g is { group: QuotaGroup; entries: Array<{ provider: string; models: string[] }> } =>
-          g !== null,
+          g !== null
       );
   }, [realCombos, groups]);
 

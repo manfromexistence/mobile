@@ -23,7 +23,7 @@ export function useConnectionGate({ providerId, subscriptionRisk }: UseConnectio
       }
       callback();
     },
-    [providerId, riskAcknowledged, subscriptionRisk],
+    [providerId, riskAcknowledged, subscriptionRisk]
   );
 
   const handleConfirmRiskNotice = useCallback(() => {

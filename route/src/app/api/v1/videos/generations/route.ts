@@ -39,7 +39,7 @@ export async function GET(request?: Request) {
   return getSpecialtyModelsResponse(
     request,
     "/v1/videos/generations",
-    (model) => model.type === "video",
+    (model) => model.type === "video"
   );
 }
 
@@ -66,7 +66,7 @@ async function postHandler(request, context) {
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid video model: ${body.model}. Use format: provider/model`,
+      `Invalid video model: ${body.model}. Use format: provider/model`
     );
   }
 
@@ -79,12 +79,12 @@ async function postHandler(request, context) {
   let credentials = null;
   if (providerConfig && providerConfig.authType !== "none") {
     credentials = await getProviderCredentialsWithQuotaPreflight(
-      resolveVideoCredentialProvider(provider),
+      resolveVideoCredentialProvider(provider)
     );
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials for video provider: ${provider}`,
+        `No credentials for video provider: ${provider}`
       );
     }
     if (isAllRateLimitedCredentials(credentials)) {

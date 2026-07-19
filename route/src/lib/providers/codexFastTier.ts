@@ -39,7 +39,7 @@ export interface CodexGlobalFastServiceTierResolved {
  *    (OpenAI Fast-eligible per models_cache.json)
  */
 export function resolveCodexGlobalFastServiceTier(
-  settings: unknown,
+  settings: unknown
 ): CodexGlobalFastServiceTierResolved {
   const record = asRecord(settings);
   const raw = record.codexServiceTier;
@@ -91,7 +91,7 @@ export function getCodexConnectionServiceTier(providerSpecificData: unknown): Co
 
 export function getCodexEffectiveServiceTier(
   providerSpecificData: unknown,
-  globalServiceMode: CodexGlobalServiceMode | boolean,
+  globalServiceMode: CodexGlobalServiceMode | boolean
 ): CodexServiceTier {
   // Dashboard global modes are explicit overrides; use "none" to preserve the
   // per-connection requestDefaults.serviceTier value.
@@ -104,7 +104,7 @@ export function getCodexEffectiveServiceTier(
 
 export function getCodexEffectiveFastServiceTier(
   providerSpecificData: unknown,
-  globalFastServiceTierEnabled: CodexGlobalServiceMode | boolean,
+  globalFastServiceTierEnabled: CodexGlobalServiceMode | boolean
 ): boolean {
   return (
     getCodexEffectiveServiceTier(providerSpecificData, globalFastServiceTierEnabled) !== "default"
@@ -113,7 +113,7 @@ export function getCodexEffectiveFastServiceTier(
 
 function modelMatchesSupportedList(
   model: string | null | undefined,
-  supportedModels: readonly string[],
+  supportedModels: readonly string[]
 ): boolean {
   if (typeof model !== "string" || model.length === 0) return false;
   const normalizedModel = model.trim().toLowerCase().split("/").pop() || "";
@@ -146,7 +146,7 @@ export function applyCodexGlobalFastServiceTier<T extends JsonRecord | null | un
   provider: string | null | undefined,
   credentials: T,
   settings: unknown,
-  options: ApplyCodexGlobalFastServiceTierOptions = {},
+  options: ApplyCodexGlobalFastServiceTierOptions = {}
 ): T {
   if (provider !== "codex") return credentials;
 

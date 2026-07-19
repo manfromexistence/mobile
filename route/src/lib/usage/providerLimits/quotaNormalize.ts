@@ -28,7 +28,7 @@ export function normalizeUsageQuotaKey(provider: string, quotaKey: string): stri
 
 export function normalizeUsageQuotasForProvider(
   provider: string,
-  quotas: JsonRecord | null | undefined,
+  quotas: JsonRecord | null | undefined
 ): JsonRecord | null {
   if (!isRecord(quotas)) return quotas ?? null;
 

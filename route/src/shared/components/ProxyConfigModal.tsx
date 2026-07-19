@@ -20,7 +20,7 @@ const ALL_PROXY_TYPES = [
 // (server ENABLE_SOCKS5_PROXY) so a runtime Docker env is honoured — #3508.
 // Default ON (opt-out) to match the server: only an explicit falsey value hides SOCKS5.
 const BUILD_TIME_SOCKS5 = !["false", "0", "no", "off"].includes(
-  (process.env.NEXT_PUBLIC_ENABLE_SOCKS5_PROXY ?? "").trim().toLowerCase(),
+  (process.env.NEXT_PUBLIC_ENABLE_SOCKS5_PROXY ?? "").trim().toLowerCase()
 );
 export function buildProxyTypes(socks5Enabled: boolean) {
   return socks5Enabled
@@ -195,17 +195,17 @@ export default function ProxyConfigModal({
             if (assignedProxy?.source === DASHBOARD_CUSTOM_PROXY_SOURCE) {
               const normalizedType = String(assignedProxy.type || "http").toLowerCase();
               const hasTypeOption = runtimeProxyTypes.some(
-                (entry) => entry.value === normalizedType,
+                (entry) => entry.value === normalizedType
               );
               setMode("custom");
               setProxyType(hasTypeOption ? normalizedType : runtimeProxyTypes[0]?.value || "http");
               setHost(assignedProxy.host || "");
               setPort(String(assignedProxy.port || ""));
               setUsername(
-                isRedactedSecret(assignedProxy.username) ? "" : assignedProxy.username || "",
+                isRedactedSecret(assignedProxy.username) ? "" : assignedProxy.username || ""
               );
               setPassword(
-                isRedactedSecret(assignedProxy.password) ? "" : assignedProxy.password || "",
+                isRedactedSecret(assignedProxy.password) ? "" : assignedProxy.password || ""
               );
               setShowAuth(!!(assignedProxy.username || assignedProxy.password));
               if (normalizedType === "socks5" && !runtimeSocks5) {

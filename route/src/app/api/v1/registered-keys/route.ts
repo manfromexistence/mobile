@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     if (!quota.allowed) {
       return NextResponse.json(
         { error: quota.errorMessage, errorCode: quota.errorCode },
-        { status: 429 },
+        { status: 429 }
       );
     }
   } catch (err) {
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
           errorCode: "IDEMPOTENCY_CONFLICT",
           existing: result.existing,
         },
-        { status: 409 },
+        { status: 409 }
       );
     }
 
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
         createdAt: keyMeta.createdAt,
         warning: "Store this key securely — it will not be shown again.",
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (err) {
     console.error("[registered-keys] issue failed:", err);

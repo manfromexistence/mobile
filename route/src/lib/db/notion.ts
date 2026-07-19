@@ -25,7 +25,7 @@ export function setNotionToken(token: string): void {
     db.prepare("INSERT OR IGNORE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       NOTION_NAMESPACE,
       NOTION_TOKEN_KEY,
-      JSON.stringify(token),
+      JSON.stringify(token)
     );
   } catch {
     // Non-fatal — token still works in-memory if persistence fails.
@@ -37,7 +37,7 @@ export function clearNotionToken(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       NOTION_NAMESPACE,
-      NOTION_TOKEN_KEY,
+      NOTION_TOKEN_KEY
     );
   } catch {
     // Non-fatal.

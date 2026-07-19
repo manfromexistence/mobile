@@ -221,7 +221,7 @@ export function isLocalOnlyBypassableByManageScope(path: string): boolean {
     // and reach the spawn-capable surface without a loopback check.
     if (
       SPAWN_CAPABLE_PREFIXES.some(
-        (spawn) => p === spawn || p.startsWith(spawn) || spawn.startsWith(p),
+        (spawn) => p === spawn || p.startsWith(spawn) || spawn.startsWith(p)
       )
     ) {
       return false;

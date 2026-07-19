@@ -234,5 +234,5 @@ export const OPENAPI_ENDPOINTS: OpenApiEndpoint[] = [
 ];
 
 export const OPENAPI_TAGS: string[] = Array.from(
-  new Set(OPENAPI_ENDPOINTS.map((endpoint) => endpoint.tag)),
+  new Set(OPENAPI_ENDPOINTS.map((endpoint) => endpoint.tag))
 ).sort();

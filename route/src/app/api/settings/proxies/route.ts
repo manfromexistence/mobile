@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       relayProbeStats: getRelayProbeStats(),
       // Default ON (opt-out): only an explicit falsey value disables SOCKS5.
       socks5Enabled: !["false", "0", "no", "off"].includes(
-        (process.env.ENABLE_SOCKS5_PROXY ?? "").trim().toLowerCase(),
+        (process.env.ENABLE_SOCKS5_PROXY ?? "").trim().toLowerCase()
       ),
     });
   } catch (error) {

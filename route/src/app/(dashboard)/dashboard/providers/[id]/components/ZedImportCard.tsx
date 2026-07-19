@@ -36,12 +36,12 @@ export default function ZedImportCard({ fetchConnections, notify }: ZedImportCar
           notify.info("No Zed credentials found in keychain");
         } else {
           notify.info(
-            `Found ${found} keychain credential(s), but none matched supported providers`,
+            `Found ${found} keychain credential(s), but none matched supported providers`
           );
         }
       } else {
         notify.success(
-          `Imported ${data.count} credential(s) from Zed for ${data.providers?.length ?? 0} provider(s)`,
+          `Imported ${data.count} credential(s) from Zed for ${data.providers?.length ?? 0} provider(s)`
         );
         await fetchConnections();
       }

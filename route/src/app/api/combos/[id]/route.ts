@@ -109,7 +109,7 @@ export async function PUT(request, { params }) {
       "COMBO_001",
       400,
       { field: "body", reason: "Invalid JSON body" },
-      request,
+      request
     );
   }
 
@@ -128,7 +128,7 @@ export async function PUT(request, { params }) {
           firstField: firstDetail?.field ?? null,
           firstMessage: firstDetail?.message ?? null,
         },
-        request,
+        request
       );
     }
     const currentCombo = (await getComboById(id)) as ComboRowShape | null;
@@ -140,7 +140,7 @@ export async function PUT(request, { params }) {
         "COMBO_006",
         409,
         { name: currentCombo.name, source: "quota-share" },
-        request,
+        request
       );
     }
     const allCombos = await getCombos();
@@ -195,7 +195,7 @@ export async function PUT(request, { params }) {
         "COMBO_003",
         400,
         { reason: failure.error.message, details: failure.error.details },
-        request,
+        request
       );
     }
 
@@ -207,7 +207,7 @@ export async function PUT(request, { params }) {
           "COMBO_004",
           400,
           { name: body.name, conflictingId: existing.id },
-          request,
+          request
         );
       }
     }
@@ -218,7 +218,7 @@ export async function PUT(request, { params }) {
       const updatedCombos = allCombos.map((c) => (c.id === id ? { ...c, ...body } : c));
       if (comboName) {
         const configuredDepth = clampComboDepth(
-          (nextComboState as { config?: { maxComboDepth?: unknown } }).config?.maxComboDepth,
+          (nextComboState as { config?: { maxComboDepth?: unknown } }).config?.maxComboDepth
         );
         try {
           validateComboDAG(String(comboName), updatedCombos, new Set(), 0, configuredDepth);
@@ -266,7 +266,7 @@ export async function DELETE(request, { params }) {
         "COMBO_006",
         409,
         { name: existingCombo.name, source: "quota-share" },
-        request,
+        request
       );
     }
     const success = await deleteCombo(id);

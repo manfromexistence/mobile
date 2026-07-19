@@ -177,7 +177,7 @@ function mergeCatalogHeaders(...sources: Array<Record<string, string> | undefine
  */
 export async function getUnifiedModelsResponse(
   request: Request,
-  corsHeaders: Record<string, string> = {},
+  corsHeaders: Record<string, string> = {}
 ) {
   const diagnosticHeaders = getCatalogDiagnosticsHeaders({ request });
 
@@ -240,13 +240,13 @@ export async function getUnifiedModelsResponse(
           code: INTERNAL_PROXY_ERROR,
         },
       },
-      { status: 500, headers: { ...corsHeaders, ...diagnosticHeaders } },
+      { status: 500, headers: { ...corsHeaders, ...diagnosticHeaders } }
     );
   }
 }
 
 async function buildCatalogPayload(
-  request: Request,
+  request: Request
 ): Promise<{ body: string; headers: Record<string, string>; status: number }> {
   _catalogBuilderRuns++;
   const built = await buildUnifiedModelsResponseCore(request);
@@ -269,7 +269,7 @@ async function buildCatalogPayload(
  */
 async function buildUnifiedModelsResponseCore(
   request: Request,
-  corsHeaders: Record<string, string> = {},
+  corsHeaders: Record<string, string> = {}
 ) {
   const diagnosticHeaders = getCatalogDiagnosticsHeaders({ request });
   try {
@@ -357,7 +357,7 @@ async function buildUnifiedModelsResponseCore(
     const connectionsByProvider = new Map<string, typeof connections>();
     const registerConnectionKey = (
       key: string | null | undefined,
-      connection: (typeof connections)[number],
+      connection: (typeof connections)[number]
     ) => {
       if (!key) return;
       const existing = connectionsByProvider.get(key) || [];
@@ -402,7 +402,7 @@ async function buildUnifiedModelsResponseCore(
         return true;
       return hasEligibleConnectionForModel(
         getConnectionsForProvider(providerKey, providerId, alias),
-        modelId,
+        modelId
       );
     };
 
@@ -426,7 +426,7 @@ async function buildUnifiedModelsResponseCore(
         (prefix): prefix is string =>
           typeof prefix === "string" &&
           prefix.length > 0 &&
-          prefixRoutesToProvider(prefix, providerId),
+          prefixRoutesToProvider(prefix, providerId)
       );
     };
 
@@ -450,7 +450,7 @@ async function buildUnifiedModelsResponseCore(
     };
 
     const getComboTargetCatalogMetadata = (
-      target: ComboCatalogTarget,
+      target: ComboCatalogTarget
     ): ComboTargetCatalogMetadata | null => {
       const targetModel = getComboTargetModelId(target);
       if (!targetModel) return null;
@@ -505,9 +505,7 @@ async function buildUnifiedModelsResponseCore(
           : syncedInputModalities.length > 0 || syncedOutputModalities.length > 0
             ? [...syncedInputModalities, ...syncedOutputModalities].some((entry) =>
                 // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
-                entry
-                  .toLowerCase()
-                  .includes("image"),
+                entry.toLowerCase().includes("image")
               )
             : undefined;
       const registryVision =
@@ -570,7 +568,7 @@ async function buildUnifiedModelsResponseCore(
 
     const buildComboCatalogMetadata = (
       combo: Parameters<typeof resolveNestedComboTargets>[0],
-      allCombos: Parameters<typeof resolveNestedComboTargets>[1],
+      allCombos: Parameters<typeof resolveNestedComboTargets>[1]
     ) => {
       const explicitContextLength = isPositiveFiniteNumber(combo.context_length)
         ? combo.context_length
@@ -583,28 +581,27 @@ async function buildUnifiedModelsResponseCore(
       const targetMetadata = targets.map((target) => getComboTargetCatalogMetadata(target));
 
       const knownMetadata = targetMetadata.filter(
-        (metadata): metadata is ComboTargetCatalogMetadata => metadata !== null,
+        (metadata): metadata is ComboTargetCatalogMetadata => metadata !== null
       );
       if (knownMetadata.length === 0) return baseMetadata;
       const contextLength =
         explicitContextLength ??
         minKnownNumber(knownMetadata.map((metadata) => metadata.contextLength));
       const maxInputTokens = minKnownNumber(
-        knownMetadata.map((metadata) => metadata.maxInputTokens),
+        knownMetadata.map((metadata) => metadata.maxInputTokens)
       );
       const maxOutputTokens = minKnownNumber(
-        knownMetadata.map((metadata) => metadata.maxOutputTokens),
+        knownMetadata.map((metadata) => metadata.maxOutputTokens)
       );
 
       const inputModalities = knownMetadata.every(
-        (metadata) =>
-          Array.isArray(metadata.inputModalities) && metadata.inputModalities.length > 0,
+        (metadata) => Array.isArray(metadata.inputModalities) && metadata.inputModalities.length > 0
       )
         ? intersectStringArrays(knownMetadata.map((metadata) => metadata.inputModalities || []))
         : [];
       const outputModalities = knownMetadata.every(
         (metadata) =>
-          Array.isArray(metadata.outputModalities) && metadata.outputModalities.length > 0,
+          Array.isArray(metadata.outputModalities) && metadata.outputModalities.length > 0
       )
         ? intersectStringArrays(knownMetadata.map((metadata) => metadata.outputModalities || []))
         : [];
@@ -704,7 +701,7 @@ async function buildUnifiedModelsResponseCore(
       // Skip combos whose any underlying target model is hidden
       const comboTargets = resolveNestedComboTargets(
         combo as Parameters<typeof resolveNestedComboTargets>[0],
-        combos as Parameters<typeof resolveNestedComboTargets>[1],
+        combos as Parameters<typeof resolveNestedComboTargets>[1]
       ) as ComboCatalogTarget[];
       if (
         comboTargets.some((target) => {
@@ -741,7 +738,7 @@ async function buildUnifiedModelsResponseCore(
       Object.keys(syncedModelsByProvider).filter((pid) => {
         const models = syncedModelsByProvider[pid];
         return Array.isArray(models) && models.length > 0;
-      }),
+      })
     );
 
     // Add provider models (chat)
@@ -868,7 +865,7 @@ async function buildUnifiedModelsResponseCore(
           // Multi-capability models may intentionally share an id between the
           // chat and image catalogs; getAllImageModels() adds the image entry.
           const explicitlySupportsChat = sm.supportedEndpoints?.some(
-            (endpoint) => endpoint === "chat" || endpoint === "responses",
+            (endpoint) => endpoint === "chat" || endpoint === "responses"
           );
           if (
             !explicitlySupportsChat &&
@@ -998,10 +995,10 @@ async function buildUnifiedModelsResponseCore(
           if (models.some((existingModel: any) => existingModel?.id === qualifiedId)) continue;
 
           const inputModalities = normalizeOpenRouterModalities(
-            openRouterModel.architecture?.input_modalities,
+            openRouterModel.architecture?.input_modalities
           );
           const outputModalities = normalizeOpenRouterModalities(
-            openRouterModel.architecture?.output_modalities,
+            openRouterModel.architecture?.output_modalities
           );
           const modelType = getOpenRouterModelType(inputModalities, outputModalities);
           const isFree = isOpenRouterFreeModel(openRouterModel);
@@ -1074,7 +1071,7 @@ async function buildUnifiedModelsResponseCore(
       providerId: string,
       rawModelId: string,
       type: string,
-      scopedModelId: string,
+      scopedModelId: string
     ) =>
       models.some((model: any) => {
         if (model?.id === scopedModelId) return true;
@@ -1217,7 +1214,7 @@ async function buildUnifiedModelsResponseCore(
         const providerCustomModels: CustomModelEntry[] = Array.isArray(rawProviderCustomModels)
           ? rawProviderCustomModels.filter(
               (model): model is CustomModelEntry =>
-                !!model && typeof model === "object" && !Array.isArray(model),
+                !!model && typeof model === "object" && !Array.isArray(model)
             )
           : [];
         // For compatible providers, use the prefix from provider nodes
@@ -1255,7 +1252,7 @@ async function buildUnifiedModelsResponseCore(
               isNoAuthProviderBlocked(blockedProviders, canonicalProviderId, providerId, alias)) &&
             !hasEligibleConnectionForModel(
               getConnectionsForProvider(alias, canonicalProviderId, providerId, parentProviderType),
-              modelId,
+              modelId
             )
           ) {
             continue;
@@ -1490,7 +1487,7 @@ async function buildUnifiedModelsResponseCore(
           keyMeta.allowedQuotas,
           combos,
           timestamp,
-          (c) => buildComboCatalogMetadata(c, combos),
+          (c) => buildComboCatalogMetadata(c, combos)
         );
       } else if (!keyMeta) {
         // #6406: A valid apiKey without a DB metadata row is an env-var master key
@@ -1520,7 +1517,7 @@ async function buildUnifiedModelsResponseCore(
     // key-filtered list, so a variant only appears when its real model is permitted.
     finalModels = appendNoThinkingVariants(
       finalModels,
-      prefixMode === "canonical" ? aliasToProviderId : undefined,
+      prefixMode === "canonical" ? aliasToProviderId : undefined
     );
 
     // #4424 follow-up — drop exact-duplicate ids that slip through the per-source push
@@ -1558,7 +1555,7 @@ async function buildUnifiedModelsResponseCore(
           ? { ...enriched, context_length: fallbackContextLength }
           : enriched;
         return maybeOmitCatalogModelName(listedModel, includeModelNames);
-      }),
+      })
     );
     // Codex CLI compatibility: its model-catalog refresh (codex_models_manager) does
     // GET /v1/models?client_version=<v> and decodes a JSON object with a TOP-LEVEL
@@ -1604,7 +1601,7 @@ async function buildUnifiedModelsResponseCore(
           ...corsHeaders,
           ...diagnosticHeaders,
         },
-      },
+      }
     );
   }
 }

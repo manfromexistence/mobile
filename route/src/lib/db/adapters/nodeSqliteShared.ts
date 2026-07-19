@@ -16,7 +16,7 @@ const MAX_STMT_CACHE_SIZE = 200;
 export function createNodeSqliteAdapterFromDatabase(
   db: NodeSqliteDatabaseLike,
   filePath: string,
-  onClose?: () => void,
+  onClose?: () => void
 ): SqliteAdapter {
   let _isOpen = true;
   type NodeSqliteStatement = ReturnType<NodeSqliteDatabaseLike["prepare"]>;

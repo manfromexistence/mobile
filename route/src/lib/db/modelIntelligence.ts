@@ -44,7 +44,7 @@ function rowToEntry(row: Record<string, unknown>): ModelIntelligenceEntry {
 
 export function getModelIntelligence(
   model: string,
-  category: string,
+  category: string
 ): ModelIntelligenceEntry | null {
   const db = getDbInstance();
   const row = db
@@ -58,7 +58,7 @@ export function getModelIntelligence(
          WHEN 'arena_elo' THEN 2
          WHEN 'models_dev_tier' THEN 3
        END
-       LIMIT 1`,
+       LIMIT 1`
     )
     .get(model, category) as Record<string, unknown> | undefined;
 
@@ -68,14 +68,14 @@ export function getModelIntelligence(
 export function getModelIntelligenceBySource(
   model: string,
   source: string,
-  category: string,
+  category: string
 ): ModelIntelligenceEntry | null {
   const db = getDbInstance();
   const row = db
     .prepare(
       `SELECT * FROM model_intelligence
        WHERE model = ? AND source = ? AND category = ?
-         AND (expires_at IS NULL OR datetime(expires_at) > datetime('now'))`,
+         AND (expires_at IS NULL OR datetime(expires_at) > datetime('now'))`
     )
     .get(model, source, category) as Record<string, unknown> | undefined;
 
@@ -88,7 +88,7 @@ export function upsertModelIntelligence(entry: Omit<ModelIntelligenceEntry, "syn
   db.prepare(
     `INSERT OR REPLACE INTO model_intelligence
        (model, source, category, score, elo_raw, confidence, synced_at, expires_at)
-     VALUES (?, ?, ?, ?, ?, ?, datetime('now'), ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, datetime('now'), ?)`
   ).run(
     entry.model,
     entry.source,
@@ -96,7 +96,7 @@ export function upsertModelIntelligence(entry: Omit<ModelIntelligenceEntry, "syn
     entry.score,
     entry.eloRaw ?? null,
     entry.confidence ?? null,
-    entry.expiresAt ?? null,
+    entry.expiresAt ?? null
   );
 }
 
@@ -105,7 +105,7 @@ export function deleteModelIntelligence(model: string, source: string, category:
   const result = db
     .prepare(
       `DELETE FROM model_intelligence
-       WHERE model = ? AND source = ? AND category = ?`,
+       WHERE model = ? AND source = ? AND category = ?`
     )
     .run(model, source, category);
   return (result.changes ?? 0) > 0;
@@ -158,7 +158,7 @@ export function listModelIntelligence(filters?: {
 }
 
 export function bulkUpsertModelIntelligence(
-  entries: Array<Omit<ModelIntelligenceEntry, "syncedAt">>,
+  entries: Array<Omit<ModelIntelligenceEntry, "syncedAt">>
 ): number {
   if (entries.length === 0) return 0;
 
@@ -166,7 +166,7 @@ export function bulkUpsertModelIntelligence(
   const stmt = db.prepare(
     `INSERT OR REPLACE INTO model_intelligence
        (model, source, category, score, elo_raw, confidence, synced_at, expires_at)
-     VALUES (?, ?, ?, ?, ?, ?, datetime('now'), ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, datetime('now'), ?)`
   );
 
   const upsertAll = db.transaction(() => {
@@ -179,7 +179,7 @@ export function bulkUpsertModelIntelligence(
         entry.score,
         entry.eloRaw ?? null,
         entry.confidence ?? null,
-        entry.expiresAt ?? null,
+        entry.expiresAt ?? null
       );
       count++;
     }

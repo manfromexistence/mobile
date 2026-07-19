@@ -49,7 +49,7 @@ export async function validateAssemblyAIProvider({ apiKey, providerSpecificData 
           Authorization: apiKey,
           "Content-Type": "application/json",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
     if (response.ok) return { valid: true, error: null };
@@ -72,7 +72,7 @@ export async function validateElevenLabsProvider({ apiKey, providerSpecificData 
           "xi-api-key": apiKey,
           "Content-Type": "application/json",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
 
@@ -98,7 +98,7 @@ export async function validateInworldProvider({ apiKey, providerSpecificData = {
           Authorization: `Basic ${apiKey}`,
           "Content-Type": "application/json",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
       body: JSON.stringify({
         text: "test",
@@ -128,7 +128,7 @@ export async function validateKieProvider({ apiKey, providerSpecificData = {} }:
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
     });
 
@@ -257,7 +257,7 @@ export async function validateBailianCodingPlanProvider({
           "x-api-key": apiKey,
           "anthropic-version": "2023-06-01",
         },
-        providerSpecificData,
+        providerSpecificData
       ),
       body: JSON.stringify({
         model: "qwen3-coder-plus",

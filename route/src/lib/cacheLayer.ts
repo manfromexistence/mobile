@@ -206,7 +206,7 @@ let promptCache: LRUCache | null = null;
  * @returns {LRUCache}
  */
 export function getPromptCache(
-  options?: { maxSize?: number; maxBytes?: number; defaultTTL?: number } & Record<string, unknown>,
+  options?: { maxSize?: number; maxBytes?: number; defaultTTL?: number } & Record<string, unknown>
 ) {
   if (!promptCache) {
     promptCache = new LRUCache({

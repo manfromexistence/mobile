@@ -83,7 +83,7 @@ export default function StatsCharts({ requests }: StatsChartsProps) {
           <div className="text-2xl font-bold text-red-400">
             {
               requests.filter(
-                (r) => r.status === "error" || (typeof r.status === "number" && r.status >= 400),
+                (r) => r.status === "error" || (typeof r.status === "number" && r.status >= 400)
               ).length
             }
           </div>

@@ -102,7 +102,7 @@ function maybeResetWindow(
   db: ReturnType<typeof getDbInstance>,
   table: string,
   idField: string,
-  idValue: string,
+  idValue: string
 ): void {
   const today = nowDay();
   const hour = nowHour();
@@ -115,7 +115,7 @@ function maybeResetWindow(
         last_reset_day = ?,
         last_reset_hour = ?
     WHERE ${idField} = ?
-  `,
+  `
   ).run(today, hour, today, hour, idValue);
 }
 
@@ -158,7 +158,7 @@ export function checkQuota(provider = "", accountId = ""): QuotaCheckResult {
       if (limits.max_active_keys !== null) {
         const { activeCount } = db
           .prepare(
-            "SELECT COUNT(*) as activeCount FROM registered_keys WHERE provider = ? AND is_active = 1",
+            "SELECT COUNT(*) as activeCount FROM registered_keys WHERE provider = ? AND is_active = 1"
           )
           .get(provider) as { activeCount: number };
         if (activeCount >= limits.max_active_keys) {
@@ -202,7 +202,7 @@ export function checkQuota(provider = "", accountId = ""): QuotaCheckResult {
       if (limits.max_active_keys !== null) {
         const { activeCount } = db
           .prepare(
-            "SELECT COUNT(*) as activeCount FROM registered_keys WHERE account_id = ? AND is_active = 1",
+            "SELECT COUNT(*) as activeCount FROM registered_keys WHERE account_id = ? AND is_active = 1"
           )
           .get(accountId) as { activeCount: number };
         if (activeCount >= limits.max_active_keys) {
@@ -226,7 +226,7 @@ export function checkQuota(provider = "", accountId = ""): QuotaCheckResult {
  * Returns the key with rawKey (only on creation) or null if idempotency_key already exists.
  */
 export function issueRegisteredKey(
-  params: IssueKeyParams,
+  params: IssueKeyParams
 ): RegisteredKeyWithSecret | { idempotencyConflict: true; existing: RegisteredKey } {
   const db = getDbInstance();
   const {
@@ -262,7 +262,7 @@ export function issueRegisteredKey(
     INSERT INTO registered_keys
       (id, key, key_prefix, name, provider, account_id, idempotency_key, expires_at, daily_budget, hourly_budget, last_reset_day, last_reset_hour)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `,
+  `
   ).run(
     id,
     keyHash,
@@ -275,7 +275,7 @@ export function issueRegisteredKey(
     dailyBudget ?? null,
     hourlyBudget ?? null,
     nowDay(),
-    nowHour(),
+    nowHour()
   );
 
   // Increment provider/account issuance counters
@@ -289,7 +289,7 @@ export function issueRegisteredKey(
         daily_issued = daily_issued + 1,
         hourly_issued = hourly_issued + 1,
         updated_at = datetime('now')
-    `,
+    `
     ).run(provider, nowDay(), nowHour());
   }
   if (accountId) {
@@ -302,7 +302,7 @@ export function issueRegisteredKey(
         daily_issued = daily_issued + 1,
         hourly_issued = hourly_issued + 1,
         updated_at = datetime('now')
-    `,
+    `
     ).run(accountId, nowDay(), nowHour());
   }
 
@@ -318,8 +318,7 @@ export function issueRegisteredKey(
 export function getRegisteredKey(id: string): RegisteredKey | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM registered_keys WHERE id = ?").get(id) as
-    | RegisteredKeyRow
-    | undefined;
+    RegisteredKeyRow | undefined;
   return row ? (rowToCamel(row) as unknown as RegisteredKey) : null;
 }
 
@@ -327,7 +326,7 @@ export function getRegisteredKey(id: string): RegisteredKey | null {
  * List all registered keys (optionally filtered by provider/accountId).
  */
 export function listRegisteredKeys(
-  opts: { provider?: string; accountId?: string } = {},
+  opts: { provider?: string; accountId?: string } = {}
 ): RegisteredKey[] {
   const db = getDbInstance();
   let sql = "SELECT * FROM registered_keys WHERE 1=1";
@@ -356,7 +355,7 @@ export function revokeRegisteredKey(id: string): boolean {
     UPDATE registered_keys
     SET is_active = 0, revoked_at = datetime('now'), updated_at = datetime('now')
     WHERE id = ? AND is_active = 1
-  `,
+  `
     )
     .run(id);
   return result.changes > 0;
@@ -375,7 +374,7 @@ export function validateRegisteredKey(rawKey: string): RegisteredKey | null {
     SELECT * FROM registered_keys
     WHERE key = ? AND is_active = 1
       AND (expires_at IS NULL OR expires_at > datetime('now'))
-  `,
+  `
     )
     .get(hash) as RegisteredKeyRow | undefined;
   if (!row) return null;
@@ -391,7 +390,7 @@ export function validateRegisteredKey(rawKey: string): RegisteredKey | null {
           hourly_used = CASE WHEN last_reset_hour <> ? THEN 0 ELSE hourly_used END,
           last_reset_day = ?, last_reset_hour = ?
       WHERE id = ?
-    `,
+    `
     ).run(today, hour, today, hour, row.id);
   }
 
@@ -412,7 +411,7 @@ export function incrementRegisteredKeyUsage(id: string): void {
     UPDATE registered_keys
     SET daily_used = daily_used + 1, hourly_used = hourly_used + 1, updated_at = datetime('now')
     WHERE id = ?
-  `,
+  `
   ).run(id);
 }
 
@@ -420,9 +419,7 @@ export function incrementRegisteredKeyUsage(id: string): void {
 
 export function setProviderKeyLimit(
   provider: string,
-  limits: Partial<
-    Omit<ProviderKeyLimit, "provider" | "dailyIssued" | "hourlyIssued" | "updatedAt">
-  >,
+  limits: Partial<Omit<ProviderKeyLimit, "provider" | "dailyIssued" | "hourlyIssued" | "updatedAt">>
 ): void {
   const db = getDbInstance();
   db.prepare(
@@ -434,22 +431,20 @@ export function setProviderKeyLimit(
       daily_issue_limit = excluded.daily_issue_limit,
       hourly_issue_limit = excluded.hourly_issue_limit,
       updated_at = datetime('now')
-  `,
+  `
   ).run(
     provider,
     limits.maxActiveKeys ?? null,
     limits.dailyIssueLimit ?? null,
     limits.hourlyIssueLimit ?? null,
     nowDay(),
-    nowHour(),
+    nowHour()
   );
 }
 
 export function setAccountKeyLimit(
   accountId: string,
-  limits: Partial<
-    Omit<AccountKeyLimit, "accountId" | "dailyIssued" | "hourlyIssued" | "updatedAt">
-  >,
+  limits: Partial<Omit<AccountKeyLimit, "accountId" | "dailyIssued" | "hourlyIssued" | "updatedAt">>
 ): void {
   const db = getDbInstance();
   db.prepare(
@@ -461,30 +456,28 @@ export function setAccountKeyLimit(
       daily_issue_limit = excluded.daily_issue_limit,
       hourly_issue_limit = excluded.hourly_issue_limit,
       updated_at = datetime('now')
-  `,
+  `
   ).run(
     accountId,
     limits.maxActiveKeys ?? null,
     limits.dailyIssueLimit ?? null,
     limits.hourlyIssueLimit ?? null,
     nowDay(),
-    nowHour(),
+    nowHour()
   );
 }
 
 export function getProviderKeyLimit(provider: string): ProviderKeyLimit | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM provider_key_limits WHERE provider = ?").get(provider) as
-    | ProviderKeyLimitRow
-    | undefined;
+    ProviderKeyLimitRow | undefined;
   return row ? (rowToCamel(row) as unknown as ProviderKeyLimit) : null;
 }
 
 export function getAccountKeyLimit(accountId: string): AccountKeyLimit | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM account_key_limits WHERE account_id = ?").get(accountId) as
-    | AccountKeyLimitRow
-    | undefined;
+    AccountKeyLimitRow | undefined;
   return row ? (rowToCamel(row) as unknown as AccountKeyLimit) : null;
 }
 

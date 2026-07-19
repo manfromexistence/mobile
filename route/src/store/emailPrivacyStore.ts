@@ -18,8 +18,8 @@ const useEmailPrivacyStore = create<EmailPrivacyState>()(
     }),
     {
       name: "omniroute-email-privacy",
-    },
-  ),
+    }
+  )
 );
 
 export default useEmailPrivacyStore;

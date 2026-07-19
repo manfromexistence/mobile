@@ -14,7 +14,7 @@ type AliasMode = "exact" | "wildcard";
 function translateOrFallback(
   t: ReturnType<typeof useTranslations>,
   key: string,
-  fallback: string,
+  fallback: string
 ): string {
   return typeof t.has === "function" && t.has(key) ? t(key) : fallback;
 }
@@ -173,7 +173,7 @@ export default function ModelAliasesUnified() {
             {translateOrFallback(
               t,
               "modelAliasesDesc",
-              "Remap model names using exact matches or wildcard patterns.",
+              "Remap model names using exact matches or wildcard patterns."
             )}
           </p>
         </div>
@@ -223,12 +223,12 @@ export default function ModelAliasesUnified() {
             ? translateOrFallback(
                 t,
                 "exactMatchModeDesc",
-                "Use exact aliases for deprecated or renamed model IDs.",
+                "Use exact aliases for deprecated or renamed model IDs."
               )
             : translateOrFallback(
                 t,
                 "wildcardPatternModeDesc",
-                "Use wildcard aliases with * and ? when a family of models should map to one target.",
+                "Use wildcard aliases with * and ? when a family of models should map to one target."
               )}
         </p>
 
@@ -278,7 +278,7 @@ export default function ModelAliasesUnified() {
               {translateOrFallback(
                 t,
                 "noExactAliasesConfigured",
-                "No exact-match aliases configured.",
+                "No exact-match aliases configured."
               )}
             </div>
           ) : (
@@ -313,7 +313,7 @@ export default function ModelAliasesUnified() {
               {translateOrFallback(
                 t,
                 "noWildcardAliasesConfigured",
-                "No wildcard aliases configured.",
+                "No wildcard aliases configured."
               )}
             </div>
           ) : (

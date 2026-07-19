@@ -63,7 +63,7 @@ async function extractTarGz(archivePath: string, destDir: string): Promise<void>
 export function buildExtractZipCommand(
   platform: NodeJS.Platform,
   archivePath: string,
-  destDir: string,
+  destDir: string
 ): { command: string; args: string[] } {
   if (platform === "win32") {
     const src = archivePath.replace(/'/g, "''");
@@ -110,7 +110,7 @@ function findBinaryInDir(dir: string): string | null {
 export async function downloadRelease(
   version: string,
   targetDir: string,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ): Promise<string> {
   const release = await getReleaseByVersion(version);
   if (!release) throw new Error(`Version ${version} not found`);
@@ -195,7 +195,7 @@ export async function getInstalledVersions(dataDir?: string): Promise<string[]> 
         (e) =>
           typeof e === "string" &&
           e.startsWith("cliproxyapi-") &&
-          fsSync.statSync(path.join(/* turbopackIgnore: true */ binDir, e)).isDirectory(),
+          fsSync.statSync(path.join(/* turbopackIgnore: true */ binDir, e)).isDirectory()
       )
       .map((e) => e.replace("cliproxyapi-", ""));
   } catch {

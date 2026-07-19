@@ -17,7 +17,7 @@ function warnTokenInUrlOnce() {
   console.warn(
     "[VSCODE][SECURITY] A path-token endpoint (/api/v1/vscode/raw/[token] or /api/v1/vscode/[token]) " +
       "was used. The API key travels in the request URL and can leak via access logs, proxies, and " +
-      "browser history. Prefer the Authorization header where the client supports it.",
+      "browser history. Prefer the Authorization header where the client supports it."
   );
 }
 

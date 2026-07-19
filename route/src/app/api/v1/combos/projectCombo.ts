@@ -82,7 +82,7 @@ export function projectComboStep(step: Record<string, unknown>): PublicComboStep
  */
 export function computeComboCapabilities(
   combo: Record<string, unknown>,
-  resolve: ComboCapabilityResolver = defaultCapabilityResolver,
+  resolve: ComboCapabilityResolver = defaultCapabilityResolver
 ): PublicComboCapabilities {
   const rawModels = Array.isArray(combo.models) ? combo.models : [];
   const modelIds: string[] = [];
@@ -116,7 +116,7 @@ export function computeComboCapabilities(
 
 export function projectCombo(
   combo: Record<string, unknown>,
-  options?: ProjectComboOptions,
+  options?: ProjectComboOptions
 ): PublicCombo | null {
   const name = typeof combo.name === "string" ? combo.name.trim() : "";
   if (!name) return null;

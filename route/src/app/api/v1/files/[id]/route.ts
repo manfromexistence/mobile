@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!file || (file.apiKeyId !== null && file.apiKeyId !== apiKeyId && !scope.isSessionAuth)) {
     return NextResponse.json(
       { error: { message: "File not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS },
+      { status: 404, headers: CORS_HEADERS }
     );
   }
 
@@ -36,7 +36,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (!file) {
     return NextResponse.json(
       { error: { message: "File not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS },
+      { status: 404, headers: CORS_HEADERS }
     );
   }
 
@@ -45,7 +45,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (!scope.isSessionAuth && file.apiKeyId !== null && file.apiKeyId !== apiKeyId) {
     return NextResponse.json(
       { error: { message: "File not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS },
+      { status: 404, headers: CORS_HEADERS }
     );
   }
 
@@ -57,6 +57,6 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       object: "file",
       deleted: true,
     },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

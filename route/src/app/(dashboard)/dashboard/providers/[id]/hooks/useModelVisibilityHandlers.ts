@@ -84,7 +84,7 @@ export interface UseModelVisibilityHandlersReturn {
   handleBulkToggleModelHidden: (
     providerKey: string,
     modelIds: string[],
-    hidden: boolean,
+    hidden: boolean
   ) => Promise<void>;
   handleClearAllModels: () => Promise<void>;
   onTestModel: (modelId: string, fullModel: string) => Promise<void>;
@@ -111,7 +111,7 @@ export function useModelVisibilityHandlers({
   const [compatSavingModelId, setCompatSavingModelId] = useState<string | null>(null);
   const [togglingModelId, setTogglingModelId] = useState<string | null>(null);
   const [bulkVisibilityAction, setBulkVisibilityAction] = useState<"select" | "deselect" | null>(
-    null,
+    null
   );
   const [clearingModels, setClearingModels] = useState(false);
   const [modelFilter, setModelFilter] = useState("");
@@ -125,9 +125,9 @@ export function useModelVisibilityHandlers({
   const providerAliasEntries = useMemo(
     () =>
       Object.entries(modelAliases).filter(
-        ([, model]) => typeof model === "string" && model.startsWith(`${providerStorageAlias}/`),
+        ([, model]) => typeof model === "string" && model.startsWith(`${providerStorageAlias}/`)
       ) as [string, string][],
-    [modelAliases, providerStorageAlias],
+    [modelAliases, providerStorageAlias]
   );
 
   const saveModelCompatFlags = async (modelId: string, patch: ModelCompatSavePatch) => {
@@ -183,7 +183,7 @@ export function useModelVisibilityHandlers({
       if (!res.ok) {
         const detail = await formatProviderModelsErrorResponse(res);
         notify.error(
-          detail ? `${t("failedSaveCustomModel")} — ${detail}` : t("failedSaveCustomModel"),
+          detail ? `${t("failedSaveCustomModel")} — ${detail}` : t("failedSaveCustomModel")
         );
         return;
       }
@@ -203,7 +203,7 @@ export function useModelVisibilityHandlers({
   const handleToggleModelHidden = async (
     providerKey: string,
     modelId: string,
-    hidden: boolean,
+    hidden: boolean
   ): Promise<void> => {
     setTogglingModelId(modelId);
     try {
@@ -213,7 +213,7 @@ export function useModelVisibilityHandlers({
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isHidden: hidden }),
-        },
+        }
       );
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
@@ -231,7 +231,7 @@ export function useModelVisibilityHandlers({
   const handleBulkToggleModelHidden = async (
     providerKey: string,
     modelIds: string[],
-    hidden: boolean,
+    hidden: boolean
   ): Promise<void> => {
     if (modelIds.length === 0) return;
     setBulkVisibilityAction(hidden ? "deselect" : "select");
@@ -261,7 +261,7 @@ export function useModelVisibilityHandlers({
     try {
       const res = await fetch(
         `/api/provider-models?provider=${encodeURIComponent(providerStorageAlias)}&all=true`,
-        { method: "DELETE" },
+        { method: "DELETE" }
       );
       if (res.ok) {
         // Also delete all aliases that belong to this provider
@@ -269,8 +269,8 @@ export function useModelVisibilityHandlers({
           providerAliasEntries.map(([alias]) =>
             fetch(`/api/models/alias?alias=${encodeURIComponent(alias)}`, {
               method: "DELETE",
-            }).catch(() => {}),
-          ),
+            }).catch(() => {})
+          )
         );
         await fetchProviderModelMeta();
         await fetchAliases();
@@ -308,8 +308,8 @@ export function useModelVisibilityHandlers({
             {
               modelId,
               latencyMs: data.latencyMs,
-            },
-          ),
+            }
+          )
         );
         setModelTestStatus((prev) => ({ ...prev, [modelId]: "ok" }));
       } else {
@@ -328,7 +328,7 @@ export function useModelVisibilityHandlers({
   };
 
   const handleTestAll = async (
-    targets: Array<{ modelId: string; fullModel: string }>,
+    targets: Array<{ modelId: string; fullModel: string }>
   ): Promise<void> => {
     if (testingAll) return;
     if (targets.length === 0) {
@@ -389,7 +389,7 @@ export function useModelVisibilityHandlers({
             setModelTestStatus((prev) => ({ ...prev, [modelId]: "error" }));
           }
           setTestProgress((prev) => (prev ? { done: prev.done + 1, total: prev.total } : null));
-        }),
+        })
       );
     }
 

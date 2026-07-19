@@ -591,7 +591,7 @@ export default function RequestLoggerDetail({
                 >
                   {formatApiKeyLabel(
                     detail?.apiKeyName || log.apiKeyName,
-                    detail?.apiKeyId || log.apiKeyId,
+                    detail?.apiKeyId || log.apiKeyId
                   )}
                 </div>
               </div>
@@ -705,7 +705,7 @@ export default function RequestLoggerDetail({
                     onCopy(
                       Array.isArray(streamChunks.provider)
                         ? streamChunks.provider.join("")
-                        : String(streamChunks.provider),
+                        : String(streamChunks.provider)
                     )
                   }
                 />
@@ -723,7 +723,7 @@ export default function RequestLoggerDetail({
                     onCopy(
                       Array.isArray(streamChunks.client)
                         ? streamChunks.client.join("")
-                        : String(streamChunks.client),
+                        : String(streamChunks.client)
                     )
                   }
                 />
@@ -744,7 +744,7 @@ export default function RequestLoggerDetail({
                       onCopy(
                         Array.isArray(streamChunks.openai)
                           ? streamChunks.openai.join("")
-                          : String(streamChunks.openai),
+                          : String(streamChunks.openai)
                       )
                     }
                   />

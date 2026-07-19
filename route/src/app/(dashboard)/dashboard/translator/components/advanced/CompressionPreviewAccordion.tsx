@@ -254,7 +254,7 @@ export default function CompressionPreviewAccordion({
       <div
         className={cn(
           "flex items-center gap-3 p-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors",
-          open && "border-b border-black/5 dark:border-white/5",
+          open && "border-b border-black/5 dark:border-white/5"
         )}
       >
         <button

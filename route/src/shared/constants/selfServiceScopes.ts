@@ -12,7 +12,7 @@ export function hasSelfAccountQuotaScope(scopes: readonly string[] | null | unde
 }
 
 export function normalizeSelfServiceScopesForCreate(
-  scopes: readonly string[] | null | undefined,
+  scopes: readonly string[] | null | undefined
 ): string[] {
   const normalized = new Set((scopes ?? []).filter((scope) => typeof scope === "string" && scope));
   normalized.add(SELF_USAGE_SCOPE);

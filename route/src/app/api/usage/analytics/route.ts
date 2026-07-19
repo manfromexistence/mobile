@@ -57,12 +57,12 @@ type PricingByProvider = Record<string, Record<string, Record<string, unknown>>>
 type ComputeCostFromPricing = (
   pricing: Record<string, unknown> | null | undefined,
   tokens: Record<string, number | undefined> | null | undefined,
-  options?: Record<string, unknown>,
+  options?: Record<string, unknown>
 ) => number;
 type GetCodexFastCostMultiplier = (
   provider: string | null | undefined,
   model: string | null | undefined,
-  serviceTier: string | null | undefined,
+  serviceTier: string | null | undefined
 ) => number;
 
 function toNumber(value: unknown): number {
@@ -130,7 +130,7 @@ function stripCodexEffortSuffix(model: string): string {
 
 function getPricingModelCandidates(
   model: string,
-  normalizeModelName: (model: string) => string,
+  normalizeModelName: (model: string) => string
 ): string[] {
   const normalizedModel = normalizeModelName(model);
   const lowerModel = model.toLowerCase();
@@ -155,7 +155,7 @@ function resolveModelPricing(
   providerAliasMap: Record<string, string>,
   providerRaw: string,
   model: string,
-  normalizeModelName: (model: string) => string,
+  normalizeModelName: (model: string) => string
 ): Record<string, unknown> | null {
   const pLower = (providerRaw || "").toLowerCase();
 
@@ -238,7 +238,7 @@ function computeUsageRowCost(
   pricingByProvider: PricingByProvider,
   providerAliasMap: Record<string, string>,
   normalizeModelName: (model: string) => string,
-  computeCostFromPricing: ComputeCostFromPricing,
+  computeCostFromPricing: ComputeCostFromPricing
 ): number {
   const provider = toStringValue(row.provider);
   const model = toStringValue(row.model);
@@ -250,7 +250,7 @@ function computeUsageRowCost(
     providerAliasMap,
     provider,
     model,
-    normalizeModelName,
+    normalizeModelName
   );
   if (!pricing) return 0;
 
@@ -268,7 +268,7 @@ function computeUsageRowCost(
       model,
       serviceTier,
       flatRateAsZero: true,
-    },
+    }
   );
 }
 
@@ -277,21 +277,21 @@ function computeUsageRowStandardCost(
   pricingByProvider: PricingByProvider,
   providerAliasMap: Record<string, string>,
   normalizeModelName: (model: string) => string,
-  computeCostFromPricing: ComputeCostFromPricing,
+  computeCostFromPricing: ComputeCostFromPricing
 ): number {
   return computeUsageRowCost(
     { ...row, serviceTier: "standard", service_tier: "standard" },
     pricingByProvider,
     providerAliasMap,
     normalizeModelName,
-    computeCostFromPricing,
+    computeCostFromPricing
   );
 }
 
 function computeUsageSavingsTokens(
   row: Record<string, unknown>,
   serviceTier: string,
-  getCodexFastCostMultiplier: GetCodexFastCostMultiplier,
+  getCodexFastCostMultiplier: GetCodexFastCostMultiplier
 ): number {
   const provider = toStringValue(row.provider);
   const model = toStringValue(row.model);
@@ -407,9 +407,8 @@ export async function GET(request: Request) {
       }
       pricingByProvider[providerKey.toLowerCase()] = lowerProvider;
     }
-    const { computeCostFromPricing, getCodexFastCostMultiplier, normalizeModelName } = await import(
-      "@/lib/usage/costCalculator"
-    );
+    const { computeCostFromPricing, getCodexFastCostMultiplier, normalizeModelName } =
+      await import("@/lib/usage/costCalculator");
     const { PROVIDER_ID_TO_ALIAS } = await import("@omniroute/open-sse/config/providerModels");
 
     const summaryRow = getUsageSummary(unifiedSource, unifiedParams) as Record<string, unknown>;
@@ -469,7 +468,7 @@ export async function GET(request: Request) {
 
     const apiKeyWhereClause = appendWhereCondition(
       whereClause,
-      "(api_key_id IS NOT NULL AND api_key_id != '') OR (api_key_name IS NOT NULL AND api_key_name != '')",
+      "(api_key_id IS NOT NULL AND api_key_id != '') OR (api_key_name IS NOT NULL AND api_key_name != '')"
     );
     const apiKeyRows = getApiKeyUsageRows(apiKeyWhereClause, params) as Array<
       Record<string, unknown>
@@ -520,7 +519,7 @@ export async function GET(request: Request) {
                 (Number(summaryRow?.successfulRequests || 0) /
                   Number(summaryRow?.totalRequests || 1)) *
                 100
-              ).toFixed(2),
+              ).toFixed(2)
             )
           : 0,
       avgLatencyMs: Math.round(Number(summaryRow?.avgLatencyMs || 0)),
@@ -544,7 +543,7 @@ export async function GET(request: Request) {
                 (Number(fallbackRow?.fallbacks || 0) /
                   Number(fallbackRow?.fallback_eligible || 1)) *
                 100
-              ).toFixed(2),
+              ).toFixed(2)
             )
           : 0,
       requestedModelCoveragePct:
@@ -553,7 +552,7 @@ export async function GET(request: Request) {
               (
                 (Number(fallbackRow?.with_requested || 0) / Number(fallbackRow?.total || 1)) *
                 100
-              ).toFixed(2),
+              ).toFixed(2)
             )
           : 0,
       streak: 0,
@@ -573,7 +572,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       dailyCostByDate.set(date, (dailyCostByDate.get(date) || 0) + cost);
 
@@ -611,7 +610,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       const key = `${provider}::${model}`;
       const existing = modelMap.get(key) || {
@@ -679,7 +678,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       providerCostByProvider.set(provider, (providerCostByProvider.get(provider) || 0) + cost);
     }
@@ -706,7 +705,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       accountCostByAccount.set(account, (accountCostByAccount.get(account) || 0) + cost);
     }
@@ -768,7 +767,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       apiKeyMap.set(key, existing);
     }
@@ -812,7 +811,7 @@ export async function GET(request: Request) {
         pricingByProvider,
         PROVIDER_ID_TO_ALIAS,
         normalizeModelName,
-        computeCostFromPricing,
+        computeCostFromPricing
       );
       existing.cost += actualCost;
       if (serviceTier === "flex") {
@@ -821,13 +820,13 @@ export async function GET(request: Request) {
           pricingByProvider,
           PROVIDER_ID_TO_ALIAS,
           normalizeModelName,
-          computeCostFromPricing,
+          computeCostFromPricing
         );
         existing.savings += Math.max(0, standardCost - actualCost);
         existing.usageSavingsTokens += computeUsageSavingsTokens(
           row,
           serviceTier,
-          getCodexFastCostMultiplier,
+          getCodexFastCostMultiplier
         );
       }
       serviceTierMap.set(serviceTier, existing);
@@ -940,7 +939,7 @@ export async function GET(request: Request) {
             pricingByProvider,
             PROVIDER_ID_TO_ALIAS,
             normalizeModelName,
-            computeCostFromPricing,
+            computeCostFromPricing
           );
         }
 

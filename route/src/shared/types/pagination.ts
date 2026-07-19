@@ -49,7 +49,7 @@ export function parsePaginationParams(searchParams: URLSearchParams): Pagination
 export function buildPaginatedResponse<T>(
   data: T[],
   total: number,
-  params: PaginationParams,
+  params: PaginationParams
 ): PaginatedResponse<T> {
   return {
     data,

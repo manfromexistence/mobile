@@ -35,7 +35,7 @@ function isFamilyFirstEligibleFamily(family: string) {
 
 export function getFamilyFirstPublishedModelId(
   actualModelId: string,
-  family: string | null | undefined,
+  family: string | null | undefined
 ) {
   const normalizedFamily = normalizeFamily(family);
   if (!normalizedFamily || !isFamilyFirstEligibleFamily(normalizedFamily)) {
@@ -74,7 +74,7 @@ export function resolveFamilyFirstPublishedModelId(modelId: string | null | unde
 
 export function getFamilyFirstModelCandidates(
   actualModelId: string,
-  family: string | null | undefined,
+  family: string | null | undefined
 ) {
   const normalizedFamily = normalizeFamily(family);
   const candidates = new Set<string>([actualModelId]);

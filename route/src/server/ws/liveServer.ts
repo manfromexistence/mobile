@@ -161,7 +161,7 @@ function extractAltTokenHeader(request: import("http").IncomingMessage): string 
 
 export function getCookieValueFromHeader(
   headers: import("http").IncomingHttpHeaders,
-  name: string,
+  name: string
 ): string | null {
   const raw = headers.cookie;
   const cookieHeader = Array.isArray(raw) ? raw.join("; ") : raw;
@@ -176,7 +176,7 @@ export function getCookieValueFromHeader(
 }
 
 async function isDashboardCookieAuthenticated(
-  request: import("http").IncomingMessage,
+  request: import("http").IncomingMessage
 ): Promise<boolean> {
   const token = getCookieValueFromHeader(request.headers, "auth_token");
   if (!token || !process.env.JWT_SECRET) return false;
@@ -270,7 +270,7 @@ function sendTo(ws: WebSocket, msg: WsServerMessage | Record<string, unknown>): 
 function publishDashboardEvent(
   event: DashboardEventName,
   payload: unknown,
-  timestamp = Date.now(),
+  timestamp = Date.now()
 ): boolean {
   const channel = getChannelForEvent(event);
   if (!channel) return false;
@@ -346,7 +346,7 @@ function handleInternalEventRequest(req: IncomingMessage, res: ServerResponse): 
       const ok = publishDashboardEvent(
         event,
         parsed.payload,
-        Number(parsed.timestamp) || Date.now(),
+        Number(parsed.timestamp) || Date.now()
       );
       res
         .writeHead(ok ? 202 : 400, { "content-type": "application/json" })
@@ -397,16 +397,16 @@ async function seedLatestCompressionRunFromDb(): Promise<void> {
         fallbackApplied: Boolean(row.validation_fallback),
         timestamp,
       },
-      timestamp,
+      timestamp
     );
     console.log(
       "[LiveWS] Seeded latest compression run from analytics: %s",
-      row.request_id || row.id,
+      row.request_id || row.id
     );
   } catch (err) {
     console.warn(
       "[LiveWS] Could not seed compression analytics backlog: %s",
-      err instanceof Error ? err.message : String(err),
+      err instanceof Error ? err.message : String(err)
     );
   }
 }
@@ -448,13 +448,13 @@ function startHeartbeat(server: WebSocketServer): void {
  */
 export async function startLiveDashboardServer(
   port = DEFAULT_PORT,
-  host = DEFAULT_HOST,
+  host = DEFAULT_HOST
 ): Promise<import("http").Server> {
   if (!process.env.JWT_SECRET) {
     console.warn(
       "  \x1b[33m⚠ Warning: JWT_SECRET is not set in the environment.\x1b[0m\n" +
         "    Dashboard cookie-based WebSocket authentication will fail.\n" +
-        "    Please ensure JWT_SECRET is configured in your .env file.",
+        "    Please ensure JWT_SECRET is configured in your .env file."
     );
   }
 
@@ -545,7 +545,7 @@ export async function startLiveDashboardServer(
       "[LiveWS] Client connected: %s (%s) [%d total]",
       clientId,
       client.remoteAddress,
-      clients.size,
+      clients.size
     );
 
     // Replay any subscribe/ping frames sent while auth was still pending.

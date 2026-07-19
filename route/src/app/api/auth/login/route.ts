@@ -44,7 +44,7 @@ export async function POST(request) {
       });
       return NextResponse.json(
         { error: "Server misconfigured: JWT_SECRET not set. Contact administrator." },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -59,7 +59,7 @@ export async function POST(request) {
             details: [{ field: "body", message: "Invalid JSON body" }],
           },
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -95,7 +95,7 @@ export async function POST(request) {
           headers: guardCheck.retryAfterSeconds
             ? { "Retry-After": String(guardCheck.retryAfterSeconds) }
             : {},
-        },
+        }
       );
     }
 
@@ -118,7 +118,7 @@ export async function POST(request) {
       });
       return NextResponse.json(
         { error: "No password configured. Complete onboarding first.", needsSetup: true },
-        { status: 403 },
+        { status: 403 }
       );
     }
 
@@ -187,7 +187,7 @@ export async function POST(request) {
           headers: failureDecision.retryAfterSeconds
             ? { "Retry-After": String(failureDecision.retryAfterSeconds) }
             : {},
-        },
+        }
       );
     }
 

@@ -97,7 +97,7 @@ export interface ReverseProxyConfig {
 export async function proxyRequest(
   request: Request,
   pathSegments: string[],
-  config: ReverseProxyConfig,
+  config: ReverseProxyConfig
 ): Promise<Response> {
   const { name, publicPrefix, htmlRewrite = true } = config;
 

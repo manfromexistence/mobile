@@ -68,7 +68,7 @@ export async function GET(request: Request) {
         ".config",
         "Code",
         "User",
-        "settings.json",
+        "settings.json"
       );
       const raw = await fs.readFile(vscodeSettingsPath, "utf-8");
       const allSettings = JSON.parse(raw);
@@ -123,7 +123,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -178,7 +178,7 @@ export async function POST(request) {
         ".config",
         "Code",
         "User",
-        "settings.json",
+        "settings.json"
       );
       let vscodeSettings = {};
       try {
@@ -258,7 +258,7 @@ export async function DELETE(request: Request) {
         ".config",
         "Code",
         "User",
-        "settings.json",
+        "settings.json"
       );
       const raw = await fs.readFile(vscodeSettingsPath, "utf-8");
       const vscodeSettings = JSON.parse(raw);

@@ -226,7 +226,7 @@ function pushFeed(prev: FeedEvent[], events: FeedEvent[]): FeedEvent[] {
 function diffSnapshots(
   prev: { health: HealthPayload | null; conns: Connection[] },
   next: { health: HealthPayload | null; conns: Connection[] },
-  nowTs: number,
+  nowTs: number
 ): FeedEvent[] {
   const out: FeedEvent[] = [];
 
@@ -278,12 +278,12 @@ function diffSnapshots(
   const prevCooldowns = new Map(
     prev.conns
       .filter((c) => c.rateLimitedUntil && untilMs(c.rateLimitedUntil) > 0)
-      .map((c) => [c.id, c]),
+      .map((c) => [c.id, c])
   );
   const nextCooldowns = new Map(
     next.conns
       .filter((c) => c.rateLimitedUntil && untilMs(c.rateLimitedUntil) > 0)
-      .map((c) => [c.id, c]),
+      .map((c) => [c.id, c])
   );
   for (const [id, conn] of nextCooldowns) {
     if (!prevCooldowns.has(id)) {
@@ -355,7 +355,7 @@ function diffSnapshots(
     (prev.health?.quotaMonitor?.monitors ?? []).map((m) => [
       `${m.accountId ?? ""}:${m.provider ?? ""}:${m.window ?? ""}`,
       m,
-    ]),
+    ])
   );
   for (const m of next.health?.quotaMonitor?.monitors ?? []) {
     const key = `${m.accountId ?? ""}:${m.provider ?? ""}:${m.window ?? ""}`;
@@ -463,7 +463,7 @@ export default function RuntimePageClient() {
   const breakers = health?.providerBreakers ?? EMPTY_PROVIDER_BREAKERS;
   const lockoutEntries = useMemo<Array<[string, LockoutEntry]>>(
     () => Object.entries(health?.lockouts ?? {}),
-    [health],
+    [health]
   );
 
   const counts = useMemo(() => {

@@ -32,7 +32,7 @@ const MOCK_CONTEXT: PluginContext = {
  */
 export async function testPlugin(
   entryPoint: string,
-  manifest: PluginManifestWithDefaults,
+  manifest: PluginManifestWithDefaults
 ): Promise<PluginTestResult[]> {
   const results: PluginTestResult[] = [];
   let loaded: LoadedPlugin | null = null;

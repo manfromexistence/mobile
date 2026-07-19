@@ -103,7 +103,7 @@ export default function ProviderUtilizationTab() {
     async (
       selectedRange: UtilizationTimeRange,
       selectedAggregate: "provider" | "connection",
-      signal?: AbortSignal,
+      signal?: AbortSignal
     ) => {
       setLoading(true);
 
@@ -113,7 +113,7 @@ export default function ProviderUtilizationTab() {
           {
             signal,
             cache: "no-store",
-          },
+          }
         );
 
         if (!response.ok) {
@@ -129,7 +129,7 @@ export default function ProviderUtilizationTab() {
         }
 
         setError(
-          fetchError instanceof Error ? fetchError.message : "Failed to fetch utilization data",
+          fetchError instanceof Error ? fetchError.message : "Failed to fetch utilization data"
         );
         setData(null);
       } finally {
@@ -138,7 +138,7 @@ export default function ProviderUtilizationTab() {
         }
       }
     },
-    [],
+    []
   );
 
   useEffect(() => {

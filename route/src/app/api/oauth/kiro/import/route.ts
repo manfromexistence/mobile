@@ -55,7 +55,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
         region: region || "us-east-1",
       };
       const refreshed = await runWithProxyContext(proxy, () =>
-        kiroService.refreshToken(refreshToken.trim(), externalIdpPsd),
+        kiroService.refreshToken(refreshToken.trim(), externalIdpPsd)
       );
       const email =
         emailFromExternalIdpToken(refreshed.accessToken) ||
@@ -135,7 +135,7 @@ export async function POST(request: Request) {
         authMethod: "idc",
       };
       const refreshed = await runWithProxyContext(proxy, () =>
-        kiroService.refreshToken(refreshToken.trim(), providerSpecificData),
+        kiroService.refreshToken(refreshToken.trim(), providerSpecificData)
       );
       tokenData = {
         accessToken: refreshed.accessToken,
@@ -151,7 +151,7 @@ export async function POST(request: Request) {
       // validateImportToken also calls registerClient() to obtain a per-connection OIDC
       // client pair so multiple Kiro accounts do not share a single backend session (#2328).
       tokenData = await runWithProxyContext(proxy, () =>
-        kiroService.validateImportToken(refreshToken.trim(), region),
+        kiroService.validateImportToken(refreshToken.trim(), region)
       );
     }
 

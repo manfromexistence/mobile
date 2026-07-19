@@ -124,7 +124,7 @@ function injectSystemFirst(
   request: ChatRequest,
   messages: ChatMessage[],
   memoryText: string,
-  count: number,
+  count: number
 ): ChatRequest {
   log.info("memory.injection.injected", { count, strategy: "system-first", model: request.model });
   const first = messages[0];
@@ -145,7 +145,7 @@ function placeMessage(
   request: ChatRequest,
   messages: ChatMessage[],
   msg: ChatMessage,
-  cacheSafeIndex: number,
+  cacheSafeIndex: number
 ): ChatRequest {
   if (cacheSafeIndex >= 0) {
     const next = [...messages];
@@ -159,7 +159,7 @@ export function injectMemory(
   request: ChatRequest,
   memories: Memory[],
   provider: string | null | undefined,
-  options: InjectMemoryOptions = {},
+  options: InjectMemoryOptions = {}
 ): ChatRequest {
   if (!memories || memories.length === 0) {
     log.info("memory.injection.skipped", { reason: "no_memories", model: request.model });

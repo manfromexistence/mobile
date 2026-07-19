@@ -21,7 +21,7 @@ const PATHS = [
     process.env.LOCALAPPDATA ?? path.join(HOME, "AppData", "Local"),
     "Programs",
     "Antigravity",
-    "Antigravity.exe",
+    "Antigravity.exe"
   ),
 ];
 

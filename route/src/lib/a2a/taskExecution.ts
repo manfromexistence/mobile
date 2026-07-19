@@ -5,7 +5,7 @@ type TaskManagerLike = {
     taskId: string,
     state: "completed" | "failed",
     artifacts?: Array<{ type: string; content: string }>,
-    message?: string,
+    message?: string
   ) => unknown;
 };
 
@@ -46,7 +46,7 @@ export const A2A_SKILL_HANDLERS: Record<string, A2ASkillHandler> = {
 export async function executeA2ATaskWithState(
   tm: TaskManagerLike,
   task: A2ATask,
-  handler: (task: A2ATask) => Promise<StreamTaskResult>,
+  handler: (task: A2ATask) => Promise<StreamTaskResult>
 ) {
   try {
     const result = await handler(task);

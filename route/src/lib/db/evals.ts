@@ -99,7 +99,7 @@ function ensureEvalSuiteTables(db: DbLike) {
       description TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    )`,
+    )`
   ).run();
 
   if (!hasColumn(db, "eval_suites", "description")) {
@@ -125,7 +125,7 @@ function ensureEvalSuiteTables(db: DbLike) {
       tags_json TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    )`,
+    )`
   ).run();
 
   if (!hasColumn(db, "eval_cases", "sort_order")) {
@@ -139,7 +139,7 @@ function ensureEvalSuiteTables(db: DbLike) {
   }
   if (!hasColumn(db, "eval_cases", "expected_strategy")) {
     db.prepare(
-      "ALTER TABLE eval_cases ADD COLUMN expected_strategy TEXT NOT NULL DEFAULT 'contains'",
+      "ALTER TABLE eval_cases ADD COLUMN expected_strategy TEXT NOT NULL DEFAULT 'contains'"
     ).run();
   }
   if (!hasColumn(db, "eval_cases", "expected_value")) {
@@ -156,10 +156,10 @@ function ensureEvalSuiteTables(db: DbLike) {
   }
 
   db.prepare(
-    "CREATE INDEX IF NOT EXISTS idx_eval_suites_updated_at ON eval_suites(updated_at DESC)",
+    "CREATE INDEX IF NOT EXISTS idx_eval_suites_updated_at ON eval_suites(updated_at DESC)"
   ).run();
   db.prepare(
-    "CREATE INDEX IF NOT EXISTS idx_eval_cases_suite_order ON eval_cases(suite_id, sort_order ASC, created_at ASC)",
+    "CREATE INDEX IF NOT EXISTS idx_eval_cases_suite_order ON eval_cases(suite_id, sort_order ASC, created_at ASC)"
   ).run();
 }
 
@@ -186,7 +186,7 @@ function parseJsonArray(value: unknown): Array<Record<string, unknown>> {
   if (Array.isArray(value)) {
     return value.filter(
       (entry): entry is Record<string, unknown> =>
-        !!entry && typeof entry === "object" && !Array.isArray(entry),
+        !!entry && typeof entry === "object" && !Array.isArray(entry)
     );
   }
 
@@ -199,7 +199,7 @@ function parseJsonArray(value: unknown): Array<Record<string, unknown>> {
     return Array.isArray(parsed)
       ? parsed.filter(
           (entry): entry is Record<string, unknown> =>
-            !!entry && typeof entry === "object" && !Array.isArray(entry),
+            !!entry && typeof entry === "object" && !Array.isArray(entry)
         )
       : [];
   } catch {
@@ -297,7 +297,7 @@ function createScorecardFromRuns(
     suiteName: string;
     summary: EvalRunSummary;
     results: Array<Record<string, unknown>>;
-  }>,
+  }>
 ) {
   const totalCases = runs.reduce((sum, run) => sum + run.summary.total, 0);
   const totalPassed = runs.reduce((sum, run) => sum + run.summary.passed, 0);
@@ -352,7 +352,7 @@ function toPersistedEvalRun(row: unknown): PersistedEvalRun | null {
   const outputs = Object.fromEntries(
     Object.entries(outputsRecord)
       .filter((entry): entry is [string, string] => typeof entry[0] === "string")
-      .map(([key, value]) => [key, typeof value === "string" ? value : String(value ?? "")]),
+      .map(([key, value]) => [key, typeof value === "string" ? value : String(value ?? "")])
   );
 
   return {
@@ -452,7 +452,7 @@ export function saveEvalRun(input: {
     `INSERT INTO eval_runs
       (id, run_group_id, suite_id, suite_name, target_type, target_id, target_label, api_key_id,
        pass_rate, total, passed, failed, avg_latency_ms, summary_json, results_json, outputs_json, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     input.runGroupId || null,
@@ -470,7 +470,7 @@ export function saveEvalRun(input: {
     JSON.stringify(input.summary),
     JSON.stringify(input.results || []),
     JSON.stringify(input.outputs || {}),
-    createdAt,
+    createdAt
   );
 
   return {
@@ -498,7 +498,7 @@ export function listEvalRuns(
     suiteId?: string;
     runGroupId?: string;
     limit?: number;
-  } = {},
+  } = {}
 ): PersistedEvalRun[] {
   const db = getDbInstance() as unknown as DbLike;
   const conditions: string[] = [];
@@ -533,7 +533,7 @@ export function listEvalRuns(
 export function listModelEvalRunsForRouting(options: EvalRoutingRunQuery): PersistedEvalRun[] {
   const targetIds = [...new Set(options.targetIds.map((id) => id.trim()).filter(Boolean))].slice(
     0,
-    200,
+    200
   );
   if (targetIds.length === 0) return [];
 
@@ -569,7 +569,7 @@ export function listModelEvalRunsForRouting(options: EvalRoutingRunQuery): Persi
        FROM eval_runs
        WHERE ${conditions.join(" AND ")}
        ORDER BY created_at DESC
-       LIMIT ?`,
+       LIMIT ?`
     )
     .all(...params);
 
@@ -582,7 +582,7 @@ export function getEvalScorecard(
   options: {
     suiteId?: string;
     limit?: number;
-  } = {},
+  } = {}
 ) {
   const runs = listEvalRuns({ suiteId: options.suiteId, limit: options.limit || 50 });
   if (runs.length === 0) return null;
@@ -601,7 +601,7 @@ export function getEvalScorecard(
       suiteName: `${run.suiteName} · ${run.target.label}`,
       results: run.results,
       summary: run.summary,
-    })),
+    }))
   );
 }
 
@@ -613,7 +613,7 @@ export function listCustomEvalSuites(): EvalSuiteRecord[] {
     .all();
   const caseRows = db
     .prepare(
-      "SELECT * FROM eval_cases ORDER BY suite_id ASC, sort_order ASC, created_at ASC, id ASC",
+      "SELECT * FROM eval_cases ORDER BY suite_id ASC, sort_order ASC, created_at ASC, id ASC"
     )
     .all();
 
@@ -689,12 +689,12 @@ export function saveCustomEvalSuite(input: {
       db.prepare(
         `UPDATE eval_suites
          SET name = ?, description = ?, updated_at = ?
-         WHERE id = ?`,
+         WHERE id = ?`
       ).run(name, description, now, suiteId);
     } else {
       db.prepare(
         `INSERT INTO eval_suites (id, name, description, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?)`
       ).run(suiteId, name, description, now, now);
     }
 
@@ -737,7 +737,7 @@ export function saveCustomEvalSuite(input: {
         `INSERT INTO eval_cases
           (id, suite_id, sort_order, name, model, input_json, expected_strategy, expected_value,
            tags_json, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       ).run(
         caseId,
         suiteId,
@@ -749,7 +749,7 @@ export function saveCustomEvalSuite(input: {
         sanitizedExpected.value || null,
         JSON.stringify(tags),
         now,
-        now,
+        now
       );
     });
 

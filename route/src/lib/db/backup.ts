@@ -67,7 +67,7 @@ function setStoredDbBackupInteger(key: string, value: number, options: { min: nu
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     DB_BACKUP_SETTINGS_NAMESPACE,
     key,
-    JSON.stringify(value),
+    JSON.stringify(value)
   );
 }
 
@@ -94,7 +94,7 @@ export function getDbBackupRetentionDays() {
   if (process.env.DB_BACKUP_RETENTION_DAYS) {
     return parseNonNegativeInt(
       process.env.DB_BACKUP_RETENTION_DAYS,
-      DEFAULT_DB_BACKUP_RETENTION_DAYS,
+      DEFAULT_DB_BACKUP_RETENTION_DAYS
     );
   }
   return (
@@ -321,7 +321,7 @@ function sleep(ms: number) {
 
 export async function unlinkFileWithRetry(
   filePath: string,
-  options?: { maxAttempts?: number; retryableCodes?: string[]; baseDelayMs?: number },
+  options?: { maxAttempts?: number; retryableCodes?: string[]; baseDelayMs?: number }
 ) {
   const maxAttempts = Math.max(1, options?.maxAttempts ?? 10);
   const retryableCodes = new Set(options?.retryableCodes ?? ["EBUSY", "EPERM"]);
@@ -523,7 +523,7 @@ export async function restoreDbBackup(backupId: string) {
         if (!fs.existsSync(backupDirForPre)) fs.mkdirSync(backupDirForPre, { recursive: true });
         const preBackupPath = path.join(
           backupDirForPre,
-          `db_${new Date().toISOString().replace(/[:.]/g, "-")}_pre-restore.sqlite`,
+          `db_${new Date().toISOString().replace(/[:.]/g, "-")}_pre-restore.sqlite`
         );
         const dbForBackup = getDbInstance();
         await dbForBackup.backup(preBackupPath);
@@ -637,9 +637,9 @@ export function exportAllSummaryRows(): ExportAllRows {
     providers.push(
       ...db
         .prepare(
-          "SELECT id, provider, name, auth_type, is_active, email, created_at FROM provider_connections",
+          "SELECT id, provider, name, auth_type, is_active, email, created_at FROM provider_connections"
         )
-        .all(),
+        .all()
     );
   } catch {
     // provider_connections table might not exist
@@ -650,9 +650,9 @@ export function exportAllSummaryRows(): ExportAllRows {
     apiKeys.push(
       ...db
         .prepare(
-          "SELECT id, name, substr(key, 1, 8) as prefix, machine_id, created_at FROM api_keys",
+          "SELECT id, name, substr(key, 1, 8) as prefix, machine_id, created_at FROM api_keys"
         )
-        .all(),
+        .all()
     );
   } catch {
     // api_keys table might not exist

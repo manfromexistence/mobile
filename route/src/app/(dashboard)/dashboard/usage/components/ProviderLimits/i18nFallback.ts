@@ -9,7 +9,7 @@ export function translateUsageOrFallback(
   t: UsageTranslator,
   key: string,
   fallback: string,
-  values?: UsageTranslationValues,
+  values?: UsageTranslationValues
 ): string {
   try {
     if (typeof t.has === "function" && !t.has(key)) {

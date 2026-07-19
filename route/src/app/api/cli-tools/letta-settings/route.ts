@@ -134,7 +134,7 @@ export async function GET(request: Request) {
  * the complexity gate.
  */
 async function prepareLettaAuthFile(
-  overwrite: boolean | undefined,
+  overwrite: boolean | undefined
 ): Promise<
   | { conflictResponse: NextResponse }
   | { authFile: { version: number; providers: Record<string, any> }; authPath: string }
@@ -161,7 +161,7 @@ async function prepareLettaAuthFile(
           conflict: true,
           existingBaseUrl: existingProvider.base_url,
         },
-        { status: 409 },
+        { status: 409 }
       ),
     };
   }

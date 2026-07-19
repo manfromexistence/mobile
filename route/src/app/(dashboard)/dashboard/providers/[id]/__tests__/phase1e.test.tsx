@@ -180,7 +180,7 @@ describe("ModelRow — render smoke test", () => {
           effectiveModelPreserveDeveloper={() => true}
           saveModelCompatFlags={vi.fn()}
           getUpstreamHeadersRecord={() => ({})}
-        />,
+        />
       );
     });
 
@@ -219,7 +219,7 @@ describe("PassthroughModelRow — render smoke test", () => {
           effectiveModelPreserveDeveloper={() => true}
           saveModelCompatFlags={vi.fn()}
           getUpstreamHeadersRecord={() => ({})}
-        />,
+        />
       );
     });
 
@@ -245,9 +245,8 @@ describe("PassthroughModelsSection — catalog model fallback", () => {
   });
 
   it("renders built-in catalog models even when no models were imported", async () => {
-    const { default: PassthroughModelsSection } = await import(
-      "../components/PassthroughModelsSection"
-    );
+    const { default: PassthroughModelsSection } =
+      await import("../components/PassthroughModelsSection");
 
     await act(async () => {
       root.render(
@@ -280,7 +279,7 @@ describe("PassthroughModelsSection — catalog model fallback", () => {
           isModelHidden={() => false}
           onToggleHidden={vi.fn().mockResolvedValue(undefined)}
           onBulkToggleHidden={vi.fn().mockResolvedValue(undefined)}
-        />,
+        />
       );
     });
 
@@ -320,7 +319,7 @@ describe("ModelVisibilityToolbar — render smoke test", () => {
           totalCount={10}
           onSelectAll={vi.fn()}
           onDeselectAll={vi.fn()}
-        />,
+        />
       );
     });
 

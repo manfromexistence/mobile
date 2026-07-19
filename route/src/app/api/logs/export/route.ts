@@ -44,7 +44,7 @@ export async function GET(request: Request) {
           "Content-Type": "application/json",
           "Content-Disposition": `attachment; filename="${filename}"`,
         },
-      },
+      }
     );
   } catch (error) {
     return Response.json(
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
           type: "server_error",
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -18,7 +18,7 @@ const REQUEST_DEFAULT_SERVICE_TIER_VALUES = new Set(["default", "priority", "fas
 
 export function validateProviderSpecificData(
   data: Record<string, unknown> | undefined,
-  ctx: z.RefinementCtx,
+  ctx: z.RefinementCtx
 ): void {
   if (!data) return;
 
@@ -290,7 +290,7 @@ export function validateProviderSpecificData(
       });
     } else if (
       routingTags.some(
-        (tag) => typeof tag !== "string" || tag.trim().length === 0 || tag.trim().length > 64,
+        (tag) => typeof tag !== "string" || tag.trim().length === 0 || tag.trim().length > 64
       )
     ) {
       ctx.addIssue({
@@ -324,7 +324,7 @@ export function validateProviderSpecificData(
           typeof pattern !== "string" ||
           pattern.trim().length === 0 ||
           pattern.trim().length > 200 ||
-          pattern.trim() === "**",
+          pattern.trim() === "**"
       )
     ) {
       ctx.addIssue({

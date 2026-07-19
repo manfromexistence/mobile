@@ -70,7 +70,7 @@ export default function CompatibleNodeCard({
                 isCcCompatible,
                 isAnthropicCompatible,
                 providerNode?.apiType,
-                providerNode?.chatPath,
+                providerNode?.chatPath
               )}
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function CompatibleNodeCard({
                       : isAnthropicCompatible
                         ? t("anthropic")
                         : t("openai"),
-                  }),
+                  })
                 )
               )
                 return;

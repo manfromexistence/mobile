@@ -68,7 +68,7 @@ export default function ModelCooldownsCard() {
         setBusyKey(null);
       }
     },
-    [load, notify],
+    [load, notify]
   );
 
   const clearAll = useCallback(async () => {

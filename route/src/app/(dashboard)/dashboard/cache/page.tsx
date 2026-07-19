@@ -255,7 +255,7 @@ function PromptTrendPanel({
   const trackedHours = trend.length;
   const totalCachedRequests = trend.reduce((sum, point) => sum + point.cachedRequests, 0);
   const busiestHour = trend.reduce((best, point) =>
-    point.requests > best.requests ? point : best,
+    point.requests > best.requests ? point : best
   );
   const peakCacheRatePoint = trend.reduce((best, point) => {
     const bestRate = best.requests > 0 ? best.cachedRequests / best.requests : 0;

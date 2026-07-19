@@ -143,7 +143,7 @@ function createSandbox(permissions: string[], pluginDir: string): Record<string,
           get: (_t, key) => (typeof key === "string" ? process.env[key] : undefined),
           set: () => false,
           has: (_t, key) => (typeof key === "string" ? key in process.env : false),
-        },
+        }
       ),
     };
   }
@@ -151,7 +151,7 @@ function createSandbox(permissions: string[], pluginDir: string): Record<string,
   if (permissions.includes("exec")) {
     if (process.env.OMNIROUTE_PLUGINS_ALLOW_EXEC !== "1") {
       throw new Error(
-        `Plugin '${name}' requested the 'exec' permission, which is disabled. Set OMNIROUTE_PLUGINS_ALLOW_EXEC=1 to enable (local operator only).`,
+        `Plugin '${name}' requested the 'exec' permission, which is disabled. Set OMNIROUTE_PLUGINS_ALLOW_EXEC=1 to enable (local operator only).`
       );
     }
     sandbox.child_process = {
@@ -171,7 +171,7 @@ let activeTimers: Set<ReturnType<typeof setTimeout>> | null = null;
 async function loadPlugin(
   entryPoint: string,
   permissions: string[],
-  name: string,
+  name: string
 ): Promise<string[]> {
   const pluginDir = resolve(entryPoint, "..");
   const sandbox = createSandbox(permissions, pluginDir);
@@ -215,7 +215,7 @@ async function loadPlugin(
 function callHook(
   hook: string,
   payload: unknown,
-  extra?: { response?: unknown; error?: string },
+  extra?: { response?: unknown; error?: string }
 ): unknown {
   if (!context || !pluginExports) throw new Error("Plugin not loaded");
 

@@ -70,9 +70,9 @@ export async function install(version = "latest"): Promise<InstallResult> {
       JSON.stringify(
         { name: "omniroute-9router-host", version: "0.0.0", private: true, dependencies: {} },
         null,
-        2,
+        2
       ),
-      "utf8",
+      "utf8"
     );
   }
 
@@ -80,7 +80,7 @@ export async function install(version = "latest"): Promise<InstallResult> {
     ["install", `${NINEROUTER_PACKAGE}@${version}`, "--omit=dev", "--no-audit", "--no-fund"],
     // `--prefix` is passed via `prefix` (→ npm_config_prefix env) instead of an
     // argv path so an install dir with spaces survives the Windows shell (#5379).
-    { cwd: NINEROUTER_INSTALL_DIR, prefix: NINEROUTER_INSTALL_DIR },
+    { cwd: NINEROUTER_INSTALL_DIR, prefix: NINEROUTER_INSTALL_DIR }
   );
 
   const installedVersion = await getInstalledVersion();
@@ -88,7 +88,7 @@ export async function install(version = "latest"): Promise<InstallResult> {
     throw new InstallError(
       "Could not read installed version from node_modules/9router/package.json",
       "9router instalado mas versão não pôde ser lida.",
-      500,
+      500
     );
   }
 

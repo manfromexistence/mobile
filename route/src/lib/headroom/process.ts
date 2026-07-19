@@ -123,7 +123,7 @@ export async function startHeadroomProxy(opts: { port?: number } = {}): Promise<
       if (isPidAlive(child.pid!)) resolve();
       else
         reject(
-          new HeadroomError("headroom proxy exited during startup — see proxy.log", "EARLY_EXIT"),
+          new HeadroomError("headroom proxy exited during startup — see proxy.log", "EARLY_EXIT")
         );
     }, STARTUP_TIMEOUT_MS);
 
@@ -138,8 +138,8 @@ export async function startHeadroomProxy(opts: { port?: number } = {}): Promise<
       reject(
         new HeadroomError(
           `headroom proxy exited early (code=${code}) — see proxy.log`,
-          "EARLY_EXIT",
-        ),
+          "EARLY_EXIT"
+        )
       );
     });
   });

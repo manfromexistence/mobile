@@ -44,7 +44,7 @@ export default function ResultNarrated({
           if (params) {
             return Object.entries(params).reduce(
               (acc, [k, v]) => acc.replace(`{${k}}`, String(v)),
-              fallback,
+              fallback
             );
           }
           return fallback;
@@ -54,13 +54,13 @@ export default function ResultNarrated({
         if (params && fallback) {
           return Object.entries(params).reduce(
             (acc, [k, v]) => acc.replace(`{${k}}`, String(v)),
-            fallback,
+            fallback
           );
         }
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   const isSpinning = result.status === "translating" || result.status === "sending";

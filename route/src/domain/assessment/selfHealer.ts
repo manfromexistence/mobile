@@ -39,7 +39,7 @@ export class SelfHealer {
 
   healCombo(
     combo: Combo,
-    assessments: Map<string, ModelAssessment>,
+    assessments: Map<string, ModelAssessment>
   ): {
     combo: Combo;
     actions: HealAction[];
@@ -65,8 +65,8 @@ export class SelfHealer {
               "remove_model",
               model.model,
               model.providerId,
-              `Model broken: ${assessment?.lastError ?? "unknown error"}`,
-            ),
+              `Model broken: ${assessment?.lastError ?? "unknown error"}`
+            )
           );
         } else {
           updatedModels.push(model);
@@ -77,7 +77,7 @@ export class SelfHealer {
       if (status === "rate_limited") {
         const newWeight = Math.max(
           this.config.minimumWeight,
-          model.weight * (1 - this.config.maxWeightReduction),
+          model.weight * (1 - this.config.maxWeightReduction)
         );
         updatedModels.push({ ...model, weight: newWeight });
         healthyCount++;
@@ -87,8 +87,8 @@ export class SelfHealer {
             "reduce_weight",
             model.model,
             model.providerId,
-            `Rate limited: weight ${model.weight} → ${newWeight}`,
-          ),
+            `Rate limited: weight ${model.weight} → ${newWeight}`
+          )
         );
         continue;
       }
@@ -103,8 +103,8 @@ export class SelfHealer {
             "reduce_weight",
             model.model,
             model.providerId,
-            `Timeout detected: weight ${model.weight} → ${newWeight}`,
-          ),
+            `Timeout detected: weight ${model.weight} → ${newWeight}`
+          )
         );
         continue;
       }
@@ -129,8 +129,8 @@ export class SelfHealer {
             "emergency_replace",
             bestAlternative.modelId,
             bestAlternative.providerId,
-            "All models broken, added best available alternative",
-          ),
+            "All models broken, added best available alternative"
+          )
         );
         healthyCount = 1;
         deadCount = 0;
@@ -162,7 +162,7 @@ export class SelfHealer {
 
   findBestWorkingModel(
     comboName: string,
-    assessments: Map<string, ModelAssessment>,
+    assessments: Map<string, ModelAssessment>
   ): ModelAssessment | null {
     const template = AUTO_COMBO_TEMPLATES.find((t) => t.name === comboName);
     const workingModels = Array.from(assessments.values()).filter((a) => a.status === "working");
@@ -191,7 +191,7 @@ export class SelfHealer {
 
   generateCombosFromAssessments(
     assessments: Map<string, ModelAssessment>,
-    templates: AutoComboTemplate[] = AUTO_COMBO_TEMPLATES,
+    templates: AutoComboTemplate[] = AUTO_COMBO_TEMPLATES
   ): Array<{ template: AutoComboTemplate; models: ComboModel[] }> {
     const results: Array<{ template: AutoComboTemplate; models: ComboModel[] }> = [];
 
@@ -244,7 +244,7 @@ export class SelfHealer {
     actionType: HealActionType,
     modelId: string,
     providerId: string,
-    reason: string,
+    reason: string
   ): HealAction {
     return {
       id: crypto.randomUUID(),

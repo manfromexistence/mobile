@@ -53,7 +53,7 @@ export default function SimpleControls({
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   const examples = getExampleTemplates(t as (key: string) => string);
@@ -79,7 +79,7 @@ export default function SimpleControls({
       onProviderChange(prov);
       onTargetChange(providerToFormatId(prov));
     },
-    [onProviderChange, onTargetChange, providerToFormatId],
+    [onProviderChange, onTargetChange, providerToFormatId]
   );
 
   const handleExampleChange = useCallback(
@@ -100,7 +100,7 @@ export default function SimpleControls({
         onInputChange(JSON.stringify(body, null, 2));
       }
     },
-    [examples, source, onInputChange, onOpenAdvanced],
+    [examples, source, onInputChange, onOpenAdvanced]
   );
 
   const modeOptions = [
@@ -130,7 +130,7 @@ export default function SimpleControls({
             <InfoTooltip
               text={tr(
                 "simpleAppUsesHint",
-                "The API format your app speaks (e.g. Anthropic SDK = claude).",
+                "The API format your app speaks (e.g. Anthropic SDK = claude)."
               )}
             />
           </div>
@@ -159,7 +159,7 @@ export default function SimpleControls({
             <InfoTooltip
               text={tr(
                 "simpleSendToHint",
-                "Where to actually send the request (a provider connected in OmniRoute).",
+                "Where to actually send the request (a provider connected in OmniRoute)."
               )}
             />
           </div>

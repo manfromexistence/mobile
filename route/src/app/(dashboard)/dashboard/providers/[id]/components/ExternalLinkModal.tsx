@@ -37,7 +37,7 @@ export default function ExternalLinkModal({
         <p className="text-sm text-text-muted">
           {text(
             "codexExternalLinkModalDescription",
-            "Share this single-use link with the person who will authenticate the Codex account. They open it in their own browser, complete the OpenAI login, and the connection is registered here. The link expires in 15 minutes.",
+            "Share this single-use link with the person who will authenticate the Codex account. They open it in their own browser, complete the OpenAI login, and the connection is registered here. The link expires in 15 minutes."
           )}
         </p>
         {loading ? (
@@ -71,7 +71,7 @@ export default function ExternalLinkModal({
               <span className="material-symbols-outlined animate-spin text-[16px]">sync</span>
               {text(
                 "codexExternalLinkWaiting",
-                "Waiting for browser authentication. This window refreshes automatically.",
+                "Waiting for browser authentication. This window refreshes automatically."
               )}
             </p>
           </>

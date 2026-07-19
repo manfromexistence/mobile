@@ -56,7 +56,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     if (message.includes("GitHub raw fetch failed")) {
       return new Response(
         JSON.stringify(buildErrorBody(502, "Upstream fetch failed — try again later")),
-        { status: 502, headers: { "Content-Type": "application/json" } },
+        { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 

@@ -107,7 +107,7 @@ export default function DroidToolCard({
           const fileKeyPrefix = first.apiKey.slice(0, 8);
           const fileKeySuffix = first.apiKey.slice(-4);
           const matchedKey = apiKeys?.find(
-            (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix),
+            (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix)
           );
           if (matchedKey) setSelectedApiKeyId(matchedKey.id);
         }

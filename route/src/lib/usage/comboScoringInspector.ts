@@ -152,7 +152,7 @@ function circuitState(provider: string): ProviderCandidate["circuitBreakerState"
 
 function buildCandidate(
   target: TargetHealth,
-  forecastTarget: ComboForecastTarget | undefined,
+  forecastTarget: ComboForecastTarget | undefined
 ): { candidate: ProviderCandidate; context: CandidateContext } {
   const sources: CandidateContext["sources"] = {};
   const notes: CandidateContext["notes"] = {};
@@ -223,7 +223,7 @@ function buildCandidate(
 function factorBreakdown(
   factors: ScoringFactors,
   weights: ScoringWeights,
-  context: CandidateContext,
+  context: CandidateContext
 ): ComboScoringInspectorFactor[] {
   return FACTOR_KEYS.map((key) => ({
     key,
@@ -260,13 +260,13 @@ async function buildInspectorCombo(
   forecastTargets: Map<string, ComboForecastTarget>,
   autopilotCombo: ComboAutopilotCombo | undefined,
   taskType: string,
-  weights: ScoringWeights,
+  weights: ScoringWeights
 ): Promise<ComboScoringInspectorCombo> {
   const warnings: string[] = [];
   const targets = combo.targetHealth ?? [];
   if (combo.strategy !== "auto") {
     warnings.push(
-      "Combo strategy is not auto; this is an explanatory recompute, not the runtime strategy.",
+      "Combo strategy is not auto; this is an explanatory recompute, not the runtime strategy."
     );
   }
   if (targets.length === 0) {
@@ -277,8 +277,8 @@ async function buildInspectorCombo(
   const contexts = targets.map((target) =>
     buildCandidate(
       target,
-      forecastTargets.get(target.executionKey) || forecastTargets.get(target.stepId),
-    ),
+      forecastTargets.get(target.executionKey) || forecastTargets.get(target.stepId)
+    )
   );
   const pool = contexts.map((entry) => entry.candidate);
 
@@ -302,15 +302,15 @@ async function buildInspectorCombo(
             (await getProviderConnections({
               provider,
               isActive: true,
-            })) as ProviderConnectionView[],
+            })) as ProviderConnectionView[]
           );
         } catch {
           warnings.push(
-            `Provider connection prefetch failed for ${provider}; resilience details will use fallback inspection.`,
+            `Provider connection prefetch failed for ${provider}; resilience details will use fallback inspection.`
           );
         }
-      },
-    ),
+      }
+    )
   );
 
   const inspectorTargets: ComboScoringInspectorTarget[] = await Promise.all(
@@ -343,7 +343,7 @@ async function buildInspectorCombo(
           resilience,
         },
       };
-    }),
+    })
   );
 
   return {
@@ -359,7 +359,7 @@ async function buildInspectorCombo(
 }
 
 export async function buildComboScoringInspectorResponse(
-  options: ComboScoringInspectorOptions,
+  options: ComboScoringInspectorOptions
 ): Promise<ComboScoringInspectorResponse> {
   const taskType = normalizeTaskType(options.taskType);
   const weights = DEFAULT_WEIGHTS;
@@ -411,9 +411,9 @@ export async function buildComboScoringInspectorResponse(
           targetForecastMap(forecastByComboId.get(combo.comboId)?.targets ?? []),
           autopilotByComboId.get(combo.comboId),
           taskType,
-          weights,
-        ),
-      ),
+          weights
+        )
+      )
     ),
   };
 }

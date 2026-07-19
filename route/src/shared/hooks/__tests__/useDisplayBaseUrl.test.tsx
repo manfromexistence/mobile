@@ -52,7 +52,7 @@ describe("useDisplayBaseUrl", () => {
 
     // Env set: first render shows env value (useEffect no-ops when envValue is set)
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      "https://example.com",
+      "https://example.com"
     );
 
     // Flush microtasks and any remaining async work
@@ -60,7 +60,7 @@ describe("useDisplayBaseUrl", () => {
 
     // Env still wins after mount
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      "https://example.com",
+      "https://example.com"
     );
   });
 
@@ -85,7 +85,7 @@ describe("useDisplayBaseUrl", () => {
 
     // Pre-microtask: DOM still shows the initial state (DEFAULT_DISPLAY_BASE_URL)
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      DEFAULT_DISPLAY_BASE_URL,
+      DEFAULT_DISPLAY_BASE_URL
     );
 
     // Flush queueMicrotask callback (setState) and resulting re-render
@@ -93,7 +93,7 @@ describe("useDisplayBaseUrl", () => {
 
     // After mount: swaps to window.location.origin
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      window.location.origin,
+      window.location.origin
     );
   });
 
@@ -139,7 +139,7 @@ describe("useDisplayBaseUrl", () => {
     });
 
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      "http://192.168.13.62:20128",
+      "http://192.168.13.62:20128"
     );
   });
 
@@ -163,7 +163,7 @@ describe("useDisplayBaseUrl", () => {
 
     // Empty env treated as unset → initial state is DEFAULT_DISPLAY_BASE_URL
     expect(container.querySelector('[data-testid="value"]')?.textContent).toBe(
-      DEFAULT_DISPLAY_BASE_URL,
+      DEFAULT_DISPLAY_BASE_URL
     );
 
     // Flush queueMicrotask + re-render

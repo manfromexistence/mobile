@@ -32,7 +32,7 @@ export function setObsidianToken(token: string): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       OBSIDIAN_TOKEN_KEY,
-      JSON.stringify(encrypted),
+      JSON.stringify(encrypted)
     );
   } catch {
     // Non-fatal — token still works in-memory if persistence fails.
@@ -44,7 +44,7 @@ export function clearObsidianToken(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      OBSIDIAN_TOKEN_KEY,
+      OBSIDIAN_TOKEN_KEY
     );
   } catch {
     // Non-fatal.
@@ -73,7 +73,7 @@ export function setObsidianBaseUrl(url: string): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       "base_url",
-      JSON.stringify(url),
+      JSON.stringify(url)
     );
   } catch {
     // Non-fatal.
@@ -85,7 +85,7 @@ export function clearObsidianBaseUrl(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      "base_url",
+      "base_url"
     );
   } catch {
     // Non-fatal.
@@ -114,7 +114,7 @@ export function setObsidianVaultPath(vaultPath: string): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       "vault_path",
-      JSON.stringify(vaultPath),
+      JSON.stringify(vaultPath)
     );
   } catch {
     // Non-fatal.
@@ -126,7 +126,7 @@ export function clearObsidianVaultPath(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      "vault_path",
+      "vault_path"
     );
   } catch {
     // Non-fatal.
@@ -155,7 +155,7 @@ export function setWebdavUsername(username: string): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       "webdav_username",
-      JSON.stringify(username),
+      JSON.stringify(username)
     );
   } catch {
     // Non-fatal.
@@ -167,7 +167,7 @@ export function clearWebdavUsername(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      "webdav_username",
+      "webdav_username"
     );
   } catch {
     // Non-fatal.
@@ -199,7 +199,7 @@ export function setWebdavPassword(password: string): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       "webdav_password",
-      JSON.stringify(encrypted),
+      JSON.stringify(encrypted)
     );
   } catch {
     // Non-fatal.
@@ -211,7 +211,7 @@ export function clearWebdavPassword(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      "webdav_password",
+      "webdav_password"
     );
   } catch {
     // Non-fatal.
@@ -239,7 +239,7 @@ export function setWebdavEnabled(enabled: boolean): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       OBSIDIAN_NAMESPACE,
       "webdav_enabled",
-      JSON.stringify(enabled),
+      JSON.stringify(enabled)
     );
   } catch {
     // Non-fatal.
@@ -251,7 +251,7 @@ export function clearWebdavEnabled(): void {
     const db = getDbInstance();
     db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
       OBSIDIAN_NAMESPACE,
-      "webdav_enabled",
+      "webdav_enabled"
     );
   } catch {
     // Non-fatal.

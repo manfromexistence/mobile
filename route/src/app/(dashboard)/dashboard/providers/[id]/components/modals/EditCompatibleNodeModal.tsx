@@ -74,7 +74,7 @@ export default function EditCompatibleNodeModal({
           node.chatPath ||
           (!isCcCompatible && node.modelsPath) ||
           (isCcCompatible && !node.chatPath)
-        ),
+        )
       );
     }
   }, [node, isAnthropic, isCcCompatible]);

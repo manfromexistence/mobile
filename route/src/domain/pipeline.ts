@@ -187,7 +187,7 @@ async function executeStage(
   stage: PipelineStage,
   request: string,
   context: Record<string, string>,
-  executor: StageExecutor,
+  executor: StageExecutor
 ): Promise<StageResult> {
   const rendered = renderPrompt(stage.name, {
     original_request: request,
@@ -233,7 +233,7 @@ async function executeStage(
  */
 export async function executePipeline(
   config: PipelineConfig,
-  executor: StageExecutor,
+  executor: StageExecutor
 ): Promise<PipelineResult> {
   const { stages, request } = config;
   const results: StageResult[] = [];

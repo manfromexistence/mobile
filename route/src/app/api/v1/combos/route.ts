@@ -50,7 +50,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       { object: "list", data },
-      { headers: { "Cache-Control": "no-store" } },
+      { headers: { "Cache-Control": "no-store" } }
     );
   } catch {
     return errorResponse(HTTP_STATUS.SERVER_ERROR, "Failed to fetch combos");

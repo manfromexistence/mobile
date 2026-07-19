@@ -88,7 +88,7 @@ const pendingPostUsageRefreshes = new Set<string>();
 function toProviderLimitsCacheEntry(
   usage: JsonRecord,
   source: SyncSource,
-  fetchedAt = new Date().toISOString(),
+  fetchedAt = new Date().toISOString()
 ): ProviderLimitsCacheEntry {
   const value = Number(usage.bankedResetCredits);
   return {
@@ -119,7 +119,7 @@ function scheduleProviderLimitsPostUsageRefresh(connectionId: string): void {
     }).catch((error) => {
       const message = error instanceof Error ? error.message : String(error);
       console.warn(
-        `[ProviderLimits] Post-usage refresh failed for connection ${connectionId}: ${message}`,
+        `[ProviderLimits] Post-usage refresh failed for connection ${connectionId}: ${message}`
       );
     });
   }, getProviderLimitsPostUsageRefreshDelayMs());
@@ -128,7 +128,7 @@ function scheduleProviderLimitsPostUsageRefresh(connectionId: string): void {
 
 export function notifyProviderUsageRecorded(
   provider: string | null | undefined,
-  connectionId: string | null | undefined,
+  connectionId: string | null | undefined
 ): void {
   if ((provider !== "antigravity" && provider !== "agy") || !connectionId) return;
   scheduleProviderLimitsPostUsageRefresh(connectionId);
@@ -141,7 +141,7 @@ onUsageRecorded(notifyProviderUsageRecorded);
 
 function hasRetrieveUserQuotaSource(
   provider: string,
-  cache: ProviderLimitsCacheEntry | undefined,
+  cache: ProviderLimitsCacheEntry | undefined
 ): boolean {
   if (provider !== "antigravity" && provider !== "agy") return true;
   if (!cache?.quotas) return false;
@@ -153,7 +153,7 @@ function hasRetrieveUserQuotaSource(
 
 function sanitizeProviderLimitsCacheForConnection(
   connection: ProviderConnectionLike | null | undefined,
-  entry: ProviderLimitsCacheEntry | null,
+  entry: ProviderLimitsCacheEntry | null
 ): ProviderLimitsCacheEntry | null {
   if (!connection || !entry || !entry.quotas) return entry;
   if (connection.provider !== "antigravity" && connection.provider !== "agy") return entry;
@@ -164,7 +164,7 @@ function sanitizeProviderLimitsCacheForConnection(
 
 function shouldRefreshProviderLimitsCache(
   connection: ProviderConnectionLike,
-  cache: ProviderLimitsCacheEntry | undefined,
+  cache: ProviderLimitsCacheEntry | undefined
 ): boolean {
   if (!cache?.quotas) return true;
   if (connection.provider !== "antigravity" && connection.provider !== "agy") return false;
@@ -172,7 +172,7 @@ function shouldRefreshProviderLimitsCache(
   return (
     !hasRetrieveUserQuotaSource(connection.provider, cache) ||
     Object.keys(cache.quotas).some(
-      (quotaKey) => !isUsageQuotaKeyAllowed(connection.provider, quotaKey),
+      (quotaKey) => !isUsageQuotaKeyAllowed(connection.provider, quotaKey)
     )
   );
 }
@@ -222,7 +222,7 @@ async function syncToCloudIfEnabled() {
  */
 export function shouldAttemptRotatingRefresh(
   provider: string,
-  allowRotatingRefresh: boolean | undefined,
+  allowRotatingRefresh: boolean | undefined
 ): boolean {
   if (rotationGroupFor(provider) === null) return true;
   return allowRotatingRefresh === true;
@@ -230,7 +230,7 @@ export function shouldAttemptRotatingRefresh(
 
 export async function refreshAndUpdateCredentials(
   connection: ProviderConnectionLike,
-  opts: { allowRotatingRefresh?: boolean; force?: boolean } = {},
+  opts: { allowRotatingRefresh?: boolean; force?: boolean } = {}
 ) {
   if (!shouldAttemptRotatingRefresh(connection.provider, opts.allowRotatingRefresh)) {
     return { connection, refreshed: false };
@@ -258,7 +258,7 @@ export async function refreshAndUpdateCredentials(
   // Serialize the actual token mint per rotation group so two sibling accounts
   // never hit Auth0 concurrently (passthrough for non-rotating providers).
   const refreshResult = (await serializeRefresh(connection.provider, () =>
-    executor.refreshCredentials(credentials, console),
+    executor.refreshCredentials(credentials, console)
   )) as
     | (JsonRecord & {
         accessToken?: string;
@@ -281,7 +281,7 @@ export async function refreshAndUpdateCredentials(
     }
     throw withStatus(
       new Error("Failed to refresh credentials. Please re-authorize the connection."),
-      401,
+      401
     );
   }
 
@@ -357,7 +357,7 @@ function isAccountScopedProxyResolution(proxyInfo: unknown): boolean {
 
 function shouldFailClosedForProviderLimitsProxy(
   connection: ProviderConnectionLike,
-  proxyInfo: unknown,
+  proxyInfo: unknown
 ): boolean {
   return connection.authType === "oauth" && isAccountScopedProxyResolution(proxyInfo);
 }
@@ -380,7 +380,7 @@ function shouldFailClosedForProviderLimitsProxy(
 export function quotaPathShouldMarkExpired(
   provider: string,
   usageMessage: unknown,
-  currentTestStatus: string | null | undefined,
+  currentTestStatus: string | null | undefined
 ): boolean {
   if (currentTestStatus === "expired") return false;
 
@@ -428,7 +428,7 @@ export function hasUsableQuota(usage: JsonRecord): boolean {
 
 export async function maybeClearRecoveredQuotaState(
   connection: ProviderConnectionLike,
-  usage: JsonRecord,
+  usage: JsonRecord
 ): Promise<ProviderConnectionLike> {
   if (!hasUsableQuota(usage)) return connection;
   if (isTerminalStatusForQuotaRecovery(connection.testStatus)) return connection;
@@ -460,7 +460,7 @@ export async function maybeClearRecoveredQuotaState(
         testStatus: connection.testStatus ?? null,
         lastErrorAt: connection.lastErrorAt ?? null,
         rateLimitedUntil: connection.rateLimitedUntil ?? null,
-      },
+      }
     );
     cleared = result.applied;
   } catch (dbError) {
@@ -490,7 +490,7 @@ export async function maybeClearRecoveredQuotaState(
 
 async function syncExpiredStatusIfNeeded(
   connection: ProviderConnectionLike,
-  usage: JsonRecord,
+  usage: JsonRecord
 ): Promise<ProviderConnectionLike> {
   if (!quotaPathShouldMarkExpired(connection.provider, usage.message, connection.testStatus)) {
     return connection;
@@ -516,7 +516,7 @@ async function syncExpiredStatusIfNeeded(
 
 async function syncClaudeExtraUsageStateIfNeeded(
   connection: ProviderConnectionLike,
-  usage: JsonRecord,
+  usage: JsonRecord
 ): Promise<ProviderConnectionLike> {
   const update = buildClaudeExtraUsageConnectionUpdate(connection, usage);
   if (!update) return connection;
@@ -531,7 +531,7 @@ async function syncClaudeExtraUsageStateIfNeeded(
 /** Persist Antigravity tier from live loadCodeAssist on quota refresh (not only OAuth). */
 async function syncAntigravitySubscriptionIfNeeded(
   connection: ProviderConnectionLike,
-  usage: JsonRecord,
+  usage: JsonRecord
 ): Promise<ProviderConnectionLike> {
   if (connection.provider !== "antigravity" && connection.provider !== "agy") return connection;
 
@@ -569,7 +569,7 @@ async function syncAntigravitySubscriptionIfNeeded(
 /** Persist refreshed Claude bootstrap fields into psd; writes only on diff. */
 async function syncClaudeBootstrapIfNeeded(
   connection: ProviderConnectionLike,
-  usage: JsonRecord,
+  usage: JsonRecord
 ): Promise<ProviderConnectionLike> {
   if (connection.provider !== "claude") return connection;
   const bootstrap = usage?.bootstrap as Record<string, string | null> | null | undefined;
@@ -702,13 +702,13 @@ export async function fetchLiveProviderLimits(connectionId: string): Promise<{
 
 async function fetchLiveProviderLimitsWithOptions(
   connectionId: string,
-  options: { forceRefresh?: boolean; allowRotatingRefresh?: boolean } = {},
+  options: { forceRefresh?: boolean; allowRotatingRefresh?: boolean } = {}
 ): Promise<{
   connection: ProviderConnectionLike;
   usage: JsonRecord;
 }> {
   let connection = (await getProviderConnectionById(
-    connectionId,
+    connectionId
   )) as unknown as ProviderConnectionLike | null;
   if (!connection) {
     throw withStatus(new Error("Connection not found"), 404);
@@ -726,8 +726,8 @@ async function fetchLiveProviderLimitsWithOptions(
     const usage = sanitizeUsageQuotasForProvider(
       connection.provider,
       (await runWithProxyContext(apiKeyProxy?.proxy ?? null, () =>
-        getUsageForProvider(connection as unknown as JsonRecord, options),
-      )) as JsonRecord,
+        getUsageForProvider(connection as unknown as JsonRecord, options)
+      )) as JsonRecord
     );
     if (isRecord(usage.quotas)) {
       setQuotaCache(connectionId, connection.provider, usage.quotas);
@@ -759,7 +759,7 @@ async function fetchLiveProviderLimitsWithOptions(
 
       let usageData = sanitizeUsageQuotasForProvider(
         conn.provider,
-        (await getUsageForProvider(conn as unknown as JsonRecord, options)) as JsonRecord,
+        (await getUsageForProvider(conn as unknown as JsonRecord, options)) as JsonRecord
       );
 
       // Reactive 401 recovery (on-demand/force path only): an unauthorized usage
@@ -777,7 +777,7 @@ async function fetchLiveProviderLimitsWithOptions(
           await syncToCloudIfEnabled();
           usageData = sanitizeUsageQuotasForProvider(
             conn.provider,
-            (await getUsageForProvider(conn as unknown as JsonRecord, options)) as JsonRecord,
+            (await getUsageForProvider(conn as unknown as JsonRecord, options)) as JsonRecord
           );
         }
       }
@@ -805,7 +805,7 @@ async function fetchLiveProviderLimitsWithOptions(
           "[ProviderLimits] Account-scoped %s proxy fetch failed for %s; failing closed without direct retry:",
           connection.provider,
           connectionId,
-          error?.message,
+          error?.message
         );
         throw error;
       }
@@ -813,7 +813,7 @@ async function fetchLiveProviderLimitsWithOptions(
       console.warn(
         "[ProviderLimits] Proxy fetch threw for %s, retrying without proxy:",
         connectionId,
-        error?.message,
+        error?.message
       );
       result = await fetchUsageWithContext(null);
     } else {
@@ -831,7 +831,7 @@ async function fetchLiveProviderLimitsWithOptions(
         "[ProviderLimits] Account-scoped %s proxy usage failed for %s; failing closed without direct retry:",
         connection.provider,
         connectionId,
-        message,
+        message
       );
       throw withStatus(new Error(message), 503);
     }
@@ -839,7 +839,7 @@ async function fetchLiveProviderLimitsWithOptions(
     console.warn(
       "[ProviderLimits] Proxy usage returned network error for %s, retrying without proxy:",
       connectionId,
-      result.usage.message,
+      result.usage.message
     );
     result = await fetchUsageWithContext(null);
   }
@@ -862,7 +862,7 @@ async function fetchLiveProviderLimitsWithOptions(
 export async function fetchAndPersistProviderLimits(
   connectionId: string,
   source: SyncSource = "manual",
-  opts: { allowRotatingRefresh?: boolean } = {},
+  opts: { allowRotatingRefresh?: boolean } = {}
 ): Promise<{
   connection: ProviderConnectionLike;
   usage: JsonRecord;
@@ -903,7 +903,7 @@ export async function syncAllProviderLimits(
   options: {
     source?: SyncSource;
     concurrency?: number;
-  } = {},
+  } = {}
 ): Promise<{
   total: number;
   succeeded: number;
@@ -921,7 +921,7 @@ export async function syncAllProviderLimits(
 
   const recordResult = (
     connectionId: string,
-    result: PromiseSettledResult<{ connectionId: string; cache: ProviderLimitsCacheEntry }>,
+    result: PromiseSettledResult<{ connectionId: string; cache: ProviderLimitsCacheEntry }>
   ) => {
     if (result.status === "fulfilled") {
       const { cache } = result.value;

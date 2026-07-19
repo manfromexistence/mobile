@@ -70,7 +70,7 @@ export async function GET(request: Request) {
         {
           status: auth.hasCredential ? 403 : 401,
           headers: WS_HANDSHAKE_HEADERS,
-        },
+        }
       );
     }
 
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
       },
       {
         headers: WS_HANDSHAKE_HEADERS,
-      },
+      }
     );
   }
 
@@ -115,6 +115,6 @@ export async function GET(request: Request) {
         ...WS_HANDSHAKE_HEADERS,
         Upgrade: "websocket",
       },
-    },
+    }
   );
 }

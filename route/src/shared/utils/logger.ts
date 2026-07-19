@@ -66,7 +66,7 @@ function buildFileTransportStream(targets: NonNullable<pino.TransportMultiOption
   stream.on("error", (err: unknown) => {
     try {
       process.stderr.write(
-        `[logger] log transport write failed, dropping log line: ${(err as Error)?.message || err}\n`,
+        `[logger] log transport write failed, dropping log line: ${(err as Error)?.message || err}\n`
       );
     } catch {
       // Nothing more we can do — never let a logging failure crash the process.
@@ -136,7 +136,7 @@ function buildLogger(): pino.Logger {
       // Log the actual error for diagnostics (issue #165)
       try {
         process.stderr.write(
-          `[logger] Failed to set up file transport, attempting sync fallback: ${(err as Error)?.message || err}\n`,
+          `[logger] Failed to set up file transport, attempting sync fallback: ${(err as Error)?.message || err}\n`
         );
       } catch {}
 
@@ -148,7 +148,7 @@ function buildLogger(): pino.Logger {
         fileDestination.on("error", (err: unknown) => {
           try {
             process.stderr.write(
-              `[logger] sync log destination write failed, dropping log line: ${(err as Error)?.message || err}\n`,
+              `[logger] sync log destination write failed, dropping log line: ${(err as Error)?.message || err}\n`
             );
           } catch {
             // Nothing more we can do — never let a logging failure crash the process.
@@ -161,12 +161,12 @@ function buildLogger(): pino.Logger {
           pino.multistream([
             { stream: process.stdout, level: logLevel as pino.Level },
             { stream: fileDestination, level: logLevel as pino.Level },
-          ]),
+          ])
         );
       } catch (fallbackErr) {
         try {
           process.stderr.write(
-            `[logger] Sync fallback also failed, falling back to console only: ${(fallbackErr as Error)?.message || fallbackErr}\n`,
+            `[logger] Sync fallback also failed, falling back to console only: ${(fallbackErr as Error)?.message || fallbackErr}\n`
           );
         } catch {}
       }

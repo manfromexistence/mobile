@@ -43,7 +43,7 @@ export function startMonitoring(
   tool: string,
   url: string,
   intervalMs: number = 30_000,
-  healthPath?: string,
+  healthPath?: string
 ): void {
   stopMonitoring(tool);
 

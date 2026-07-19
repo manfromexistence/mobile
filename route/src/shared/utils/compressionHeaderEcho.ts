@@ -44,7 +44,7 @@ export function readCompressionRequestHeader(request: {
  */
 export function withCompressionHeaderEcho(
   response: Response,
-  requestHeaderValue: string | null,
+  requestHeaderValue: string | null
 ): Response {
   if (!requestHeaderValue) return response;
   if (response.headers.has(COMPRESSION_RESPONSE_HEADER)) return response;

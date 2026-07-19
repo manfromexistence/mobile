@@ -22,7 +22,7 @@ export const chaosConfigSchema = z.object({
         providerId: z.string().min(1),
         modelId: z.string().optional(),
         enabled: z.boolean().default(true),
-      }),
+      })
     )
     .max(200)
     .default([]),

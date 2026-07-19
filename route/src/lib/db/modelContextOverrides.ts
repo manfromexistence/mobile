@@ -38,7 +38,7 @@ function isPositiveInteger(value: unknown): value is number {
 
 function normalizeKey(
   provider: unknown,
-  modelId: unknown,
+  modelId: unknown
 ): { provider: string; modelId: string } | null {
   const p = typeof provider === "string" ? provider.trim() : "";
   const m = typeof modelId === "string" ? modelId.trim() : "";
@@ -59,7 +59,7 @@ function toOverride(row: OverrideRow): ModelContextOverride {
 /** Full override record for (provider, modelId), or null. Never throws. */
 export function getModelContextOverrideRecord(
   provider: string | null | undefined,
-  modelId: string | null | undefined,
+  modelId: string | null | undefined
 ): ModelContextOverride | null {
   const key = normalizeKey(provider, modelId);
   if (!key) return null;
@@ -67,7 +67,7 @@ export function getModelContextOverrideRecord(
     const row = getDbInstance()
       .prepare(
         "SELECT provider, model_id, real_context, source, refreshed_at " +
-          "FROM model_context_overrides WHERE provider = ? AND model_id = ?",
+          "FROM model_context_overrides WHERE provider = ? AND model_id = ?"
       )
       .get(key.provider, key.modelId) as OverrideRow | undefined;
     return row ? toOverride(row) : null;
@@ -80,7 +80,7 @@ export function getModelContextOverrideRecord(
 /** The overridden context window (tokens) for (provider, modelId), or null. Never throws. */
 export function getModelContextOverride(
   provider: string | null | undefined,
-  modelId: string | null | undefined,
+  modelId: string | null | undefined
 ): number | null {
   const record = getModelContextOverrideRecord(provider, modelId);
   return record ? record.realContext : null;
@@ -94,7 +94,7 @@ export function setModelContextOverride(
   provider: string,
   modelId: string,
   realContext: number,
-  source: ModelContextOverrideSource = "manual",
+  source: ModelContextOverrideSource = "manual"
 ): boolean {
   const key = normalizeKey(provider, modelId);
   if (!key || !isPositiveInteger(realContext)) return false;
@@ -104,7 +104,7 @@ export function setModelContextOverride(
     .prepare(
       "INSERT OR REPLACE INTO model_context_overrides " +
         "(provider, model_id, real_context, source, refreshed_at) " +
-        "VALUES (?, ?, ?, ?, datetime('now'))",
+        "VALUES (?, ?, ?, ?, datetime('now'))"
     )
     .run(key.provider, key.modelId, realContext, normalizedSource);
   return true;
@@ -126,7 +126,7 @@ export function listModelContextOverrides(): ModelContextOverride[] {
     const rows = getDbInstance()
       .prepare(
         "SELECT provider, model_id, real_context, source, refreshed_at " +
-          "FROM model_context_overrides ORDER BY refreshed_at DESC",
+          "FROM model_context_overrides ORDER BY refreshed_at DESC"
       )
       .all() as OverrideRow[];
     return rows.map(toOverride);

@@ -53,7 +53,7 @@ function prune(): void {
 /** Create a ticket and return its opaque token + expiry. */
 export function createDeviceFlowTicket(
   provider: string,
-  connectionId?: string,
+  connectionId?: string
 ): { token: string; expiresAt: number } {
   prune();
   const token = randomBytes(32).toString("base64url");

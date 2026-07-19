@@ -64,7 +64,7 @@ export function useVirtualList<T>(items: T[], containerHeight: number): VirtualL
         }
       }
     },
-    [],
+    []
   );
 
   // Compute cumulative offsets — reads heights from state (not a ref)

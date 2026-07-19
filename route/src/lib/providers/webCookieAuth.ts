@@ -140,7 +140,7 @@ export function extractKimiJwt(rawValue: string): string {
 
 export function normalizeSessionCookieHeaders(
   rawValues: Array<string | null | undefined>,
-  defaultCookieName: string,
+  defaultCookieName: string
 ): string[] {
   const seen = new Set<string>();
   const normalizedHeaders: string[] = [];

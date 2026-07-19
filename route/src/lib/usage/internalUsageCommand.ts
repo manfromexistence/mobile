@@ -59,7 +59,7 @@ export interface InternalUsageCommandDeps {
   getAllProviderLimitsCache?: () => Record<string, ProviderLimitsCacheEntry>;
   getApiKeyUsageLimitStatus?: (
     metadata: UsageCommandApiKeyMetadata,
-    deps?: { now?: () => number },
+    deps?: { now?: () => number }
   ) => Promise<ApiKeyUsageLimitStatus>;
   getQuotaPolicy?: () => Promise<UsageCommandQuotaPolicy>;
 }
@@ -246,7 +246,7 @@ function connectionFromValue(value: unknown): ProviderConnectionLike | null {
 
 function snapshotFromConnection(
   connection: ProviderConnectionLike,
-  cache: ProviderLimitsCacheEntry | null,
+  cache: ProviderLimitsCacheEntry | null
 ): UsageSnapshot | null {
   if (!cache || !isRecord(cache.quotas) || Object.keys(cache.quotas).length === 0) return null;
   return {
@@ -260,7 +260,7 @@ function snapshotFromConnection(
 
 async function collectUsageSnapshots(
   metadata: UsageCommandApiKeyMetadata,
-  deps: RequiredDeps,
+  deps: RequiredDeps
 ): Promise<UsageSnapshot[]> {
   const allowedConnections = Array.isArray(metadata.allowedConnections)
     ? metadata.allowedConnections.filter((id) => typeof id === "string" && id.trim())
@@ -273,7 +273,7 @@ async function collectUsageSnapshots(
       if (!connection) continue;
       const snapshot = snapshotFromConnection(
         connection,
-        deps.getProviderLimitsCache(connection.id),
+        deps.getProviderLimitsCache(connection.id)
       );
       if (snapshot) snapshots.push(snapshot);
     }
@@ -306,7 +306,7 @@ interface QuotaMatch {
 
 function findQuota(
   quotas: JsonRecord,
-  kind: "session" | "weekly" | "weekly-sonnet",
+  kind: "session" | "weekly" | "weekly-sonnet"
 ): QuotaMatch | null {
   const entries = Object.entries(quotas).filter(([, value]) => isRecord(value));
 
@@ -456,7 +456,7 @@ function quotaWindowLookupNames(provider: string, windowName: string): string[] 
 function resolveQuotaCutoffPercent(
   snapshot: UsageSnapshot,
   windowName: string,
-  policy: UsageCommandQuotaPolicy,
+  policy: UsageCommandQuotaPolicy
 ): number {
   const provider = normalizeProviderId(snapshot.provider) ?? snapshot.provider;
   const providerDefaults =
@@ -477,7 +477,7 @@ function resolveQuotaCutoffPercent(
 
 function effectiveRemainingPercent(
   realRemaining: number | null,
-  cutoffPercent: number,
+  cutoffPercent: number
 ): number | null {
   if (realRemaining === null || !Number.isFinite(realRemaining)) return null;
   const remaining = Math.max(0, Math.min(100, realRemaining));
@@ -488,7 +488,7 @@ function effectiveRemainingPercent(
 
 function selectUsageSnapshot(
   snapshots: UsageSnapshot[],
-  selection: UsageCommandSelection = {},
+  selection: UsageCommandSelection = {}
 ): UsageSnapshot | null {
   const preferredConnectionId = selection.preferredConnectionId?.trim();
   if (preferredConnectionId) {
@@ -499,7 +499,7 @@ function selectUsageSnapshot(
   const preferredProvider = normalizeProviderId(selection.preferredProvider);
   if (preferredProvider) {
     return selectBestUsageSnapshot(
-      snapshots.filter((entry) => normalizeProviderId(entry.provider) === preferredProvider),
+      snapshots.filter((entry) => normalizeProviderId(entry.provider) === preferredProvider)
     );
   }
 
@@ -512,7 +512,7 @@ function appendQuotaBlock(
   match: QuotaMatch | null,
   snapshot: UsageSnapshot,
   policy: UsageCommandQuotaPolicy,
-  now: number,
+  now: number
 ) {
   lines.push(label);
   const usedPercent = getQuotaUsedPercent(match?.quota ?? null);
@@ -528,7 +528,7 @@ function appendQuotaBlock(
 export async function buildUsageCommandText(
   metadata: UsageCommandApiKeyMetadata,
   deps: InternalUsageCommandDeps = {},
-  selection: UsageCommandSelection = {},
+  selection: UsageCommandSelection = {}
 ): Promise<string> {
   const resolvedDeps = await normalizeDeps(deps);
   const sections: string[] = [];
@@ -546,7 +546,7 @@ export async function buildUsageCommandText(
 
   const snapshot = selectUsageSnapshot(
     await collectUsageSnapshots(metadata, resolvedDeps),
-    selection,
+    selection
   );
 
   if (!snapshot) {
@@ -651,9 +651,9 @@ function createOpenAIStreamResponse(text: string, body: unknown): Response {
   };
   return new Response(
     textEncoderStream(
-      `data: ${JSON.stringify(first)}\n\ndata: ${JSON.stringify(second)}\n\ndata: [DONE]\n\n`,
+      `data: ${JSON.stringify(first)}\n\ndata: ${JSON.stringify(second)}\n\ndata: [DONE]\n\n`
     ),
-    { headers: { "Content-Type": "text/event-stream; charset=utf-8" } },
+    { headers: { "Content-Type": "text/event-stream; charset=utf-8" } }
   );
 }
 
@@ -731,7 +731,7 @@ export function createLocalTextResponse(request: Request, body: unknown, text: s
 export async function handleInternalUsageCommand(
   request: Request,
   body: unknown,
-  deps: InternalUsageCommandDeps = {},
+  deps: InternalUsageCommandDeps = {}
 ): Promise<Response | null> {
   const lastUserText = extractLastUserText(body);
   if (!isInternalUsageCommand(lastUserText)) return null;
@@ -754,13 +754,13 @@ export async function handleInternalUsageCommand(
   return createLocalTextResponse(
     request,
     body,
-    await buildUsageCommandText(metadata, resolvedDeps),
+    await buildUsageCommandText(metadata, resolvedDeps)
   );
 }
 
 export async function handleInternalUsageCommandHttpRequest(
   request: Request,
-  deps: InternalUsageCommandDeps = {},
+  deps: InternalUsageCommandDeps = {}
 ): Promise<Response> {
   try {
     const resolvedDeps = await normalizeDeps(deps);
@@ -779,7 +779,7 @@ export async function handleInternalUsageCommandHttpRequest(
     }
 
     return createPlainUsageCommandResponse(
-      await buildUsageCommandText(metadata, resolvedDeps, inferHttpUsageCommandSelection(request)),
+      await buildUsageCommandText(metadata, resolvedDeps, inferHttpUsageCommandSelection(request))
     );
   } catch (err) {
     const body = buildErrorBody(500, err instanceof Error ? err.message : String(err));

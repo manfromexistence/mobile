@@ -113,7 +113,7 @@ export function normalizeIntelligentRoutingFilter(value: unknown): IntelligentRo
 
 export function filterCombosByStrategyCategory<T extends { strategy?: unknown }>(
   combos: T[],
-  filter: IntelligentRoutingFilter,
+  filter: IntelligentRoutingFilter
 ): T[] {
   if (filter === "all") return combos;
   return combos.filter((combo) => getStrategyCategory(combo?.strategy) === filter);

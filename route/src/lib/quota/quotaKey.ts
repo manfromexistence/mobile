@@ -48,7 +48,7 @@ export interface QuotaKeyScope {
  */
 export function constrainConnectionsToQuota(
   existing: string[],
-  quotaConnectionIds: string[],
+  quotaConnectionIds: string[]
 ): string[] {
   if (quotaConnectionIds.length === 0) return existing;
   if (existing.length === 0) return quotaConnectionIds;
@@ -80,7 +80,7 @@ export function constrainConnectionsToQuota(
  * - All arrays are deduplicated; order is not guaranteed.
  */
 export async function resolveQuotaKeyScope(
-  allowedQuotas: string[] | null | undefined,
+  allowedQuotas: string[] | null | undefined
 ): Promise<QuotaKeyScope> {
   if (!allowedQuotas || allowedQuotas.length === 0) {
     return { connectionIds: [], providers: [], poolSlugs: [] };
@@ -163,7 +163,7 @@ export async function reconcilePoolExclusivity(
   poolId: string,
   prevApiKeyIds: string[],
   nextApiKeyIds: string[],
-  exclusive: boolean,
+  exclusive: boolean
 ): Promise<void> {
   const affectedIds = new Set([...prevApiKeyIds, ...nextApiKeyIds]);
 
@@ -173,7 +173,7 @@ export async function reconcilePoolExclusivity(
       if (!keyRow) continue;
 
       const currentQuotas: string[] = Array.isArray(
-        (keyRow as Record<string, unknown>).allowedQuotas,
+        (keyRow as Record<string, unknown>).allowedQuotas
       )
         ? ((keyRow as Record<string, unknown>).allowedQuotas as string[])
         : [];

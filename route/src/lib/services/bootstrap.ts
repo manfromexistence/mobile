@@ -69,7 +69,7 @@ const SERVICES: ServiceEntry[] = [
 
 function buildSpawnArgsFactory(
   cfg: ServiceEntry,
-  apiKey: string,
+  apiKey: string
 ): () => ReturnType<typeof nineRouterSpawnArgs> {
   if (cfg.tool === "9router") {
     return () => nineRouterSpawnArgs(apiKey, cfg.port);

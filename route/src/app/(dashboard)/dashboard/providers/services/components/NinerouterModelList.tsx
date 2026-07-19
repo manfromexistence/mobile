@@ -25,7 +25,7 @@ interface ServiceModel {
 export function paginateModels(
   models: ServiceModel[],
   page: number,
-  pageSize: number,
+  pageSize: number
 ): ServiceModel[] {
   const start = (page - 1) * pageSize;
   return models.slice(start, start + pageSize);

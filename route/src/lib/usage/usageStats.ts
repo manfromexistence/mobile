@@ -166,7 +166,7 @@ async function calculateAggregateCost(row: JsonRecord): Promise<number> {
       cacheCreation: toNumber(row.cost_tokens_cache_creation ?? row.tokens_cache_creation),
       reasoning: toNumber(row.cost_tokens_reasoning ?? row.tokens_reasoning),
     },
-    { provider, serviceTier, flatRateAsZero: true },
+    { provider, serviceTier, flatRateAsZero: true }
   );
   return storedCost + calculatedCost;
 }
@@ -176,7 +176,7 @@ function addUsage(
   requests: number,
   promptTokens: number,
   completionTokens: number,
-  cost: number,
+  cost: number
 ) {
   bucket.requests += requests;
   bucket.promptTokens += promptTokens;
@@ -197,13 +197,13 @@ function getApiKeyStatsKey(apiKeyId: string | null, apiKeyName: string | null): 
  */
 export function getMonthlyProviderTokensForConnection(
   provider: string,
-  connectionId: string,
+  connectionId: string
 ): number {
   if (!provider || !connectionId) return 0;
   const db = getDbInstance();
   const now = new Date();
   const monthStartIso = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1),
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)
   ).toISOString();
   const row = db
     .prepare(
@@ -213,7 +213,7 @@ export function getMonthlyProviderTokensForConnection(
             + COALESCE(SUM(tokens_cache_creation), 0)
             + COALESCE(SUM(tokens_reasoning), 0) AS total
        FROM usage_history
-       WHERE provider = ? AND connection_id = ? AND timestamp >= ?`,
+       WHERE provider = ? AND connection_id = ? AND timestamp >= ?`
     )
     .get(provider, connectionId, monthStartIso) as { total?: number } | undefined;
   return Math.max(0, Number(row?.total ?? 0));
@@ -232,7 +232,7 @@ export function getMonthlyProviderTokensForConnection(
  */
 export async function getConnectionSpendUsdSinceAdded(
   provider: string,
-  connectionId: string,
+  connectionId: string
 ): Promise<{ costUsd: number; requests: number }> {
   if (!provider || !connectionId) return { costUsd: 0, requests: 0 };
 
@@ -248,7 +248,7 @@ export async function getConnectionSpendUsdSinceAdded(
           COUNT(*) AS requests
        FROM usage_history
        WHERE connection_id = ? AND provider = ? AND success = 1
-       GROUP BY model`,
+       GROUP BY model`
     )
     .all(connectionId, provider) as Array<{
     model?: string;
@@ -387,7 +387,7 @@ export async function getUsageStats() {
         SELECT provider, model, service_tier, ${AGGREGATE_FIELDS}
         FROM usage_source
         GROUP BY provider, model, service_tier
-      `,
+      `
     )
     .all(...sourceParams) as unknown[];
 
@@ -444,7 +444,7 @@ export async function getUsageStats() {
         FROM usage_source
         WHERE connection_id IS NOT NULL AND connection_id != ''
         GROUP BY provider, model, connection_id, service_tier
-      `,
+      `
     )
     .all(...sourceParams) as unknown[];
 
@@ -481,7 +481,7 @@ export async function getUsageStats() {
         requestCount,
         promptTokens,
         completionTokens,
-        entryCost,
+        entryCost
       );
       if (new Date(timestamp) > new Date(stats.byAccount[accountKey].lastUsed || timestamp)) {
         stats.byAccount[accountKey].lastUsed = timestamp;
@@ -498,7 +498,7 @@ export async function getUsageStats() {
         WHERE (api_key_id IS NOT NULL AND api_key_id != '')
            OR (api_key_name IS NOT NULL AND api_key_name != '')
         GROUP BY provider, model, api_key_id, api_key_name, service_tier
-      `,
+      `
     )
     .all(...sourceParams) as unknown[];
 
@@ -560,7 +560,7 @@ export async function getUsageStats() {
         FROM usage_history
         WHERE timestamp >= ? AND timestamp <= ?
         GROUP BY minute, provider, model, service_tier
-      `,
+      `
     )
     .all(tenMinutesAgo.toISOString(), now.toISOString()) as unknown[];
 

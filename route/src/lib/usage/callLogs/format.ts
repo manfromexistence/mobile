@@ -86,12 +86,12 @@ export function protectPipelinePayloads(payloads: unknown): RequestPipelinePaylo
       const chunks = value as Record<string, unknown>;
       const compacted = Object.fromEntries(
         Object.entries(chunks).filter(
-          ([, chunkValue]) => Array.isArray(chunkValue) && chunkValue.length > 0,
-        ),
+          ([, chunkValue]) => Array.isArray(chunkValue) && chunkValue.length > 0
+        )
       );
       if (Object.keys(compacted).length > 0) {
         protectedPayloads.streamChunks = protectPayloadForLog(
-          compacted,
+          compacted
         ) as RequestPipelinePayloads["streamChunks"];
       }
       continue;
@@ -105,7 +105,7 @@ export function protectPipelinePayloads(payloads: unknown): RequestPipelinePaylo
 
 export function buildRequestSummary(
   requestType: string | null,
-  requestBody: unknown,
+  requestBody: unknown
 ): string | null {
   if (requestType !== "search") return null;
 
@@ -118,7 +118,7 @@ export function buildRequestSummary(
   }
 
   const filters = Object.fromEntries(
-    Object.entries(body).filter(([key]) => key !== "query" && key !== "provider"),
+    Object.entries(body).filter(([key]) => key !== "query" && key !== "provider")
   );
   if (Object.keys(filters).length > 0) {
     summary.filters = filters;

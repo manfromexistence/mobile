@@ -50,7 +50,7 @@ export interface ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand;
   /** Build a kill/stop command for a running container. */
   killCommand: string;
@@ -106,7 +106,7 @@ class DockerProvider implements ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand {
     const args = [
       "run",
@@ -163,7 +163,7 @@ class AppleContainerProvider implements ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand {
     const args = [
       "run",
@@ -218,7 +218,7 @@ class WslContainerProvider implements ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand {
     const args = [
       "run",
@@ -269,7 +269,7 @@ class OrbStackProvider implements ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand {
     // OrbStack wraps Docker inside a Linux VM.  We invoke the `orbstack`
     // binary which shims `docker` transparently.
@@ -322,7 +322,7 @@ class PodmanProvider implements ContainerProvider {
     image: string,
     command: string[],
     sandboxId: string,
-    config: SandboxConfig,
+    config: SandboxConfig
   ): ResolvedContainerCommand {
     const args = [
       "run",
@@ -373,7 +373,7 @@ export const ALL_PROVIDERS: ContainerProvider[] = [
 ];
 
 export const PROVIDER_BY_ID = new Map<SandboxRuntimeId, ContainerProvider>(
-  ALL_PROVIDERS.map((p) => [p.id, p]),
+  ALL_PROVIDERS.map((p) => [p.id, p])
 );
 
 /** Priority order for auto-detection on each platform. */
@@ -408,7 +408,7 @@ async function runDetection(): Promise<void> {
     ALL_PROVIDERS.map(async (provider) => {
       const ok = await Promise.resolve(provider.detect());
       detectionCache.set(provider.id, ok);
-    }),
+    })
   );
 }
 
@@ -463,7 +463,7 @@ export function _resetProviderCacheForTests(): void {
  */
 export function buildKillCommand(
   provider: ContainerProvider,
-  sandboxId: string,
+  sandboxId: string
 ): { command: string; args: string[] } {
   const name = SANDBOX_NAME(sandboxId);
   return {

@@ -73,7 +73,7 @@ function stampSubject(headers: Headers, subject: AuthSubject): void {
 function rejectionResponse(
   outcome: Extract<AuthOutcome, { allow: false }>,
   classification: RouteClassification,
-  requestId: string,
+  requestId: string
 ): NextResponse {
   const response = NextResponse.json(
     {
@@ -83,7 +83,7 @@ function rejectionResponse(
         correlation_id: requestId,
       },
     },
-    { status: outcome.status },
+    { status: outcome.status }
   );
   response.headers.set(AUTHZ_HEADER_REQUEST_ID, requestId);
   response.headers.set(AUTHZ_HEADER_ROUTE_CLASS, classification.routeClass);
@@ -101,7 +101,7 @@ function isDashboardPath(pathname: string): boolean {
 
 function isManagementDashboardRoute(
   classification: RouteClassification,
-  pathname: string,
+  pathname: string
 ): boolean {
   return classification.routeClass === "MANAGEMENT" && isDashboardPath(pathname);
 }
@@ -138,7 +138,7 @@ function shouldUseSecureCookie(request: NextRequest): boolean {
 
 async function refreshDashboardSessionIfNeeded(
   response: NextResponse,
-  request: NextRequest,
+  request: NextRequest
 ): Promise<void> {
   const secret = getJwtSecret();
   if (!secret) return;
@@ -197,7 +197,7 @@ function drainingResponse(requestId: string): NextResponse {
         correlation_id: requestId,
       },
     },
-    { status: 503 },
+    { status: 503 }
   );
   response.headers.set(AUTHZ_HEADER_REQUEST_ID, requestId);
   return response;
@@ -214,7 +214,7 @@ function invalidOriginResponse(requestId: string): NextResponse {
         correlation_id: requestId,
       },
     },
-    { status: 403 },
+    { status: 403 }
   );
   response.headers.set(AUTHZ_HEADER_REQUEST_ID, requestId);
   return response;
@@ -227,7 +227,7 @@ function isUnsafeMutationMethod(method: string): boolean {
 function stampRouteResponse(
   response: Response,
   requestId: string,
-  routeClass: RouteClass,
+  routeClass: RouteClass
 ): Response {
   response.headers.set(AUTHZ_HEADER_REQUEST_ID, requestId);
   response.headers.set(AUTHZ_HEADER_ROUTE_CLASS, routeClass);
@@ -240,7 +240,7 @@ async function getBodySizeSettings(): Promise<Record<string, unknown> | undefine
   } catch (error) {
     console.warn(
       "[Authz] Failed to load request body limit settings:",
-      error instanceof Error ? error.message : error,
+      error instanceof Error ? error.message : error
     );
     return undefined;
   }
@@ -248,7 +248,7 @@ async function getBodySizeSettings(): Promise<Record<string, unknown> | undefine
 
 export async function runAuthzPipeline(
   request: NextRequest,
-  options: AuthzPipelineOptions = {},
+  options: AuthzPipelineOptions = {}
 ): Promise<Response> {
   const { pathname } = request.nextUrl;
   const method = request.method;
@@ -257,7 +257,7 @@ export async function runAuthzPipeline(
 
   if (pathname === "/") {
     const response = NextResponse.redirect(
-      new URL(`${request.nextUrl.basePath}/dashboard`, request.url),
+      new URL(`${request.nextUrl.basePath}/dashboard`, request.url)
     );
     return stampRouteResponse(response, requestId, "MANAGEMENT");
   }
@@ -290,7 +290,7 @@ export async function runAuthzPipeline(
     const bodySizeSettings = await getBodySizeSettings();
     const bodySizeRejection = checkBodySize(
       request,
-      getBodySizeLimit(guardedPathname, bodySizeSettings),
+      getBodySizeLimit(guardedPathname, bodySizeSettings)
     );
     if (bodySizeRejection) {
       stampRouteResponse(bodySizeRejection, requestId, classification.routeClass);
@@ -323,7 +323,7 @@ export async function runAuthzPipeline(
   const peerLocality = classifyStampedPeerLocality(
     request.headers.get(PEER_IP_HEADER),
     request.headers.get(VIA_PROXY_HEADER),
-    process.env.OMNIROUTE_PEER_STAMP_TOKEN,
+    process.env.OMNIROUTE_PEER_STAMP_TOKEN
   );
   requestHeaders.set(AUTHZ_HEADER_PEER_LOCALITY, peerLocality);
 
@@ -352,7 +352,7 @@ export async function runAuthzPipeline(
     if (!ipVerdict.allowed) {
       const blocked = NextResponse.json(
         { error: ipVerdict.reason || "Access denied" },
-        { status: 403 },
+        { status: 403 }
       );
       stampRouteResponse(blocked, requestId, classification.routeClass);
       applyCorsHeaders(blocked, request, corsRelaxOrigin);

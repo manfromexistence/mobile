@@ -63,7 +63,7 @@ export default function RtkLearnDiscoverCard() {
     setError(null);
     try {
       const res = await fetch(
-        `/api/context/rtk/learn?command=${encodeURIComponent(command.trim())}`,
+        `/api/context/rtk/learn?command=${encodeURIComponent(command.trim())}`
       );
       if (!res.ok) throw new Error(String(res.status));
       const body = (await res.json()) as { sampleCount: number; filter: SuggestedFilter };

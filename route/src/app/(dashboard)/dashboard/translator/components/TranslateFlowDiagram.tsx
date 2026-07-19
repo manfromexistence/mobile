@@ -79,7 +79,7 @@ export default function TranslateFlowDiagram() {
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   return (
@@ -98,7 +98,7 @@ export default function TranslateFlowDiagram() {
         example={tr("conceptDiagramExampleSource", "claude")}
         tooltipContent={tr(
           "conceptDiagramSourceTooltip",
-          "The API protocol format your app speaks (for example Anthropic Messages, OpenAI Chat Completions, or Gemini).",
+          "The API protocol format your app speaks (for example Anthropic Messages, OpenAI Chat Completions, or Gemini)."
         )}
       />
       <FlowArrow label={tr("conceptDiagramArrow2", "Translator")} />
@@ -109,7 +109,7 @@ export default function TranslateFlowDiagram() {
         example={tr("conceptDiagramExampleHub", "pivot format")}
         tooltipContent={tr(
           "conceptDiagramHubTooltip",
-          "Intermediate hub used by the translator to convert between formats that are not directly compatible. All formats pass through OpenAI as the pivot.",
+          "Intermediate hub used by the translator to convert between formats that are not directly compatible. All formats pass through OpenAI as the pivot."
         )}
       />
       <FlowArrow label={tr("conceptDiagramArrow3", "→")} />
@@ -120,7 +120,7 @@ export default function TranslateFlowDiagram() {
         example={tr("conceptDiagramExampleTarget", "Gemini")}
         tooltipContent={tr(
           "conceptDiagramTargetTooltip",
-          "The provider connected in OmniRoute that actually responds, such as Google Gemini or Anthropic.",
+          "The provider connected in OmniRoute that actually responds, such as Google Gemini or Anthropic."
         )}
       />
     </div>

@@ -76,9 +76,9 @@ type ProviderModelSummary = {
 const PROVIDER_ALIAS_TO_ID = new Map(
   Object.entries(AI_PROVIDERS)
     .flatMap(([providerId, providerInfo]) =>
-      providerInfo.alias ? [[providerInfo.alias.toLowerCase(), providerId]] : [],
+      providerInfo.alias ? [[providerInfo.alias.toLowerCase(), providerId]] : []
     )
-    .filter((entry): entry is [string, string] => entry.length === 2),
+    .filter((entry): entry is [string, string] => entry.length === 2)
 );
 
 function normalizeProviderId(providerId?: string | null): string {
@@ -163,13 +163,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
   // Electron internal auto-updater state and listeners
   const [electronUpdateStatus, setElectronUpdateStatus] = useState<{
     status:
-      | "idle"
-      | "checking"
-      | "available"
-      | "not-available"
-      | "downloading"
-      | "downloaded"
-      | "error";
+      "idle" | "checking" | "available" | "not-available" | "downloading" | "downloaded" | "error";
     version?: string;
     percent?: number;
     message?: string;
@@ -228,7 +222,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
           // connection is still gated by `appearanceSettingsLoaded` in the data
           // effect, so it is never opened before settings load.
           setShowProviderTopologyOnHome(
-            shouldShowProviderTopologyOnHome(data.showProviderTopologyOnHome),
+            shouldShowProviderTopologyOnHome(data.showProviderTopologyOnHome)
           );
           if (typeof data.autoRefreshProviderQuota === "boolean") {
             setAutoRefreshProviderQuota(data.autoRefreshProviderQuota);
@@ -396,7 +390,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
 
       // Only notify for newly unhealthy keys (not already notified)
       const hasNewUnhealthy = Array.from(newUnhealthyKeys).some(
-        (k) => !notifiedUnhealthyKeys.current.has(k),
+        (k) => !notifiedUnhealthyKeys.current.has(k)
       );
       if (hasNewUnhealthy) {
         const navigateTo =
@@ -434,14 +428,14 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
           conn.isActive !== false &&
           (conn.testStatus === "active" ||
             conn.testStatus === "success" ||
-            conn.testStatus === "unknown"),
+            conn.testStatus === "unknown")
       ).length;
       const errors = connections.filter(
         (conn) =>
           conn.isActive !== false &&
           (conn.testStatus === "error" ||
             conn.testStatus === "expired" ||
-            conn.testStatus === "unavailable"),
+            conn.testStatus === "unavailable")
       ).length;
 
       const providerKeys = new Set([providerId, providerInfo.alias].filter(Boolean));
@@ -468,7 +462,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
   const selectedProviderModels = useMemo(() => {
     if (!selectedProvider) return [];
     const providerKeys = new Set(
-      [selectedProvider.id, selectedProvider.provider?.alias].filter(Boolean),
+      [selectedProvider.id, selectedProvider.provider?.alias].filter(Boolean)
     );
     return models.filter((m) => providerKeys.has(m.provider));
   }, [selectedProvider, models]);
@@ -647,13 +641,13 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
           step: "error",
           status: "failed",
           message: `Update started, but v${targetVersion} did not become available before timeout. Refresh the page or check server logs.`,
-        }),
+        })
       );
       setUpdating(false);
       setUpdatePhase("failed");
       notify.error(`Update to v${targetVersion} timed out.`);
     },
-    [fetchData],
+    [fetchData]
   );
 
   const handleUpdate = async () => {
@@ -1009,7 +1003,7 @@ export default function HomePageClient({ machineId }: HomePageClientProps) {
                       variant="secondary"
                       onClick={() =>
                         openExternal(
-                          `https://github.com/diegosouzapw/OmniRoute/releases/tag/v${versionInfo.latest}`,
+                          `https://github.com/diegosouzapw/OmniRoute/releases/tag/v${versionInfo.latest}`
                         )
                       }
                       className="font-semibold text-xs py-1"

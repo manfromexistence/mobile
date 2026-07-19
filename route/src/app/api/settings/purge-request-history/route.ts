@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         deletedDetailedLogs: detailedLogs.deleted,
         errors,
       },
-      { status: errors > 0 ? 500 : 200 },
+      { status: errors > 0 ? 500 : 200 }
     );
   } catch {
     return NextResponse.json(buildErrorBody(500, "Failed to purge request history"), {

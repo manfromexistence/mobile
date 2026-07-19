@@ -115,7 +115,7 @@ export function setCredentialHealth(
   lastError?: string,
   lastErrorType?: string,
   lastErrorSource?: string,
-  responseTimeMs?: number,
+  responseTimeMs?: number
 ): void {
   const state = getCacheState();
 

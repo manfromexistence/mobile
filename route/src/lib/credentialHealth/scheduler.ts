@@ -110,7 +110,7 @@ function getMaxFailuresAcrossConnections(): number {
 async function testConnection(
   connectionId: string,
   provider: string,
-  isOAuth: boolean,
+  isOAuth: boolean
 ): Promise<void> {
   const startTime = Date.now();
 
@@ -136,7 +136,7 @@ async function testConnection(
         undefined,
         undefined,
         undefined,
-        latencyMs,
+        latencyMs
       );
       emit("credential.health.changed", {
         connectionId,
@@ -159,7 +159,7 @@ async function testConnection(
         result.error || "Unknown error",
         diagnosis?.type || "unknown",
         diagnosis?.source || "unknown",
-        latencyMs,
+        latencyMs
       );
       emit("credential.health.changed", {
         connectionId,
@@ -175,7 +175,7 @@ async function testConnection(
         console.log(
           LOG_PREFIX,
           `❌ ${provider}/${connectionId} — ${result.error || "Connection failed"}` +
-            ` [${latencyMs}ms] (failure #${currentFailures}, next check in ${backoff / 1000}s)`,
+            ` [${latencyMs}ms] (failure #${currentFailures}, next check in ${backoff / 1000}s)`
         );
       }
     }
@@ -192,7 +192,7 @@ async function testConnection(
     if (currentFailures <= 2) {
       console.log(
         LOG_PREFIX,
-        `⚠️ ${provider}/${connectionId} — ${message} [${latencyMs}ms] (failure #${currentFailures})`,
+        `⚠️ ${provider}/${connectionId} — ${message} [${latencyMs}ms] (failure #${currentFailures})`
       );
     }
   }
@@ -217,7 +217,7 @@ export async function sweep(): Promise<void> {
     try {
       const raw = await getProviderConnections({});
       connections = (Array.isArray(raw) ? raw : []).filter(
-        (conn: any) => conn && conn.id && (conn.authType === "apikey" || conn.authType === "oauth"),
+        (conn: any) => conn && conn.id && (conn.authType === "apikey" || conn.authType === "oauth")
       ) as Array<{
         id: string;
         provider: string;
@@ -248,7 +248,7 @@ export async function sweep(): Promise<void> {
 
     console.log(
       LOG_PREFIX,
-      `Testing ${dueConnections.length}/${connections.length} connections...`,
+      `Testing ${dueConnections.length}/${connections.length} connections...`
     );
 
     // Process with concurrency limit
@@ -259,7 +259,7 @@ export async function sweep(): Promise<void> {
 
     for (const batch of batches) {
       await Promise.allSettled(
-        batch.map((conn) => testConnection(conn.id, conn.provider, conn.authType === "oauth")),
+        batch.map((conn) => testConnection(conn.id, conn.provider, conn.authType === "oauth"))
       );
     }
   } finally {
@@ -294,7 +294,7 @@ export function initCredentialHealthCheck(): void {
 
   console.log(
     LOG_PREFIX,
-    `Starting credential health check (initial delay ${INITIAL_DELAY_MS / 1000}s, interval ${getSweepInterval() / 1000}s)`,
+    `Starting credential health check (initial delay ${INITIAL_DELAY_MS / 1000}s, interval ${getSweepInterval() / 1000}s)`
   );
 
   state.sweepTimer = setTimeout(() => {

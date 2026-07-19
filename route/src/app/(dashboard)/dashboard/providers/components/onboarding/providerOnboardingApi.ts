@@ -136,7 +136,7 @@ export async function fetchOnboardingConnections(): Promise<OnboardingConnection
   const response = await fetch("/api/providers");
   const data = await expectOk<{ connections?: OnboardingConnection[] }>(
     response,
-    "Failed to load provider connections",
+    "Failed to load provider connections"
   );
   return Array.isArray(data.connections) ? data.connections : [];
 }
@@ -149,12 +149,12 @@ export async function fetchOnboardingProviderNodes(): Promise<OnboardingProvider
 }
 
 export async function validateOnboardingApiKey(
-  input: ValidateOnboardingApiKeyInput,
+  input: ValidateOnboardingApiKeyInput
 ): Promise<Record<string, unknown>> {
   const payload = parseOrThrow(
     validateProviderApiKeySchema,
     input,
-    "Provider credentials are not valid",
+    "Provider credentials are not valid"
   );
   const response = await fetch("/api/providers/validate", {
     method: "POST",
@@ -180,7 +180,7 @@ export async function validateOnboardingApiKey(
 }
 
 export async function createOnboardingConnection(
-  input: CreateOnboardingConnectionInput,
+  input: CreateOnboardingConnectionInput
 ): Promise<OnboardingConnection> {
   const payload = parseOrThrow(
     createProviderSchema,
@@ -192,7 +192,7 @@ export async function createOnboardingConnection(
       testStatus: input.testStatus || "unknown",
       providerSpecificData: input.providerSpecificData || undefined,
     },
-    "Provider connection data is invalid",
+    "Provider connection data is invalid"
   );
   const response = await fetch("/api/providers", {
     method: "POST",
@@ -201,7 +201,7 @@ export async function createOnboardingConnection(
   });
   const data = await expectOk<{ connection?: OnboardingConnection }>(
     response,
-    "Failed to create provider connection",
+    "Failed to create provider connection"
   );
   if (!data.connection?.id) {
     throw new Error("Provider connection was created without an id");
@@ -210,7 +210,7 @@ export async function createOnboardingConnection(
 }
 
 export async function testOnboardingConnection(
-  connectionId: string,
+  connectionId: string
 ): Promise<OnboardingTestResult> {
   const response = await fetch(`/api/providers/${encodeURIComponent(connectionId)}/test`, {
     method: "POST",
@@ -222,7 +222,7 @@ export function buildCompatibleNodeRequest(input: CreateCompatibleProviderNodeIn
   const sanitizedInput = parseOrThrow(
     compatibleProviderNodeInputSchema,
     input,
-    "Compatible provider data is invalid",
+    "Compatible provider data is invalid"
   );
   const modeDefaults = {
     openai: {
@@ -260,7 +260,7 @@ export function buildCompatibleNodeRequest(input: CreateCompatibleProviderNodeIn
 }
 
 export async function createCompatibleProviderNode(
-  input: CreateCompatibleProviderNodeInput,
+  input: CreateCompatibleProviderNodeInput
 ): Promise<CompatibleProviderNode> {
   const response = await fetch("/api/provider-nodes", {
     method: "POST",
@@ -269,7 +269,7 @@ export async function createCompatibleProviderNode(
   });
   const data = await expectOk<{ node?: CompatibleProviderNode }>(
     response,
-    "Failed to create compatible provider",
+    "Failed to create compatible provider"
   );
   if (!data.node?.id) {
     throw new Error("Compatible provider was created without an id");

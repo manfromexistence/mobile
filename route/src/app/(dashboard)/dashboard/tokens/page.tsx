@@ -61,7 +61,7 @@ export default function TokensPage() {
   const [redeemCode, setRedeemCode] = useState("");
   const [redeemLoading, setRedeemLoading] = useState(false);
   const [redeemMsg, setRedeemMsg] = useState<{ type: "success" | "error"; text: string } | null>(
-    null,
+    null
   );
 
   // Servers

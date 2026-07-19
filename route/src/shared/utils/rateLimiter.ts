@@ -191,7 +191,7 @@ export function setRateLimiterTestMode(enabled: boolean) {
 function checkInMemoryRateLimit(
   store: Map<string, number>,
   keyId: string,
-  rules: RateLimitRule[],
+  rules: RateLimitRule[]
 ): RateLimitResult {
   const now = Math.floor(Date.now() / 1000);
 
@@ -220,7 +220,7 @@ function checkInMemoryRateLimit(
 
 export async function checkRateLimit(
   keyId: string,
-  rules: RateLimitRule[],
+  rules: RateLimitRule[]
 ): Promise<RateLimitResult> {
   if (!rules || rules.length === 0) return { allowed: true };
 

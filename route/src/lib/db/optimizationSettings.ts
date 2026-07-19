@@ -68,7 +68,7 @@ function requireCacheSizeKb(value: number): number {
 
 function mergeOptimizationSettings(
   target: DatabaseOptimizationSettings,
-  value: unknown,
+  value: unknown
 ): DatabaseOptimizationSettings {
   if (!isRecord(value)) return target;
   return {
@@ -124,15 +124,15 @@ function readDatabaseOptimizationSettings(db: SqliteDatabase): DatabaseOptimizat
       ...settings,
       autoVacuumMode: normalizeAutoVacuumMode(
         databaseSettings["optimization.autoVacuumMode"] ?? databaseSettings.autoVacuumMode,
-        settings.autoVacuumMode,
+        settings.autoVacuumMode
       ),
       pageSize: normalizePageSizeBytes(
         databaseSettings["optimization.pageSize"] ?? databaseSettings.pageSize,
-        settings.pageSize,
+        settings.pageSize
       ),
       cacheSize: normalizeStoredCacheSizeKb(
         databaseSettings["optimization.cacheSize"] ?? databaseSettings.cacheSize,
-        settings.cacheSize,
+        settings.cacheSize
       ),
       optimizeOnStartup:
         typeof optimizeOnStartup === "boolean" ? optimizeOnStartup : settings.optimizeOnStartup,
@@ -156,14 +156,14 @@ export function setCacheSizeForDb(db: SqliteDatabase, cacheSizeKb: number): void
   }
 
   console.log(
-    `[DB] Changing cache_size from ${Math.abs(currentCacheSize)}KB to ${normalizedCacheSizeKb}KB`,
+    `[DB] Changing cache_size from ${Math.abs(currentCacheSize)}KB to ${normalizedCacheSizeKb}KB`
   );
   db.pragma(`cache_size = ${targetCacheSize}`);
 
   const newCacheSize = db.pragma("cache_size", { simple: true }) as number;
   if (newCacheSize !== targetCacheSize) {
     throw new Error(
-      `cache_size change did not take effect (expected ${targetCacheSize}, got ${newCacheSize})`,
+      `cache_size change did not take effect (expected ${targetCacheSize}, got ${newCacheSize})`
     );
   }
   console.log(`[DB] cache_size changed to ${Math.abs(newCacheSize)}KB`);
@@ -171,12 +171,12 @@ export function setCacheSizeForDb(db: SqliteDatabase, cacheSizeKb: number): void
 
 function applyPersistentOptimizationPragmas(
   db: SqliteDatabase,
-  settings: DatabaseOptimizationSettings,
+  settings: DatabaseOptimizationSettings
 ): void {
   const targetAutoVacuum = AUTO_VACUUM_MODE_TO_PRAGMA[settings.autoVacuumMode];
   const targetPageSize = normalizePageSizeBytes(
     settings.pageSize,
-    DEFAULT_DATABASE_SETTINGS.optimization.pageSize,
+    DEFAULT_DATABASE_SETTINGS.optimization.pageSize
   );
   const currentAutoVacuum = db.pragma("auto_vacuum", { simple: true }) as number;
   const currentPageSize = db.pragma("page_size", { simple: true }) as number;
@@ -184,14 +184,14 @@ function applyPersistentOptimizationPragmas(
   if (currentAutoVacuum === targetAutoVacuum && currentPageSize === targetPageSize) return;
 
   const originalJournalMode = String(
-    db.pragma("journal_mode", { simple: true }) ?? "",
+    db.pragma("journal_mode", { simple: true }) ?? ""
   ).toUpperCase();
   const shouldRestoreWal = originalJournalMode === "WAL";
 
   console.log(
     `[DB] Applying persistent optimization settings ` +
       `(auto_vacuum ${currentAutoVacuum}->${targetAutoVacuum}, ` +
-      `page_size ${currentPageSize}->${targetPageSize})`,
+      `page_size ${currentPageSize}->${targetPageSize})`
   );
 
   try {
@@ -216,7 +216,7 @@ function applyPersistentOptimizationPragmas(
     throw new Error(
       `database optimization settings did not take effect ` +
         `(auto_vacuum expected ${targetAutoVacuum}, got ${newAutoVacuum}; ` +
-        `page_size expected ${targetPageSize}, got ${newPageSize})`,
+        `page_size expected ${targetPageSize}, got ${newPageSize})`
     );
   }
 }
@@ -224,15 +224,12 @@ function applyPersistentOptimizationPragmas(
 export function applyDatabaseOptimizationSettingsForDb(
   db: SqliteDatabase,
   settings: DatabaseOptimizationSettings,
-  options: { applyPersistent: boolean },
+  options: { applyPersistent: boolean }
 ): void {
   if (options.applyPersistent) applyPersistentOptimizationPragmas(db, settings);
   setCacheSizeForDb(
     db,
-    normalizeStoredCacheSizeKb(
-      settings.cacheSize,
-      DEFAULT_DATABASE_SETTINGS.optimization.cacheSize,
-    ),
+    normalizeStoredCacheSizeKb(settings.cacheSize, DEFAULT_DATABASE_SETTINGS.optimization.cacheSize)
   );
 }
 
@@ -271,7 +268,7 @@ export function setPageSizeForDb(db: SqliteDatabase, pageSize: number): void {
   const currentPageSize = db.pragma("page_size", { simple: true }) as number;
   const targetPageSize = normalizePageSizeBytes(
     pageSize,
-    DEFAULT_DATABASE_SETTINGS.optimization.pageSize,
+    DEFAULT_DATABASE_SETTINGS.optimization.pageSize
   );
 
   if (currentPageSize === targetPageSize) {

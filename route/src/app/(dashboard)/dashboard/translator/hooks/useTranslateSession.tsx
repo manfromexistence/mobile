@@ -222,7 +222,7 @@ export function useTranslateSession(): UseTranslateSessionReturn {
         }));
       }
     },
-    [],
+    []
   );
 
   const reset = useCallback(() => setResult(initialResult("openai")), []);

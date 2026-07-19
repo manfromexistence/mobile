@@ -45,7 +45,7 @@ function csrfMac(secret: Buffer, expiresAtSeconds: number, authToken: string): B
 
 export function issueDashboardCsrfToken(
   request: Request,
-  nowMs: number = Date.now(),
+  nowMs: number = Date.now()
 ): DashboardCsrfToken | null {
   const secret = getJwtSecret();
   const authToken = getCookieValue(request, "auth_token");

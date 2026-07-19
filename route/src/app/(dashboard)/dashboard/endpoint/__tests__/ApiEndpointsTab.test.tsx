@@ -210,7 +210,7 @@ describe("ApiEndpointsTab", () => {
 
     // Expand the endpoint to reveal the curl example
     const endpointRow = Array.from(document.body.querySelectorAll("code")).find((node) =>
-      node.textContent?.includes("/api/v1/chat/completions"),
+      node.textContent?.includes("/api/v1/chat/completions")
     );
     if (endpointRow?.parentElement) {
       await act(async () => {
@@ -225,8 +225,8 @@ describe("ApiEndpointsTab", () => {
 
     expect(
       expectedOrigins.some((origin) =>
-        renderedText.includes(`curl -X POST ${origin}/v1/chat/completions`),
-      ),
+        renderedText.includes(`curl -X POST ${origin}/v1/chat/completions`)
+      )
     ).toBe(true);
   });
 });

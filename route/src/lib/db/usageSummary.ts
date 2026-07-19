@@ -8,7 +8,7 @@ export function sumUsageTokensThisMonth(db: SqliteAdapter = getDbInstance()): nu
       .prepare(
         `SELECT COALESCE(SUM(total_input_tokens + total_output_tokens), 0) AS used
          FROM daily_usage_summary
-         WHERE date >= strftime('%Y-%m-01','now')`,
+         WHERE date >= strftime('%Y-%m-01','now')`
       )
       .get() as { used: number } | undefined;
     return row?.used ?? 0;

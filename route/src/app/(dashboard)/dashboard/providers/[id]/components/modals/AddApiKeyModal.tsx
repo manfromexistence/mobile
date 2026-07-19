@@ -195,7 +195,7 @@ export default function AddApiKeyModal({
     ? providerText(
         t,
         "modalTokenIdHint",
-        "Modal auth uses a Token ID + Token Secret pair. Create one at https://modal.com/settings → API Tokens.",
+        "Modal auth uses a Token ID + Token Secret pair. Create one at https://modal.com/settings → API Tokens."
       )
     : isQoder
       ? t("qoderPatHint")
@@ -212,7 +212,7 @@ export default function AddApiKeyModal({
     ? providerText(
         t,
         "webSessionCredentialValidationFailed",
-        "Session credential validation failed. Sign in again, copy a fresh credential, and try again.",
+        "Session credential validation failed. Sign in again, copy a fresh credential, and try again."
       )
     : t("apiKeyValidationFailed");
   const validationBadge = validationResult ? validationBadgeProps(validationResult) : null;
@@ -657,7 +657,7 @@ export default function AddApiKeyModal({
                                 onClick={() =>
                                   copyCommandCodeValue(
                                     commandCodeAuthState.callbackUrl,
-                                    "callbackUrl",
+                                    "callbackUrl"
                                   )
                                 }
                               />
@@ -741,7 +741,7 @@ export default function AddApiKeyModal({
                 hint={providerText(
                   t,
                   "modalTokenSecretHint",
-                  "Paired with the Token ID above; combined as Bearer <id>:<secret>.",
+                  "Paired with the Token ID above; combined as Bearer <id>:<secret>."
                 )}
                 autoComplete="off"
                 spellCheck={false}

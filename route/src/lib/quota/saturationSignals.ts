@@ -147,7 +147,7 @@ function normalizeTokenReset(raw: string | undefined, nowMs: number): number | n
  */
 function pickTokenTriple(
   headers: Record<string, string>,
-  candidates: Array<{ limit: string; remaining: string; reset: string }>,
+  candidates: Array<{ limit: string; remaining: string; reset: string }>
 ): { limit: number; remaining: number; reset: string | undefined } | null {
   for (const c of candidates) {
     const limitStr = headers[c.limit];
@@ -174,7 +174,7 @@ function pickTokenTriple(
 export function storeRateLimitHeaders(
   connectionId: string,
   provider: string,
-  headers: Record<string, string>,
+  headers: Record<string, string>
 ): void {
   const key = `${provider}:${connectionId}`;
 
@@ -242,7 +242,7 @@ export function storeRateLimitHeaders(
  */
 export function getTokenHeaderSaturation(
   provider: string,
-  connectionId: string,
+  connectionId: string
 ): { saturation: number; resetAt: number | null } | null {
   const entry = _tokenHeaders.get(`${provider}:${connectionId}`);
   if (!entry || Date.now() - entry.ts > RL_HEADER_TTL_MS) return null;
@@ -282,7 +282,7 @@ function codexWindowKey(window: QuotaWindow): string {
 async function fetchCodexSaturation(
   connectionId: string,
   dim: DimensionSpec,
-  connection?: Record<string, unknown>,
+  connection?: Record<string, unknown>
 ): Promise<number> {
   // Dynamic import — codexQuotaFetcher lives in open-sse workspace
   const mod = await import("@omniroute/open-sse/services/codexQuotaFetcher");
@@ -449,7 +449,7 @@ async function fetchAnthropicSaturation(connectionId: string, dim: DimensionSpec
   } catch (err) {
     log.warn(
       { err: (err as Error)?.message, connectionId },
-      "anthropic oauth/usage saturation failed — falling back to rate-limit headers",
+      "anthropic oauth/usage saturation failed — falling back to rate-limit headers"
     );
   }
 
@@ -519,7 +519,7 @@ export async function getSaturation(
   connectionId: string,
   provider: string,
   dim: DimensionSpec,
-  connection?: Record<string, unknown>,
+  connection?: Record<string, unknown>
 ): Promise<number> {
   const key = cacheKey(connectionId, provider, dim);
   const cached = _cache.get(key);
@@ -547,7 +547,7 @@ export async function getSaturation(
   } catch (err) {
     log.warn(
       { err: (err as Error)?.message, connectionId, provider },
-      "saturation fetch failed — failing open with 0",
+      "saturation fetch failed — failing open with 0"
     );
     value = 0;
   }

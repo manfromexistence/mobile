@@ -171,7 +171,7 @@ export default function EditConnectionModal({
   const [showBaseUrlOverride, setShowBaseUrlOverride] = useState(
     () =>
       typeof connectionProviderSpecificData?.baseUrl === "string" &&
-      connectionProviderSpecificData.baseUrl.trim().length > 0,
+      connectionProviderSpecificData.baseUrl.trim().length > 0
   );
   const usesBaseUrl = isConfigurableBaseUrl || (isBaseUrlOverrideEligible && showBaseUrlOverride);
   const defaultBaseUrl = getProviderBaseUrlDefault(provider);
@@ -228,7 +228,7 @@ export default function EditConnectionModal({
         value,
         label: getCodexServiceTierLabel(t, value),
       })),
-    [t],
+    [t]
   );
 
   useEffect(() => {
@@ -254,7 +254,7 @@ export default function EditConnectionModal({
         stringField(connection.providerSpecificData?.glmProject);
       const codexRequestDefaults = getCodexRequestDefaults(connection.providerSpecificData);
       const ccRequestDefaults = getClaudeCodeCompatibleRequestDefaults(
-        connection.providerSpecificData,
+        connection.providerSpecificData
       );
       const existingConsoleApiKey = stringField(connection.providerSpecificData?.consoleApiKey);
       setFormData({
@@ -295,7 +295,7 @@ export default function EditConnectionModal({
         routingTags: formatRoutingTagsInput(connection.providerSpecificData?.tags),
         excludedModels: formatExcludedModelsInput(
           connection.providerSpecificData?.excludedModels ??
-            connection.providerSpecificData?.excluded_models,
+            connection.providerSpecificData?.excluded_models
         ),
         customUserAgent: existingCustomUserAgent,
         accountId: existingAccountId,
@@ -314,11 +314,11 @@ export default function EditConnectionModal({
         cloudCodeProjectId:
           (connection.providerSpecificData?.projectId as string) || connection.projectId || "",
         antigravityClientProfile: normalizeAntigravityClientProfileSetting(
-          connection.providerSpecificData?.clientProfile,
+          connection.providerSpecificData?.clientProfile
         ),
         blockExtraUsage: isClaudeExtraUsageBlockEnabled(
           effectiveProvider,
-          connection.providerSpecificData,
+          connection.providerSpecificData
         ),
         passthroughModels: connection?.providerSpecificData?.passthroughModels === true,
         disableCooling: connection?.providerSpecificData?.disableCooling === true,
@@ -344,7 +344,7 @@ export default function EditConnectionModal({
       setOpenRouterPreset(existingOpenRouterPreset);
       setShowAdvanced(
         !!existingCustomUserAgent ||
-          normalizeM365TierValue(connection.providerSpecificData?.tier) !== "",
+          normalizeM365TierValue(connection.providerSpecificData?.tier) !== ""
       );
       setTestResult(null);
       setValidationResult(null);
@@ -579,7 +579,7 @@ export default function EditConnectionModal({
           ...(connection.providerSpecificData || {}),
           ...(updates.providerSpecificData || {}),
           clientProfile: normalizeAntigravityClientProfileSetting(
-            formData.antigravityClientProfile,
+            formData.antigravityClientProfile
           ),
         };
       }
@@ -670,7 +670,7 @@ export default function EditConnectionModal({
               hint={providerText(
                 t,
                 "codexServiceTierDescription",
-                "Default uses the normal Codex tier. Priority shows as Fast; Flex uses the flex service tier when available.",
+                "Default uses the normal Codex tier. Priority shows as Fast; Flex uses the flex service tier when available."
               )}
             />
             <Toggle
@@ -1017,7 +1017,7 @@ export default function EditConnectionModal({
                 ? providerText(
                     t,
                     "overrideBaseUrlHint",
-                    "Advanced: point this built-in provider at a custom endpoint. Leave blank to use the default.",
+                    "Advanced: point this built-in provider at a custom endpoint. Leave blank to use the default."
                   )
                 : undefined)
             }

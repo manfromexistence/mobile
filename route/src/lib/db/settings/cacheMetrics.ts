@@ -19,7 +19,7 @@ export async function getCacheMetrics() {
         SUM(tokens_cache_creation) as totalCacheCreationTokens
       FROM usage_history
       WHERE tokens_cache_read > 0 OR tokens_cache_creation > 0
-    `,
+    `
       )
       .get() as
       | {
@@ -36,7 +36,7 @@ export async function getCacheMetrics() {
         `
       SELECT COUNT(*) as totalRequests
       FROM usage_history
-    `,
+    `
       )
       .get() as { totalRequests: number } | undefined;
 
@@ -55,7 +55,7 @@ export async function getCacheMetrics() {
       WHERE provider IS NOT NULL
       GROUP BY provider
       HAVING cachedRequests > 0
-    `,
+    `
       )
       .all() as Array<{
       provider: string;
@@ -79,7 +79,7 @@ export async function getCacheMetrics() {
       FROM usage_history
       WHERE (tokens_cache_read > 0 OR tokens_cache_creation > 0)
       GROUP BY combo_strategy
-    `,
+    `
       )
       .all() as Array<{
       strategy: string;
@@ -201,7 +201,7 @@ export async function getCacheTrend(hours = 24): Promise<CacheTrendPoint[]> {
         WHERE timestamp >= datetime('now', ?)
         GROUP BY hour
         ORDER BY hour ASC
-      `,
+      `
       )
       .all(`-${hours} hours`) as Array<{
       hour: string;
@@ -229,7 +229,7 @@ export async function getCacheTrend(hours = 24): Promise<CacheTrendPoint[]> {
 export async function resetCacheMetrics() {
   // No-op: cache metrics are computed from usage_history.
   console.warn(
-    "resetCacheMetrics is deprecated - cache metrics are now computed from usage_history",
+    "resetCacheMetrics is deprecated - cache metrics are now computed from usage_history"
   );
   return getCacheMetrics();
 }

@@ -33,14 +33,14 @@ export default function AppearanceTab() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [customThemeColor, setCustomThemeColor] = useState(customColor || "#3b82f6");
   const isValidHex = /^#([0-9a-fA-F]{6})$/.test(
-    customThemeColor.startsWith("#") ? customThemeColor : `#${customThemeColor}`,
+    customThemeColor.startsWith("#") ? customThemeColor : `#${customThemeColor}`
   );
   const pinProviderQuotaToHome = settings.pinProviderQuotaToHome === true;
   const showQuickStartOnHome = settings.showQuickStartOnHome !== false;
   const showProviderTopologyOnHome = settings.showProviderTopologyOnHome !== false;
   const autoRefreshProviderQuota = settings.autoRefreshProviderQuota === true;
   const autoRefreshProviderQuotaInterval = Number.isFinite(
-    settings.autoRefreshProviderQuotaInterval,
+    settings.autoRefreshProviderQuotaInterval
   )
     ? Number(settings.autoRefreshProviderQuotaInterval)
     : 180;
@@ -119,7 +119,7 @@ export default function AppearanceTab() {
       title: getSettingsLabel("comboConfigModeGuided", "Guided"),
       description: getSettingsLabel(
         "comboConfigModeGuidedDesc",
-        "Use the current step-by-step combo builder.",
+        "Use the current step-by-step combo builder."
       ),
     },
     {
@@ -128,7 +128,7 @@ export default function AppearanceTab() {
       title: getSettingsLabel("comboConfigModeExpert", "Expert"),
       description: getSettingsLabel(
         "comboConfigModeExpertDesc",
-        "Show every combo option on one page and enable direct model entry.",
+        "Show every combo option on one page and enable direct model entry."
       ),
     },
   ];
@@ -172,7 +172,7 @@ export default function AppearanceTab() {
                   "flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-all",
                   theme === option
                     ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
-                    : "text-text-muted hover:text-text-main",
+                    : "text-text-muted hover:text-text-main"
                 )}
               >
                 <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
@@ -204,7 +204,7 @@ export default function AppearanceTab() {
                   <p className="text-sm text-text-muted">
                     {getSettingsLabel(
                       "homeProviderQuotaLimitsDesc",
-                      "Pin the Provider Quota status container (with Refresh All button) to the top of the Home page.",
+                      "Pin the Provider Quota status container (with Refresh All button) to the top of the Home page."
                     )}
                   </p>
                 </div>
@@ -223,7 +223,7 @@ export default function AppearanceTab() {
                   <p className="text-sm text-text-muted">
                     {getSettingsLabel(
                       "homeQuickStartDesc",
-                      "Show the Quick Start panel on the Home page.",
+                      "Show the Quick Start panel on the Home page."
                     )}
                   </p>
                 </div>
@@ -244,7 +244,7 @@ export default function AppearanceTab() {
                   <p className="text-sm text-text-muted">
                     {getSettingsLabel(
                       "homeProviderTopologyDesc",
-                      "Show the Provider Topology on the Home page.",
+                      "Show the Provider Topology on the Home page."
                     )}
                   </p>
                 </div>
@@ -268,7 +268,7 @@ export default function AppearanceTab() {
             <p className="text-sm text-text-muted">
               {getSettingsLabel(
                 "endpointTunnelVisibilityDesc",
-                "Hide tunnel controls from the Endpoint page without changing tunnel state.",
+                "Hide tunnel controls from the Endpoint page without changing tunnel state."
               )}
             </p>
           </div>
@@ -282,7 +282,7 @@ export default function AppearanceTab() {
                 <p className="text-sm text-text-muted">
                   {getSettingsLabel(
                     "showCloudflareTunnelDesc",
-                    "Show Cloudflare Quick Tunnel controls on the Endpoint page.",
+                    "Show Cloudflare Quick Tunnel controls on the Endpoint page."
                   )}
                 </p>
               </div>
@@ -301,7 +301,7 @@ export default function AppearanceTab() {
                 <p className="text-sm text-text-muted">
                   {getSettingsLabel(
                     "showTailscaleFunnelDesc",
-                    "Show Tailscale Funnel controls on the Endpoint page.",
+                    "Show Tailscale Funnel controls on the Endpoint page."
                   )}
                 </p>
               </div>
@@ -318,7 +318,7 @@ export default function AppearanceTab() {
                 <p className="text-sm text-text-muted">
                   {getSettingsLabel(
                     "showNgrokTunnelDesc",
-                    "Show ngrok Tunnel controls on the Endpoint page.",
+                    "Show ngrok Tunnel controls on the Endpoint page."
                   )}
                 </p>
               </div>
@@ -339,7 +339,7 @@ export default function AppearanceTab() {
             <p className="text-sm text-text-muted">
               {getSettingsLabel(
                 "comboConfigModeDesc",
-                "Choose how the combo create and edit dialog is organized.",
+                "Choose how the combo create and edit dialog is organized."
               )}
             </p>
           </div>
@@ -363,7 +363,7 @@ export default function AppearanceTab() {
                     "flex items-start gap-3 rounded-lg border p-3 text-left transition-colors disabled:opacity-60",
                     active
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-surface/40 text-text-main hover:border-primary/40",
+                      : "border-border bg-surface/40 text-text-main hover:border-primary/40"
                   )}
                 >
                   <span className="material-symbols-outlined mt-0.5 text-[20px]" aria-hidden="true">
@@ -374,7 +374,7 @@ export default function AppearanceTab() {
                     <span
                       className={cn(
                         "mt-0.5 block text-xs",
-                        active ? "text-primary/80" : "text-text-muted",
+                        active ? "text-primary/80" : "text-text-muted"
                       )}
                     >
                       {option.description}
@@ -394,7 +394,7 @@ export default function AppearanceTab() {
             <p className="text-sm text-text-muted">
               {getSettingsLabel(
                 "providerQuotaAutoRefreshDesc",
-                "Refresh the Provider Limits view automatically while it stays open.",
+                "Refresh the Provider Limits view automatically while it stays open."
               )}
             </p>
           </div>
@@ -408,7 +408,7 @@ export default function AppearanceTab() {
                 <p className="text-sm text-text-muted">
                   {getSettingsLabel(
                     "providerQuotaAutoRefreshToggleDesc",
-                    "Refresh the quota view every few minutes while the page is visible.",
+                    "Refresh the quota view every few minutes while the page is visible."
                   )}
                 </p>
               </div>
@@ -432,7 +432,7 @@ export default function AppearanceTab() {
                 <p className="text-sm text-text-muted">
                   {getSettingsLabel(
                     "providerQuotaAutoRefreshIntervalDesc",
-                    "How often the quota view should refresh, in seconds.",
+                    "How often the quota view should refresh, in seconds."
                   )}
                 </p>
               </div>
@@ -487,7 +487,7 @@ export default function AppearanceTab() {
                     "flex items-center justify-between gap-2 p-2 rounded-lg border transition-colors",
                     active
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border hover:bg-surface/50 text-text-main",
+                      : "border-border hover:bg-surface/50 text-text-main"
                   )}
                 >
                   <span className="flex items-center gap-2">
@@ -603,7 +603,7 @@ export default function AppearanceTab() {
                         ];
                         if (!validTypes.includes(file.type)) {
                           setUploadError(
-                            "Invalid file type. Please upload PNG, JPG, SVG, GIF, or WebP.",
+                            "Invalid file type. Please upload PNG, JPG, SVG, GIF, or WebP."
                           );
                           return;
                         }
@@ -697,7 +697,7 @@ export default function AppearanceTab() {
                         ];
                         if (!validTypes.includes(file.type)) {
                           setUploadError(
-                            "Invalid file type. Please upload PNG, ICO, SVG, GIF, or WebP.",
+                            "Invalid file type. Please upload PNG, ICO, SVG, GIF, or WebP."
                           );
                           return;
                         }

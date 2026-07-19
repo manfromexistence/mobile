@@ -19,7 +19,7 @@ const PATHS = [
     process.env.LOCALAPPDATA ?? path.join(HOME, "AppData", "Local"),
     "Programs",
     "cursor",
-    "Cursor.exe",
+    "Cursor.exe"
   ),
 ];
 

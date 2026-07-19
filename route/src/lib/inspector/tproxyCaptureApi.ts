@@ -43,7 +43,7 @@ export function fetchTproxyStatus(): Promise<CaptureManagerStatus> {
 
 /** Start decrypt capture; resolves with the resulting status. */
 export function startTproxyCaptureMode(
-  options: StartTproxyOptions = {},
+  options: StartTproxyOptions = {}
 ): Promise<CaptureManagerStatus> {
   return requestJson<{ ok: boolean; status: CaptureManagerStatus }>(ROUTE, {
     method: "POST",

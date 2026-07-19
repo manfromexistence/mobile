@@ -14,7 +14,7 @@ import { resolveProviderId } from "@/shared/constants/providers";
 
 /** Provider ids that have at least one documented free model. */
 export const PROVIDERS_WITH_FREE_MODELS: Set<string> = new Set(
-  FREE_MODEL_BUDGETS.map((m) => m.provider),
+  FREE_MODEL_BUDGETS.map((m) => m.provider)
 );
 
 const FREE_MODEL_IDS_BY_PROVIDER: Map<string, Set<string>> = (() => {
@@ -84,7 +84,7 @@ export interface SelectModelsForImportResult<T extends FreeModelCandidate> {
  */
 export function sortModelsFreeFirst<T>(
   items: T[],
-  opts: { isFree: (item: T) => boolean; key: (item: T) => string },
+  opts: { isFree: (item: T) => boolean; key: (item: T) => string }
 ): T[] {
   return [...items].sort((a, b) => {
     const fa = opts.isFree(a);
@@ -101,7 +101,7 @@ export function sortModelsFreeFirst<T>(
 export function selectModelsForImport<T extends FreeModelCandidate>(
   provider: string,
   fetchedModels: T[],
-  importFreeOnly: boolean,
+  importFreeOnly: boolean
 ): SelectModelsForImportResult<T> {
   if (!importFreeOnly) {
     return { models: fetchedModels, freeFilterEmpty: false };

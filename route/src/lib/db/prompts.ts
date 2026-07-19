@@ -126,7 +126,7 @@ export interface PromptTemplate {
 export function savePrompt(
   slug: string,
   content: string,
-  options: { variables?: string[]; description?: string } = {},
+  options: { variables?: string[]; description?: string } = {}
 ): PromptTemplate {
   ensureSchema();
   const db = getDbInstance() as unknown as DbLike;
@@ -143,7 +143,7 @@ export function savePrompt(
 
   // Deactivate previous active version
   db.prepare("UPDATE prompt_templates SET is_active = 0 WHERE slug = ? AND is_active = 1").run(
-    slug,
+    slug
   );
 
   // Get next version number
@@ -158,7 +158,7 @@ export function savePrompt(
   const result = db
     .prepare(
       `INSERT INTO prompt_templates (slug, version, content, content_hash, variables, description, is_active)
-       VALUES (?, ?, ?, ?, ?, ?, 1)`,
+       VALUES (?, ?, ?, ?, ?, ?, 1)`
     )
     .run(
       slug,
@@ -166,7 +166,7 @@ export function savePrompt(
       content,
       hash,
       options.variables ? JSON.stringify(options.variables) : null,
-      options.description || null,
+      options.description || null
     );
 
   return {
@@ -235,7 +235,7 @@ export function listPrompts(): Array<{
               COUNT(*) as total_versions
        FROM prompt_templates
        GROUP BY slug
-       ORDER BY slug`,
+       ORDER BY slug`
     )
     .all();
 
@@ -263,7 +263,7 @@ export function rollbackPrompt(slug: string, version: number): PromptTemplate | 
     db.prepare("UPDATE prompt_templates SET is_active = 0 WHERE slug = ?").run(slug);
     db.prepare("UPDATE prompt_templates SET is_active = 1 WHERE slug = ? AND version = ?").run(
       slug,
-      version,
+      version
     );
   });
   rollback();

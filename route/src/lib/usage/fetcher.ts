@@ -39,7 +39,7 @@ export async function getUsageForProvider(connection) {
         accessToken,
         providerSpecificData,
         connection.projectId,
-        connection.id,
+        connection.id
       );
     case "claude":
       return await getClaudeUsage(accessToken);
@@ -146,7 +146,7 @@ async function probeAntigravityCreditBalance(
   accessToken: string,
   accountId: string,
   projectId?: string | null,
-  providerSpecificData: Record<string, unknown> = {},
+  providerSpecificData: Record<string, unknown> = {}
 ): Promise<number | null> {
   try {
     if (!projectId) return null; // Can't call streamGenerateContent without a projectId
@@ -177,7 +177,7 @@ async function probeAntigravityCreditBalance(
     applyAntigravityClientProfileHeaders(
       headers,
       { connectionId: accountId, projectId, providerSpecificData },
-      body,
+      body
     );
 
     const res = await fetch(url, {
@@ -202,7 +202,7 @@ async function probeAntigravityCreditBalance(
         const parsed = JSON.parse(payload);
         if (Array.isArray(parsed?.remainingCredits)) {
           const googleCredit = parsed.remainingCredits.find(
-            (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI",
+            (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI"
           );
           if (googleCredit) {
             const balance = parseInt(googleCredit.creditAmount, 10);
@@ -237,7 +237,7 @@ async function getAntigravityUsage(
   accessToken: string,
   providerSpecificData: Record<string, unknown> = {},
   projectId?: string | null,
-  connectionId?: string | null,
+  connectionId?: string | null
 ) {
   try {
     // Use connectionId as the cache key — matches executor's credentials.connectionId
@@ -253,7 +253,7 @@ async function getAntigravityUsage(
         accessToken,
         accountId,
         projectId,
-        providerSpecificData,
+        providerSpecificData
       );
     }
 

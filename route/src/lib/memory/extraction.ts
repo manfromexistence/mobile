@@ -94,7 +94,7 @@ function runPatterns(
   patterns: RegExp[],
   category: "preference" | "decision" | "pattern",
   memoryType: MemoryType,
-  seen: Set<string>,
+  seen: Set<string>
 ): ExtractedFact[] {
   const facts: ExtractedFact[] = [];
 

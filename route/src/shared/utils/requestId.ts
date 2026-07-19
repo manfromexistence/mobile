@@ -50,7 +50,7 @@ export function getRequestId() {
  */
 export async function withRequestId<T>(
   request: RequestLike,
-  handler: () => T | Promise<T>,
+  handler: () => T | Promise<T>
 ): Promise<T> {
   const existingId = getHeaderValue(request, "x-request-id");
   const requestId = existingId || randomUUID();

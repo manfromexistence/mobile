@@ -139,11 +139,11 @@ function readScheduleSettings(): VacuumScheduleSettings {
   settings = {
     scheduledVacuum: normalizeSchedule(
       databaseSettings["optimization.scheduledVacuum"] ?? databaseSettings.scheduledVacuum,
-      settings.scheduledVacuum,
+      settings.scheduledVacuum
     ),
     vacuumHour: normalizeVacuumHour(
       databaseSettings["optimization.vacuumHour"] ?? databaseSettings.vacuumHour,
-      settings.vacuumHour,
+      settings.vacuumHour
     ),
   };
 
@@ -167,14 +167,14 @@ function addFrequency(date: Date, frequency: Exclude<ScheduledVacuum, "never">):
 export function resolveNextRunAt(
   settings: VacuumScheduleSettings,
   lastRunAt: number | null,
-  now: number = Date.now(),
+  now: number = Date.now()
 ): number | null {
   const frequency = settings.scheduledVacuum;
   if (frequency === "never") return null;
 
   const hour = normalizeVacuumHour(
     settings.vacuumHour,
-    DEFAULT_DATABASE_SETTINGS.optimization.vacuumHour,
+    DEFAULT_DATABASE_SETTINGS.optimization.vacuumHour
   );
   let candidate: Date;
   if (typeof lastRunAt === "number" && Number.isFinite(lastRunAt) && lastRunAt > 0) {
@@ -220,7 +220,7 @@ function armTimer(): void {
         currentState.lastError = err instanceof Error ? err.message : String(err);
       });
     },
-    Math.min(delayMs, MAX_TIMER_TIMEOUT_MS),
+    Math.min(delayMs, MAX_TIMER_TIMEOUT_MS)
   );
   // Don't keep the event loop alive just for vacuum
   if (typeof timer.unref === "function") timer.unref();

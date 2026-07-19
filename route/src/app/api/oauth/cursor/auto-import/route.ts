@@ -19,7 +19,7 @@ export interface CursorInstallProbe {
   execFile?: (
     file: string,
     args: string[],
-    options: { timeout: number },
+    options: { timeout: number }
   ) => Promise<{ stdout: string; stderr: string }>;
   /** Resolves when the path is readable; rejects otherwise (e.g. `fs.access`). */
   access?: (path: string, mode: number) => Promise<void>;
@@ -122,7 +122,7 @@ export function extractCursorTokensFromRows(rows: VscDbRow[]): ExtractedCursorTo
  */
 export function fuzzyExtractCursorTokensFromRows(
   rows: VscDbRow[],
-  existing: ExtractedCursorTokens = {},
+  existing: ExtractedCursorTokens = {}
 ): ExtractedCursorTokens {
   const tokens: ExtractedCursorTokens = { ...existing };
   for (const row of rows) {
@@ -144,14 +144,14 @@ export function fuzzyExtractCursorTokensFromRows(
  */
 export function cursorDbCandidatePaths(
   platform: NodeJS.Platform,
-  env: { home: string; appdata?: string },
+  env: { home: string; appdata?: string }
 ): string[] {
   if (platform === "darwin") {
     return [
       join(env.home, "Library/Application Support/Cursor/User/globalStorage/state.vscdb"),
       join(
         env.home,
-        "Library/Application Support/Cursor - Insiders/User/globalStorage/state.vscdb",
+        "Library/Application Support/Cursor - Insiders/User/globalStorage/state.vscdb"
       ),
     ];
   }
@@ -294,7 +294,7 @@ async function tryIdeAuth(): Promise<{
           "SELECT key, value FROM itemTable " +
             "WHERE key LIKE '%cursorAuth/%' " +
             "OR key LIKE '%machineId%' " +
-            "OR key LIKE '%serviceMachineId%'",
+            "OR key LIKE '%serviceMachineId%'"
         )
         .all() as VscDbRow[];
       tokens = fuzzyExtractCursorTokensFromRows(fallbackRows, tokens);

@@ -12,7 +12,7 @@ import { isIP } from "node:net";
  */
 export function extractClientIp(
   xForwardedFor: string | null | undefined,
-  remoteAddress: string | undefined,
+  remoteAddress: string | undefined
 ): string {
   if (xForwardedFor) {
     const entries = xForwardedFor.split(",");

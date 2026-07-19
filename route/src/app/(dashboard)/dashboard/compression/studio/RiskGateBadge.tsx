@@ -3,7 +3,9 @@ import type { RiskGateStats } from "./compressionFlowModel.ts";
 
 export function RiskGateBadge({
   stats,
-}: { stats: RiskGateStats | null | undefined }): React.ReactElement | null {
+}: {
+  stats: RiskGateStats | null | undefined;
+}): React.ReactElement | null {
   if (!stats || stats.spansProtected <= 0) return null;
   const cats = Object.entries(stats.categories)
     .filter(([, n]) => (n ?? 0) > 0)

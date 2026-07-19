@@ -299,7 +299,7 @@ export function ApiKeyTable({ byApiKey }) {
     return data.filter(
       (row) =>
         (row.apiKeyName || "").toLowerCase().includes(q) ||
-        (row.apiKeyId || "").toLowerCase().includes(q),
+        (row.apiKeyId || "").toLowerCase().includes(q)
     );
   }, [data, query]);
 
@@ -325,7 +325,7 @@ export function ApiKeyTable({ byApiKey }) {
       setSortBy(field);
       setSortOrder("desc");
     },
-    [sortBy],
+    [sortBy]
   );
 
   const hasData = data.length > 0;
@@ -447,11 +447,11 @@ export function MostActiveDay7d({ activityMap }) {
   const locale = useLocale();
   const weekdayFormatter = useMemo(
     () => createDateFormatter(locale, { weekday: "long" }),
-    [locale],
+    [locale]
   );
   const dateFormatter = useMemo(
     () => createDateFormatter(locale, { month: "short", day: "numeric" }),
-    [locale],
+    [locale]
   );
   const data = useMemo(() => {
     if (!activityMap) return null;
@@ -512,11 +512,11 @@ export function WeeklySquares7d({ activityMap }) {
   const locale = useLocale();
   const weekdayFormatter = useMemo(
     () => createDateFormatter(locale, { weekday: "short" }),
-    [locale],
+    [locale]
   );
   const dateFormatter = useMemo(
     () => createDateFormatter(locale, { month: "short", day: "numeric" }),
-    [locale],
+    [locale]
   );
   const days = useMemo(() => {
     if (!activityMap) return [];
@@ -604,7 +604,7 @@ export function ModelTable({ byModel, summary }) {
         setSortOrder("desc");
       }
     },
-    [sortBy],
+    [sortBy]
   );
 
   const sorted = useMemo(() => {
@@ -785,7 +785,7 @@ export function ServiceTierBreakdown({ byServiceTier, summary }) {
               ? ` · ${fmt(usageSavings)} ${translateCostText(
                   t,
                   "serviceTierUsageSaved",
-                  "usage saved",
+                  "usage saved"
                 )}`
               : "";
           const costDetailText =
@@ -799,7 +799,7 @@ export function ServiceTierBreakdown({ byServiceTier, summary }) {
                 <div className="flex items-center gap-2">
                   <span
                     className={`material-symbols-outlined text-[18px] ${getServiceTierIconClass(
-                      tier.serviceTier,
+                      tier.serviceTier
                     )}`}
                   >
                     {getServiceTierIcon(tier.serviceTier)}
@@ -815,7 +815,7 @@ export function ServiceTierBreakdown({ byServiceTier, summary }) {
                 <div className="text-right">
                   <div
                     className={`font-mono text-sm font-semibold ${getServiceTierCostClass(
-                      tier.serviceTier,
+                      tier.serviceTier
                     )}`}
                   >
                     {fmtCost(tier.cost)}
@@ -883,7 +883,7 @@ export function ProviderTable({ byProvider }) {
         setSortOrder("desc");
       }
     },
-    [sortBy],
+    [sortBy]
   );
 
   const sorted = useMemo(() => {

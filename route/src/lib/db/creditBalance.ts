@@ -87,6 +87,6 @@ export function persistCreditBalance(accountId: string, balance: number): void {
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     NAMESPACE,
     accountId,
-    JSON.stringify(entry),
+    JSON.stringify(entry)
   );
 }

@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     if (!globalConfig.enabled) {
       return NextResponse.json(
         buildErrorBody(400, "Chaos Mode is not enabled. Enable it in Dashboard → Chaos Mode."),
-        { status: 400 },
+        { status: 400 }
       );
     }
 

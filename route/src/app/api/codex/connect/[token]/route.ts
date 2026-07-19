@@ -29,7 +29,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ tok
   if (!ticket || ticket.provider !== PROVIDER || ticket.status !== "pending") {
     return NextResponse.json(
       { valid: false, error: "This link is invalid, already used, or expired." },
-      { status: 404 },
+      { status: 404 }
     );
   }
   return NextResponse.json({
@@ -62,7 +62,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
   if (!ticket) {
     return NextResponse.json(
       { success: false, error: "This link is invalid, already used, or expired." },
-      { status: 410 },
+      { status: 410 }
     );
   }
 
@@ -99,7 +99,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ tok
     console.error("Codex public device-flow completion error:", err);
     return NextResponse.json(
       { success: false, error: sanitizeErrorMessage(err?.message) || "Failed to save connection" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -35,16 +35,16 @@ function mapSessionRow(row: InspectorSessionDbRow): InspectorSessionRow {
   };
 }
 
-export function createSession(opts?: {
-  name?: string;
-  profile?: "llm" | "custom" | "all";
-}): { id: string; started_at: string } {
+export function createSession(opts?: { name?: string; profile?: "llm" | "custom" | "all" }): {
+  id: string;
+  started_at: string;
+} {
   const db = getDbInstance();
   const id = randomUUID();
   const started_at = new Date().toISOString();
 
   db.prepare(
-    `INSERT INTO inspector_sessions (id, name, started_at, profile) VALUES (?, ?, ?, ?)`,
+    `INSERT INTO inspector_sessions (id, name, started_at, profile) VALUES (?, ?, ?, ?)`
   ).run(id, opts?.name ?? null, started_at, opts?.profile ?? null);
 
   return { id, started_at };
@@ -72,8 +72,7 @@ export function listSessions(): InspectorSessionRow[] {
 export function getSession(id: string): InspectorSessionRow | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM inspector_sessions WHERE id = ?").get(id) as
-    | InspectorSessionDbRow
-    | undefined;
+    InspectorSessionDbRow | undefined;
   return row ? mapSessionRow(row) : null;
 }
 
@@ -85,18 +84,18 @@ export function appendSessionRequest(sessionId: string, payload: string): number
     // Get next seq atomically within transaction
     const seqRow = db
       .prepare(
-        "SELECT COALESCE(MAX(seq), 0) + 1 AS next_seq FROM inspector_session_requests WHERE session_id = ?",
+        "SELECT COALESCE(MAX(seq), 0) + 1 AS next_seq FROM inspector_session_requests WHERE session_id = ?"
       )
       .get(sessionId) as { next_seq: number };
 
     const nextSeq = seqRow.next_seq;
 
     db.prepare(
-      `INSERT INTO inspector_session_requests (session_id, seq, payload) VALUES (?, ?, ?)`,
+      `INSERT INTO inspector_session_requests (session_id, seq, payload) VALUES (?, ?, ?)`
     ).run(sessionId, nextSeq, payload);
 
     db.prepare("UPDATE inspector_sessions SET request_count = request_count + 1 WHERE id = ?").run(
-      sessionId,
+      sessionId
     );
 
     insertedSeq = nextSeq;
@@ -110,7 +109,7 @@ export function getSessionRequests(sessionId: string): Array<{ seq: number; payl
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT seq, payload FROM inspector_session_requests WHERE session_id = ? ORDER BY seq ASC",
+      "SELECT seq, payload FROM inspector_session_requests WHERE session_id = ? ORDER BY seq ASC"
     )
     .all(sessionId) as InspectorSessionRequestDbRow[];
   return rows.map((r) => ({ seq: r.seq, payload: r.payload }));

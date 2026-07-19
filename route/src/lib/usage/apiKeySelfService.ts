@@ -38,7 +38,7 @@ type GetProviderConnectionByIdFn = (connectionId: string) => Promise<unknown>;
 type GetProviderConnectionsFn = (filters?: Record<string, unknown>) => Promise<unknown[]>;
 type FetchAndPersistProviderLimitsFn = (
   connectionId: string,
-  source: "manual",
+  source: "manual"
 ) => Promise<{ usage: JsonRecord }>;
 
 interface ApiKeySelfServiceDeps {
@@ -155,7 +155,7 @@ function aggregateTokens(db: DbLike, apiKeyId: string, periodStartAt: string): T
       FROM usage_history
       WHERE api_key_id = ?
         AND timestamp >= ?
-    `,
+    `
     )
     .get(apiKeyId, periodStartAt) as JsonRecord | undefined;
 
@@ -186,7 +186,7 @@ function quotaWindow(value: unknown) {
   const usedPercentage = toNumber(record.usedPercentage ?? record.used, Number.NaN);
   const remainingPercentage = toNumber(
     record.remainingPercentage ?? record.remaining,
-    Number.isFinite(usedPercentage) ? 100 - usedPercentage : Number.NaN,
+    Number.isFinite(usedPercentage) ? 100 - usedPercentage : Number.NaN
   );
   if (!Number.isFinite(usedPercentage) && !Number.isFinite(remainingPercentage)) return null;
 
@@ -226,7 +226,7 @@ function getConnectionIdentity(value: unknown): { id: string; provider: string }
 
 async function listAccountQuotaConnections(
   metadata: ApiKeySelfServiceMetadata,
-  deps: RequiredDeps,
+  deps: RequiredDeps
 ) {
   const allowedConnections = Array.isArray(metadata.allowedConnections)
     ? metadata.allowedConnections
@@ -241,7 +241,7 @@ async function listAccountQuotaConnections(
             } catch {
               return { id, provider: "unknown", lookupFailed: true };
             }
-          }),
+          })
         )
       : await deps.getProviderConnections({ isActive: true }).catch(() => []);
 
@@ -286,7 +286,7 @@ function normalizeQuotaWindows(quotas: JsonRecord | null) {
 
 async function resolveConnectionAccountQuota(
   connection: AccountQuotaConnection,
-  deps: RequiredDeps,
+  deps: RequiredDeps
 ) {
   if (connection.lookupFailed) {
     return {
@@ -347,7 +347,7 @@ async function resolveAccountQuotas(metadata: ApiKeySelfServiceMetadata, deps: R
 
   const connections = await listAccountQuotaConnections(metadata, deps);
   return Promise.all(
-    connections.map((connection) => resolveConnectionAccountQuota(connection, deps)),
+    connections.map((connection) => resolveConnectionAccountQuota(connection, deps))
   );
 }
 
@@ -379,7 +379,7 @@ async function normalizeDeps(deps: ApiKeySelfServiceDeps): Promise<RequiredDeps>
 
 export async function buildApiKeySelfServiceStatus(
   metadata: ApiKeySelfServiceMetadata,
-  deps: ApiKeySelfServiceDeps = {},
+  deps: ApiKeySelfServiceDeps = {}
 ) {
   if (!hasSelfUsageScope(metadata.scopes)) {
     throw new Error("missing_self_usage_scope");
@@ -394,7 +394,7 @@ export async function buildApiKeySelfServiceStatus(
     resolvedDeps.getDbInstance() as DbLike,
     metadata.id,
     cost.periodStartAt ??
-      new Date(getCurrentMonthWindow(resolvedDeps.now()).periodStartAt).toISOString(),
+      new Date(getCurrentMonthWindow(resolvedDeps.now()).periodStartAt).toISOString()
   );
   const accountQuotas = await resolveAccountQuotas(metadata, resolvedDeps);
   const accountQuota = accountQuotas && accountQuotas.length === 1 ? accountQuotas[0] : undefined;

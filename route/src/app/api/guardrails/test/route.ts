@@ -58,6 +58,6 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     { blocked: outcome.blocked, results: outcome.results, payload: outcome.payload },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

@@ -147,7 +147,7 @@ export function setParamFilterConfig(provider: string, config: ProviderParamFilt
 
   const db = getDbInstance();
   const stmt = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
   );
 
   // Normalize the filter before persisting

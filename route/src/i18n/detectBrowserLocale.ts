@@ -14,7 +14,7 @@
  */
 export function detectBrowserLocale(
   languages: readonly string[],
-  locales: readonly string[],
+  locales: readonly string[]
 ): string | null {
   if (!languages || languages.length === 0 || !locales || locales.length === 0) {
     return null;

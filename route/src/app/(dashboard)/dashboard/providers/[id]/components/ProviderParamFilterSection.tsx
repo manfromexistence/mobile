@@ -88,7 +88,7 @@ function useDirtySetter<T>(setValue: (value: T) => void, setDirty: (value: boole
       setValue(value);
       setDirty(true);
     },
-    [setValue, setDirty],
+    [setValue, setDirty]
   );
 }
 

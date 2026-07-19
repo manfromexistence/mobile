@@ -61,7 +61,7 @@ export function EngineConfigForm({ schema, value, onChange }: EngineConfigFormPr
                       const arr = Array.isArray(v) ? [...(v as string[])] : [];
                       set(
                         f.key,
-                        e.target.checked ? [...arr, o.value] : arr.filter((x) => x !== o.value),
+                        e.target.checked ? [...arr, o.value] : arr.filter((x) => x !== o.value)
                       );
                     }}
                   />

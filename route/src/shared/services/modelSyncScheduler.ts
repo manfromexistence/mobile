@@ -50,7 +50,7 @@ export function resolveModelSyncInternalBaseUrl(_candidate?: string): string {
 }
 
 export function createPinnedModelSyncTlsConnector(
-  connect: buildConnector.connector = buildConnector({ servername: "localhost" }),
+  connect: buildConnector.connector = buildConnector({ servername: "localhost" })
 ): buildConnector.connector {
   return (options, callback) =>
     connect(
@@ -60,7 +60,7 @@ export function createPinnedModelSyncTlsConnector(
         hostname: "127.0.0.1",
         servername: "localhost",
       },
-      callback,
+      callback
     );
 }
 
@@ -79,7 +79,7 @@ function getPinnedModelSyncTlsDispatcher(): Dispatcher {
 
 const fetchWithDispatcher = undiciFetch as unknown as (
   input: RequestInfo | URL,
-  init: RequestInit & { dispatcher: Dispatcher },
+  init: RequestInit & { dispatcher: Dispatcher }
 ) => Promise<Response>;
 
 export const fetchModelSyncInternal: typeof fetch = async (input, init = {}) => {
@@ -180,7 +180,7 @@ async function getAutoSyncConnections(): Promise<
 async function syncConnectionModels(
   connectionId: string,
   provider: string,
-  baseUrl: string,
+  baseUrl: string
 ): Promise<boolean> {
   try {
     const res = await fetchModelSyncInternal(
@@ -192,23 +192,23 @@ async function syncConnectionModels(
           "Content-Type": "application/json",
           ...buildModelSyncInternalHeaders(),
         },
-      },
+      }
     );
     if (!res.ok) {
       console.warn(
-        `[ModelSync] ${provider} (${connectionId.slice(0, 8)}): sync returned ${res.status}`,
+        `[ModelSync] ${provider} (${connectionId.slice(0, 8)}): sync returned ${res.status}`
       );
       return false;
     }
     const data = await res.json();
     console.log(
-      `[ModelSync] ${provider} (${connectionId.slice(0, 8)}): ✓ ${data.syncedModels || 0} models`,
+      `[ModelSync] ${provider} (${connectionId.slice(0, 8)}): ✓ ${data.syncedModels || 0} models`
     );
     return true;
   } catch (err) {
     console.warn(
       `[ModelSync] ${provider} (${connectionId.slice(0, 8)}): fetch failed —`,
-      (err as Error).message,
+      (err as Error).message
     );
     return false;
   }
@@ -237,13 +237,13 @@ async function runSyncCycle(apiBaseUrl: string): Promise<void> {
 
     const results = await Promise.allSettled(
       connections.map((conn) =>
-        syncConnectionModels(conn.id, conn.name || conn.provider, apiBaseUrl),
-      ),
+        syncConnectionModels(conn.id, conn.name || conn.provider, apiBaseUrl)
+      )
     );
 
     const succeeded = results.filter((r) => r.status === "fulfilled" && r.value === true).length;
     console.log(
-      `[ModelSync] Cycle complete: ${succeeded}/${connections.length} synced in ${Date.now() - start}ms`,
+      `[ModelSync] Cycle complete: ${succeeded}/${connections.length} synced in ${Date.now() - start}ms`
     );
 
     // Record last sync time
@@ -264,7 +264,7 @@ async function runSyncCycle(apiBaseUrl: string): Promise<void> {
  */
 export function startModelSyncScheduler(
   apiBaseUrl = getModelSyncInternalBaseUrl(),
-  intervalMs = DEFAULT_INTERVAL_MS,
+  intervalMs = DEFAULT_INTERVAL_MS
 ): void {
   if (schedulerTimer) {
     console.log("[ModelSync] Scheduler already running — skipping start");

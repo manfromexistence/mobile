@@ -23,7 +23,7 @@ async function runProviderLimitsSyncCycle(): Promise<void> {
   try {
     const result = await syncAllProviderLimits({ source: "scheduled" });
     console.log(
-      `[ProviderLimitsSync] Cycle complete: ${result.succeeded}/${result.total} synced in ${Date.now() - start}ms`,
+      `[ProviderLimitsSync] Cycle complete: ${result.succeeded}/${result.total} synced in ${Date.now() - start}ms`
     );
   } catch (error) {
     console.warn("[ProviderLimitsSync] Cycle failed:", (error as Error).message);

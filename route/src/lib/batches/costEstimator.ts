@@ -17,7 +17,7 @@ import { DEFAULT_PRICING } from "@/shared/constants/pricing";
 type PricingEntry = { input: number; output: number };
 
 function getPrice(
-  model: string,
+  model: string
 ): { input: number; output: number; src: CostEstimate["pricingSource"] } | null {
   const table = DEFAULT_PRICING as Record<string, Record<string, unknown>>;
 
@@ -110,7 +110,7 @@ export function estimateBatchCost(input: {
     pricingSource = price.src;
   } else {
     warnings.push(
-      `model "${input.model}" not found in pricing table — cost shown as $0 (fallback)`,
+      `model "${input.model}" not found in pricing table — cost shown as $0 (fallback)`
     );
   }
 

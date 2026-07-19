@@ -39,8 +39,8 @@ describe("conn-modals (Phase 1c extraction)", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>
-        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response),
-      ),
+        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response)
+      )
     );
     vi.stubGlobal("localStorage", {
       getItem: () => null,
@@ -66,7 +66,7 @@ describe("conn-modals (Phase 1c extraction)", () => {
         isCompatible={false}
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     // When isOpen=false the modal renders nothing (null body) — no throw is the assertion.
     expect(c).toBeDefined();
@@ -82,7 +82,7 @@ describe("conn-modals (Phase 1c extraction)", () => {
         isCompatible={false}
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     expect(c.querySelector("*")).not.toBeNull();
   });
@@ -97,10 +97,10 @@ describe("conn-modals (Phase 1c extraction)", () => {
         isCompatible={true}
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     const presetInput = c.querySelector<HTMLInputElement>(
-      '[data-testid="openrouter-preset-input"]',
+      '[data-testid="openrouter-preset-input"]'
     );
     expect(presetInput?.placeholder).toBe("@preset/slug");
     expect(presetInput?.closest("#add-api-key-advanced-settings")).toBeNull();
@@ -122,7 +122,7 @@ describe("conn-modals (Phase 1c extraction)", () => {
         providerId="openai"
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     // connection=null → renders null — no throw is the assertion
     expect(c).toBeDefined();
@@ -144,7 +144,7 @@ describe("conn-modals (Phase 1c extraction)", () => {
         providerId="openai"
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     expect(c.querySelector("*")).not.toBeNull();
   });
@@ -167,7 +167,7 @@ describe("conn-modals (Phase 1c extraction)", () => {
         providerId="openai"
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
 
     expect(c.textContent).toContain(fullApiKey);
@@ -190,10 +190,10 @@ describe("conn-modals (Phase 1c extraction)", () => {
         providerId="openrouter"
         onSave={onSave}
         onClose={vi.fn()}
-      />,
+      />
     );
     const presetInput = c.querySelector<HTMLInputElement>(
-      '[data-testid="openrouter-preset-input"]',
+      '[data-testid="openrouter-preset-input"]'
     );
     expect(presetInput?.value).toBe("prefer");
     expect(presetInput?.placeholder).toBe("@preset/slug");
@@ -219,8 +219,8 @@ describe("conn-modals (Phase 1c extraction)", () => {
           providerId="claude"
           onSave={onSave}
           onClose={vi.fn()}
-        />,
-      ),
+        />
+      )
     ).not.toThrow();
   });
 });

@@ -31,7 +31,7 @@ export default function CollapsibleSection({
           "flex items-center justify-between w-full px-4 py-3 text-left",
           "hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors",
           "rounded-t-lg",
-          !open && "rounded-b-lg",
+          !open && "rounded-b-lg"
         )}
         aria-expanded={open}
       >
@@ -56,7 +56,7 @@ export default function CollapsibleSection({
       <div
         className={cn(
           "overflow-hidden transition-[max-height] duration-200 ease-in-out",
-          open ? "max-h-[2000px]" : "max-h-0",
+          open ? "max-h-[2000px]" : "max-h-0"
         )}
       >
         <div className="px-4 pb-4 pt-1">{children}</div>

@@ -324,7 +324,7 @@ Puedes decirme algo como:
   // Handle createApiKey — extract name from sentence
   if (intent.tool === "createApiKey") {
     const nameMatch = userText.match(
-      /(?:llamad[oa]|named?|par[ae]?)\s*["'']?([a-zA-Z0-9_-]+)["'']?/i,
+      /(?:llamad[oa]|named?|par[ae]?)\s*["'']?([a-zA-Z0-9_-]+)["'']?/i
     );
     const name = nameMatch ? nameMatch[1] : "copilot-key";
     const scopeMatch = userText.match(/(?:con\s*)?scope?s?\s*:?\s*["'']?([a-zA-Z,]+)["'']?/i);

@@ -90,7 +90,7 @@ function generateId(): string {
  */
 export function computeDiff(
   before: Record<string, unknown> | null,
-  after: Record<string, unknown> | null,
+  after: Record<string, unknown> | null
 ): ConfigDiff {
   const beforeKeys = new Set(before ? Object.keys(before) : []);
   const afterKeys = new Set(after ? Object.keys(after) : []);
@@ -143,7 +143,7 @@ export function recordChange(
   before: Record<string, unknown> | null,
   after: Record<string, unknown> | null,
   source: AuditSource,
-  note?: string | null,
+  note?: string | null
 ): ConfigAuditEntry {
   const entry: ConfigAuditEntry = {
     id: generateId(),
@@ -235,7 +235,7 @@ export function getRollbackState(entryId: string): Record<string, unknown> | nul
 export function createSnapshot(
   version: string,
   description: string,
-  configData: Record<string, unknown>,
+  configData: Record<string, unknown>
 ): ConfigSnapshot {
   return {
     timestamp: new Date().toISOString(),

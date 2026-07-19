@@ -112,7 +112,7 @@ export interface RankableModel {
  */
 export function mergeProviderModels(
   registryModels: RankableModel[],
-  customModels: RankableModel[],
+  customModels: RankableModel[]
 ): RankableModel[] {
   if (customModels.length === 0) return registryModels;
   const seen = new Set(registryModels.map((m) => m.id));
@@ -163,7 +163,7 @@ export function findMatchingIntelligence(
   intelMap: Map<
     string,
     Array<{ score: number; eloRaw: number | null; confidence: string | null; category: string }>
-  >,
+  >
 ): { score: number; eloRaw: number | null; confidence: string | null; category: string } | null {
   const normalizedId = modelId.toLowerCase();
 
@@ -242,7 +242,7 @@ const TERMINAL_CONNECTION_STATUSES = new Set(["credits_exhausted", "banned", "ex
  */
 export function isProviderUsable(
   connections: ConnectionState[],
-  now: number = Date.now(),
+  now: number = Date.now()
 ): boolean {
   return connections.some((conn) => {
     const status = (conn.testStatus || "").trim().toLowerCase();
@@ -269,7 +269,7 @@ export function filterFreeProviderRankings(
   rankings: FreeProviderRanking[],
   connections: ConnectionState[],
   opts: FreeProviderRankingFilterOptions = {},
-  now: number = Date.now(),
+  now: number = Date.now()
 ): FreeProviderRanking[] {
   const { configuredOnly, availableOnly } = opts;
   if (!configuredOnly && !availableOnly) return rankings;
@@ -304,7 +304,7 @@ export function filterFreeProviderRankings(
 export async function computeFreeProviderRankings(
   category?: string,
   limit: number = 50,
-  opts: FreeProviderRankingFilterOptions = {},
+  opts: FreeProviderRankingFilterOptions = {}
 ): Promise<FreeProviderRanking[]> {
   const freeProviders = getFreeProviders();
   const intelligenceEntries = listModelIntelligence({

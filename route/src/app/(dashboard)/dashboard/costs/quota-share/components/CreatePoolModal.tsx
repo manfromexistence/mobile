@@ -42,7 +42,7 @@ export default function CreatePoolModal({
 
   const usedConnectionIds = useMemo(
     () => new Set(existingPools.map((p) => p.connectionId)),
-    [existingPools],
+    [existingPools]
   );
 
   const selectedConn = connections.find((c) => c.id === connectionId);

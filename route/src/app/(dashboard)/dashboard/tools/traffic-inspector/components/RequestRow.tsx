@@ -54,7 +54,7 @@ export function RequestRow({ request, selected, onClick, onSameContext, style }:
       className={cn(
         "flex items-stretch gap-1 border-b border-border/40 cursor-pointer hover:bg-bg-subtle",
         "focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
-        selected && "bg-surface",
+        selected && "bg-surface"
       )}
     >
       <ContextColorBar contextKey={request.contextKey} />

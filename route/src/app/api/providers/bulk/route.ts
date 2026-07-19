@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   if (!supportsBulkApiKey(provider)) {
     return NextResponse.json(
       { error: "Bulk add is not supported for this provider" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -126,7 +126,7 @@ export async function POST(request: Request) {
             provider,
             apiKey: entry.apiKey,
             providerSpecificData: entryProviderSpecificData,
-          }),
+          })
         );
         testStatus = probe?.valid ? "active" : "failed";
       }
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
       delete safe.apiKey;
       if (safe.providerSpecificData) {
         safe.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-          safe.providerSpecificData as Record<string, unknown>,
+          safe.providerSpecificData as Record<string, unknown>
         );
       }
       created.push(safe);
@@ -203,7 +203,7 @@ export async function POST(request: Request) {
       created,
       errors,
     },
-    { status: 200 },
+    { status: 200 }
   );
 }
 

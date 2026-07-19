@@ -106,8 +106,8 @@ export default function FeatureFlagsGrid() {
 
     setFlags((prev) =>
       prev.map((f) =>
-        f.key === key ? { ...f, effectiveValue: result.effectiveValue, source: result.source } : f,
-      ),
+        f.key === key ? { ...f, effectiveValue: result.effectiveValue, source: result.source } : f
+      )
     );
     setSummary((s) =>
       s
@@ -118,7 +118,7 @@ export default function FeatureFlagsGrid() {
             overriddenByDb: s.overriddenByDb + (isNowDb ? 1 : 0) - (wasDb ? 1 : 0),
             overriddenByEnv: s.overriddenByEnv + (isNowEnv ? 1 : 0) - (wasEnv ? 1 : 0),
           }
-        : s,
+        : s
     );
   }, []);
 
@@ -133,7 +133,7 @@ export default function FeatureFlagsGrid() {
         (f) =>
           debouncedSearch === "" ||
           matchesSearch(f.key, debouncedSearch) ||
-          matchesSearch(f.description, debouncedSearch),
+          matchesSearch(f.description, debouncedSearch)
       );
   }, [flags, debouncedSearch, category]);
 
@@ -165,7 +165,7 @@ export default function FeatureFlagsGrid() {
         });
       }
     },
-    [applyFlagResult],
+    [applyFlagResult]
   );
 
   const handleReset = useCallback(
@@ -196,7 +196,7 @@ export default function FeatureFlagsGrid() {
         });
       }
     },
-    [applyFlagResult],
+    [applyFlagResult]
   );
 
   const handleRestart = useCallback(async () => {

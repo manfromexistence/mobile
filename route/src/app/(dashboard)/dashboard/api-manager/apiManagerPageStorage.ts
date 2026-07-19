@@ -22,7 +22,7 @@ export function parseActiveOnlyPreference(value: string | null | undefined): boo
 }
 
 export function readActiveOnlyPreference(
-  storage: StorageReader | null = getBrowserStorage(),
+  storage: StorageReader | null = getBrowserStorage()
 ): boolean {
   if (!storage) return false;
   return parseActiveOnlyPreference(storage.getItem(ACTIVE_ONLY_STORAGE_KEY));
@@ -30,7 +30,7 @@ export function readActiveOnlyPreference(
 
 export function writeActiveOnlyPreference(
   enabled: boolean,
-  storage: StorageWriter | null = getBrowserStorage(),
+  storage: StorageWriter | null = getBrowserStorage()
 ): void {
   if (!storage) return;
   if (enabled) {

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const isTooLarge = error instanceof Error && error.message === "BODY_TOO_LARGE";
     return noStoreJson(
       { success: false, error: isTooLarge ? "Request body too large" : "Invalid JSON body" },
-      { status: isTooLarge ? 413 : 400, headers: callbackCorsHeaders(request) },
+      { status: isTooLarge ? 413 : 400, headers: callbackCorsHeaders(request) }
     );
   }
 
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return noStoreJson(
       { success: false, error: "Invalid callback payload" },
-      { status: 400, headers: callbackCorsHeaders(request) },
+      { status: 400, headers: callbackCorsHeaders(request) }
     );
   }
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   if (!session || session.status !== "received") {
     return noStoreJson(
       { success: false, error: "Invalid or expired state" },
-      { status: 400, headers: callbackCorsHeaders(request) },
+      { status: 400, headers: callbackCorsHeaders(request) }
     );
   }
 
@@ -62,6 +62,6 @@ export async function POST(request: Request) {
       expiresAt: session.expiresAt,
       metadata: session.metadata,
     },
-    { headers: callbackCorsHeaders(request) },
+    { headers: callbackCorsHeaders(request) }
   );
 }

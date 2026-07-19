@@ -167,7 +167,7 @@ function action(
   label: string,
   risk: ProviderAutopilotAction["risk"],
   target: ProviderAutopilotTarget,
-  evidence: JsonRecord,
+  evidence: JsonRecord
 ): ProviderAutopilotAction {
   return {
     type,
@@ -205,7 +205,7 @@ function isTerminalConnection(connection: JsonRecord): boolean {
   const status = toString(connection.testStatus)?.toLowerCase();
   const errorType = toString(connection.lastErrorType)?.toLowerCase();
   return Boolean(
-    (status && TERMINAL_STATUSES.has(status)) || (errorType && TERMINAL_STATUSES.has(errorType)),
+    (status && TERMINAL_STATUSES.has(status)) || (errorType && TERMINAL_STATUSES.has(errorType))
   );
 }
 
@@ -221,11 +221,11 @@ function hasStaleConnectionError(connection: JsonRecord, now: number): boolean {
   const status = toString(connection.testStatus)?.toLowerCase();
   return Boolean(
     toString(connection.lastError) ||
-      toString(connection.lastErrorType) ||
-      toString(connection.errorCode) ||
-      (until && until <= now) ||
-      status === "unavailable" ||
-      status === "error",
+    toString(connection.lastErrorType) ||
+    toString(connection.errorCode) ||
+    (until && until <= now) ||
+    status === "unavailable" ||
+    status === "error"
   );
 }
 
@@ -247,7 +247,7 @@ function buildConnectionClearPatch(): JsonRecord {
 }
 
 export async function buildProviderHealthAutopilotReport(
-  options: ProviderAutopilotOptions = {},
+  options: ProviderAutopilotOptions = {}
 ): Promise<ProviderAutopilotReport> {
   const now = Date.now();
   const checkedAt = new Date(now).toISOString();
@@ -263,7 +263,7 @@ export async function buildProviderHealthAutopilotReport(
     ]);
 
   const connections = (await getProviderConnections(
-    providerFilter ? { provider: providerFilter } : {},
+    providerFilter ? { provider: providerFilter } : {}
   )) as JsonRecord[];
   const breakers = getAllCircuitBreakerStatuses().filter((breaker) => {
     const name = toString((breaker as JsonRecord).name);
@@ -303,13 +303,12 @@ export async function buildProviderHealthAutopilotReport(
   const providers: ProviderAutopilotProvider[] = [];
   for (const provider of [...providerIds].sort()) {
     const providerConnections = connections.filter(
-      (connection) => connection.provider === provider,
+      (connection) => connection.provider === provider
     );
     const breaker = breakers.find((entry) => (entry as JsonRecord).name === provider) as
-      | JsonRecord
-      | undefined;
+      JsonRecord | undefined;
     const providerLockouts = lockouts.filter(
-      (lockout) => providerFromLockout(lockout) === provider,
+      (lockout) => providerFromLockout(lockout) === provider
     );
     const providerQuota = quotaSnapshots.filter((snapshot) => snapshot.provider === provider);
     const issues: ProviderAutopilotIssue[] = [];
@@ -392,14 +391,14 @@ export async function buildProviderHealthAutopilotReport(
                   "Clear connection cooldown",
                   "medium",
                   target,
-                  evidence,
+                  evidence
                 ),
                 action(
                   "deactivate_connection",
                   "Disable this connection",
                   "medium",
                   target,
-                  evidence,
+                  evidence
                 ),
               ]
             : [],
@@ -421,7 +420,7 @@ export async function buildProviderHealthAutopilotReport(
                   "Clear stale error state",
                   "low",
                   target,
-                  evidence,
+                  evidence
                 ),
               ]
             : [],
@@ -505,14 +504,14 @@ export async function buildProviderHealthAutopilotReport(
     }
 
     const activeConnections = providerConnections.filter(
-      (connection) => connection.isActive !== false,
+      (connection) => connection.isActive !== false
     );
     const cooldownCount = providerConnections.filter((connection) =>
-      isConnectionInCooldown(connection, now),
+      isConnectionInCooldown(connection, now)
     ).length;
     const terminalCount = providerConnections.filter(isTerminalConnection).length;
     const staleErrors = providerConnections.filter((connection) =>
-      hasStaleConnectionError(connection, now),
+      hasStaleConnectionError(connection, now)
     ).length;
     const breakerPenalty =
       breaker?.state === "OPEN" ? 0.35 : breaker?.state === "HALF_OPEN" ? 0.2 : 0;
@@ -526,8 +525,8 @@ export async function buildProviderHealthAutopilotReport(
           (cooldownCount / total) * 0.25 -
           (terminalCount / total) * 0.35 -
           Math.min(0.2, providerLockouts.length * 0.05) -
-          Math.min(0.1, staleErrors * 0.03),
-      ),
+          Math.min(0.1, staleErrors * 0.03)
+      )
     );
     const hasCritical = issues.some((issue) => issue.severity === "critical");
     const state: ProviderAutopilotState =
@@ -577,7 +576,7 @@ export async function buildProviderHealthAutopilotReport(
   const actionableCount = providers.reduce(
     (count, provider) =>
       count + provider.issues.reduce((sum, issue) => sum + issue.actions.length, 0),
-    0,
+    0
   );
   const healthyCount = providers.filter((provider) => provider.state === "healthy").length;
   const status: ProviderAutopilotStatus = providers.some((provider) => provider.state === "down")
@@ -602,13 +601,13 @@ export async function buildProviderHealthAutopilotReport(
 
 function findAction(
   report: ProviderAutopilotReport,
-  input: ExecuteProviderAutopilotActionInput,
+  input: ExecuteProviderAutopilotActionInput
 ): ProviderAutopilotAction | null {
   for (const provider of report.providers) {
     for (const issue of provider.issues) {
       const match = issue.actions.find(
         (candidate) =>
-          candidate.type === input.type && targetMatches(candidate.target, input.target),
+          candidate.type === input.type && targetMatches(candidate.target, input.target)
       );
       if (match) return match;
     }
@@ -617,7 +616,7 @@ function findAction(
 }
 
 export async function executeProviderHealthAutopilotAction(
-  input: ExecuteProviderAutopilotActionInput,
+  input: ExecuteProviderAutopilotActionInput
 ) {
   const provider = toString(input.target.provider);
   if (!provider) {

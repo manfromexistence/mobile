@@ -80,7 +80,7 @@ function getCodexModelScope(model: string | null | undefined): "gpt-5" | "gpt-5-
 
 function getCodexScopeRateLimitedUntil(
   providerSpecificData: unknown,
-  model: string | null | undefined,
+  model: string | null | undefined
 ): string | null {
   if (!model) return null;
   const data = asRecord(providerSpecificData);
@@ -152,7 +152,7 @@ function buildProviderExplanation(provider: string): {
   } catch (error) {
     logger.warn(
       { err: error, provider },
-      "Provider circuit breaker state could not be inspected for resilience explanation",
+      "Provider circuit breaker state could not be inspected for resilience explanation"
     );
     return {
       provider: {
@@ -179,7 +179,7 @@ function accountReason(
     connectionId: string | null;
     allowedIds: Set<string> | null;
     now: number;
-  },
+  }
 ): { state: ResilienceExplainState; reason: ResilienceSkipReason | null } {
   const connectionId = toStringOrNull(connection.id) || "unknown";
   if (options.allowedIds && !options.allowedIds.has(connectionId)) {
@@ -318,7 +318,7 @@ function accountReason(
 function buildAccountExplanation(
   connection: ProviderConnectionView,
   state: ResilienceExplainState,
-  reason: ResilienceSkipReason | null,
+  reason: ResilienceSkipReason | null
 ): ResilienceAccountExplanation {
   return {
     connectionId: toStringOrNull(connection.id) || "unknown",
@@ -338,7 +338,7 @@ function buildAccountExplanation(
 function buildModelExplanation(
   provider: string,
   model: string,
-  connectionId: string,
+  connectionId: string
 ): ResilienceModelExplanation | null {
   const lockout = getModelLockoutInfo(provider, connectionId, model);
   if (!lockout) return null;
@@ -358,13 +358,13 @@ function summarize(explanation: Omit<ResilienceExplanation, "summary">): string[
   const lines: string[] = [];
   if (explanation.provider.circuitBreakerState !== "CLOSED") {
     lines.push(
-      `Provider circuit breaker is ${explanation.provider.circuitBreakerState.toLowerCase()}.`,
+      `Provider circuit breaker is ${explanation.provider.circuitBreakerState.toLowerCase()}.`
     );
   }
   const skippedAccounts = explanation.accounts.filter((account) => account.state === "skipped");
   if (skippedAccounts.length > 0) {
     lines.push(
-      `${skippedAccounts.length}/${explanation.accounts.length} inspected account(s) skipped.`,
+      `${skippedAccounts.length}/${explanation.accounts.length} inspected account(s) skipped.`
     );
   }
   if (explanation.models.length > 0) {
@@ -377,7 +377,7 @@ function summarize(explanation: Omit<ResilienceExplanation, "summary">): string[
 }
 
 export async function inspectTargetResilience(
-  options: InspectTargetResilienceOptions,
+  options: InspectTargetResilienceOptions
 ): Promise<ResilienceExplanation> {
   const now = options.now ?? Date.now();
   const providerInspection = buildProviderExplanation(options.provider);
@@ -445,7 +445,7 @@ export async function inspectTargetResilience(
   } catch (error) {
     logger.warn(
       { err: error, provider: options.provider, model: options.model },
-      "Provider connections could not be inspected for resilience explanation",
+      "Provider connections could not be inspected for resilience explanation"
     );
     skipReasons.push({
       scope: "connection",

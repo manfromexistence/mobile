@@ -123,7 +123,7 @@ function readJulesErrorMessage(data: Record<string, unknown>): string {
 
 function inferJulesStatus(
   data: Record<string, unknown>,
-  activities: Record<string, unknown>[],
+  activities: Record<string, unknown>[]
 ): CloudAgentStatus {
   if (extractJulesResult(data.outputs)) {
     return CLOUD_AGENT_STATUS.COMPLETED;
@@ -189,7 +189,7 @@ export class JulesAgent extends CloudAgentBase {
 
   async createTask(
     params: CreateTaskParams,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentTask> {
     const taskId = this.generateTaskId();
     const { owner, repo } = parseGithubOwnerRepo(params.source.repoUrl, params.source.repoName);
@@ -301,7 +301,7 @@ export class JulesAgent extends CloudAgentBase {
   async sendMessage(
     externalId: string,
     message: string,
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<CloudAgentActivity> {
     const sessionId = normalizeJulesSessionId(externalId);
     const response = await fetch(buildJulesApiUrl(`/sessions/${sessionId}:sendMessage`), {
@@ -324,7 +324,7 @@ export class JulesAgent extends CloudAgentBase {
   }
 
   async listSources(
-    credentials: AgentCredentials,
+    credentials: AgentCredentials
   ): Promise<{ name: string; url: string; branch?: string }[]> {
     const response = await fetch(buildJulesApiUrl("/sources"), {
       headers: julesHeaders(credentials.apiKey),
@@ -348,7 +348,7 @@ export class JulesAgent extends CloudAgentBase {
           url: owner && repo ? `https://github.com/${owner}/${repo}` : "",
           ...(branch ? { branch } : {}),
         };
-      },
+      }
     );
   }
 }

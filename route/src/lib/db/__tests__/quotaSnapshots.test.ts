@@ -35,7 +35,7 @@ let lastCleanupAt = 0;
 
 function saveQuotaSnapshotForTest(
   db: Database.Database,
-  snapshot: Omit<QuotaSnapshotRow, "id" | "created_at">,
+  snapshot: Omit<QuotaSnapshotRow, "id" | "created_at">
 ): void {
   const now = new Date().toISOString();
 
@@ -44,7 +44,7 @@ function saveQuotaSnapshotForTest(
       `INSERT INTO quota_snapshots
        (provider, connection_id, window_key, remaining_percentage, is_exhausted,
         next_reset_at, window_duration_ms, raw_data, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       snapshot.provider,
@@ -55,7 +55,7 @@ function saveQuotaSnapshotForTest(
       snapshot.next_reset_at,
       snapshot.window_duration_ms,
       snapshot.raw_data,
-      now,
+      now
     );
 }
 
@@ -66,7 +66,7 @@ function getQuotaSnapshotsForTest(
     connectionId?: string;
     since: string;
     until?: string;
-  },
+  }
 ): Array<{
   id: number;
   provider: string;
@@ -112,7 +112,7 @@ function getQuotaSnapshotsForTest(
         windowDurationMs: number | null;
         rawData: string | null;
         createdAt: string;
-      },
+      }
   );
 }
 
@@ -123,7 +123,7 @@ function getAggregatedSnapshotsForTest(
     since: string;
     until?: string;
     bucketMinutes: number;
-  },
+  }
 ): Array<{
   timestamp: string;
   provider: string;
@@ -326,7 +326,7 @@ describe("quotaSnapshots DB module", () => {
             `INSERT INTO quota_snapshots
              (provider, connection_id, window_key, remaining_percentage, is_exhausted,
               next_reset_at, window_duration_ms, raw_data, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
           )
           .run(
             s.provider,
@@ -337,7 +337,7 @@ describe("quotaSnapshots DB module", () => {
             null,
             null,
             null,
-            s.created_at,
+            s.created_at
           );
       }
     });
@@ -442,7 +442,7 @@ describe("quotaSnapshots DB module", () => {
             `INSERT INTO quota_snapshots
              (provider, connection_id, window_key, remaining_percentage, is_exhausted,
               next_reset_at, window_duration_ms, raw_data, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
           )
           .run(
             s.provider,
@@ -453,7 +453,7 @@ describe("quotaSnapshots DB module", () => {
             null,
             null,
             null,
-            s.created_at,
+            s.created_at
           );
       }
     });
@@ -547,7 +547,7 @@ describe("quotaSnapshots DB module", () => {
             `INSERT INTO quota_snapshots
              (provider, connection_id, window_key, remaining_percentage, is_exhausted,
               next_reset_at, window_duration_ms, raw_data, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
           )
           .run(
             s.provider,
@@ -558,7 +558,7 @@ describe("quotaSnapshots DB module", () => {
             null,
             null,
             null,
-            s.created_at,
+            s.created_at
           );
       }
       lastCleanupAt = 0;

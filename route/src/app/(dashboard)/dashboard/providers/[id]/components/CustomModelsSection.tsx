@@ -166,7 +166,7 @@ export default function CustomModelsSection({
         `/api/provider-models?provider=${encodeURIComponent(providerId)}&model=${encodeURIComponent(modelId)}`,
         {
           method: "DELETE",
-        },
+        }
       );
       await fetchCustomModels();
       onModelsChanged?.();
@@ -184,7 +184,7 @@ export default function CustomModelsSection({
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isHidden: hidden }),
-        },
+        }
       );
       if (res.ok) {
         await fetchCustomModels();
@@ -203,11 +203,11 @@ export default function CustomModelsSection({
     setEditingEndpoints(
       Array.isArray(model.supportedEndpoints) && model.supportedEndpoints.length
         ? model.supportedEndpoints
-        : ["chat"],
+        : ["chat"]
     );
     setEditingTargetFormat(model.targetFormat || "");
     setEditingContextWindowOverride(
-      typeof model.contextWindowOverride === "number" ? String(model.contextWindowOverride) : "",
+      typeof model.contextWindowOverride === "number" ? String(model.contextWindowOverride) : ""
     );
     setEditingSupportsVision(model.supportsVision === true);
   };
@@ -224,7 +224,7 @@ export default function CustomModelsSection({
 
   const saveCustomCompat = async (
     modelId: string,
-    patch: { compatByProtocol?: CompatByProtocolMap },
+    patch: { compatByProtocol?: CompatByProtocolMap }
   ) => {
     setSavingModelId(modelId);
     try {
@@ -236,7 +236,7 @@ export default function CustomModelsSection({
       if (!res.ok) {
         const detail = await formatProviderModelsErrorResponse(res);
         notify.error(
-          detail ? `${t("failedSaveCustomModel")} — ${detail}` : t("failedSaveCustomModel"),
+          detail ? `${t("failedSaveCustomModel")} — ${detail}` : t("failedSaveCustomModel")
         );
         return;
       }
@@ -295,7 +295,7 @@ export default function CustomModelsSection({
     } catch (e) {
       console.error("Failed to save custom model:", e);
       notify.error(
-        e instanceof Error && e.message ? e.message : "Failed to save model endpoint settings",
+        e instanceof Error && e.message ? e.message : "Failed to save model endpoint settings"
       );
     } finally {
       setSavingModelId(null);
@@ -648,7 +648,7 @@ export default function CustomModelsSection({
                                   onChange={(e) => {
                                     if (e.target.checked) {
                                       setEditingEndpoints((prev) =>
-                                        prev.includes(ep) ? prev : [...prev, ep],
+                                        prev.includes(ep) ? prev : [...prev, ep]
                                       );
                                     } else {
                                       setEditingEndpoints((prev) => prev.filter((x) => x !== ep));

@@ -33,7 +33,7 @@ export async function GET() {
         headers: {
           "Cache-Control": "no-store, no-cache, must-revalidate",
         },
-      },
+      }
     );
   } catch (error) {
     console.error("[ping] Unexpected error in GET /api/health/ping:", error);

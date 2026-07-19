@@ -30,7 +30,7 @@ export function generateExampleFromSchema(
   schema: any,
   components: any,
   depth = 0,
-  propertyName = "",
+  propertyName = ""
 ): any {
   if (!schema || depth > 3) return null; // Prevent infinite recursion
 
@@ -189,7 +189,7 @@ export async function GET() {
   } catch (error: any) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to parse OpenAPI spec" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

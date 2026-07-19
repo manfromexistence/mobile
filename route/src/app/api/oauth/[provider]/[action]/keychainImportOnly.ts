@@ -33,7 +33,7 @@ function keychainImportOnlyResponse(provider: string) {
         `OS keychain. Use the "Import" button on the ${provider} provider card in the ` +
         `dashboard to discover and import them automatically.`,
     },
-    { status: 400 },
+    { status: 400 }
   );
 }
 

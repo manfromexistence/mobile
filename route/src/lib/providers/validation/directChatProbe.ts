@@ -20,7 +20,7 @@ export async function validateDirectChatProvider({
         headers: applyCustomUserAgent(headers, providerSpecificData),
         body: JSON.stringify(body),
       },
-      isLocal,
+      isLocal
     );
 
     if (response.status === 401 || response.status === 403) {

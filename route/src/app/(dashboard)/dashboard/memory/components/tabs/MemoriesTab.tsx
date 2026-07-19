@@ -470,7 +470,7 @@ export default function MemoriesTab() {
                           <Badge
                             variant={getTypeColor(memory.type)}
                             title={t(
-                              TYPE_TOOLTIPS[memory.type]?.replace("memory.", "") ?? memory.type,
+                              TYPE_TOOLTIPS[memory.type]?.replace("memory.", "") ?? memory.type
                             )}
                           >
                             {t(memory.type)}

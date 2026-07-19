@@ -18,7 +18,7 @@
  */
 export function parseExtraApiKeys(
   raw: string,
-  existing: string[],
+  existing: string[]
 ): { added: string[]; duplicates: number } {
   const existingSet = new Set(existing);
   const seen = new Set<string>();

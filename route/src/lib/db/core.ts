@@ -103,7 +103,7 @@ const CRITICAL_DB_TABLES: CriticalTableSpec[] = [
       return (
         (db.prepare("SELECT namespace, key, value FROM key_value").all() as JsonRecord[]) ?? []
       ).filter(
-        (row) => typeof row.namespace !== "string" || !SKIP_PRESERVE_NAMESPACES.has(row.namespace),
+        (row) => typeof row.namespace !== "string" || !SKIP_PRESERVE_NAMESPACES.has(row.namespace)
       );
     },
   },
@@ -166,7 +166,7 @@ function openSqliteDatabase(sqliteFile: string, options?: Record<string, unknown
     `[DB] Nenhum driver SQLite disponível para '${sqliteFile}'. ` +
       "Chame ensureDbInitialized() no startup. " +
       "Drivers testados: better-sqlite3 (falhou), node:sqlite (indisponível). " +
-      "sql.js WASM ainda não foi pré-inicializado.",
+      "sql.js WASM ainda não foi pré-inicializado."
   );
 }
 
@@ -179,7 +179,7 @@ if (!isCloud && !fs.existsSync(DATA_DIR)) {
     console.warn(
       `[DB] Cannot create data directory '${DATA_DIR}': ${msg}\n` +
         `[DB] Set the DATA_DIR environment variable to a writable path, e.g.:\n` +
-        `[DB]   DATA_DIR=/path/to/writable/dir omniroute`,
+        `[DB]   DATA_DIR=/path/to/writable/dir omniroute`
     );
   }
 }
@@ -591,7 +591,7 @@ function captureCriticalDbState(sqliteFile: string): PreservedCriticalDbState {
 
 function restoreCriticalDbState(
   db: SqliteDatabase,
-  snapshot: PreservedCriticalDbState,
+  snapshot: PreservedCriticalDbState
 ): PreservedTableSnapshot[] {
   const restoredTables: PreservedTableSnapshot[] = [];
 
@@ -691,7 +691,7 @@ function offloadLegacyCallLogDetails(db: SqliteDatabase) {
       JOIN call_logs AS current ON current.id = legacy.id
       WHERE current.detail_state = 'legacy-inline'
       ORDER BY legacy.timestamp ASC
-    `,
+    `
     )
     .all() as LegacyCallLogRow[];
 
@@ -758,7 +758,7 @@ function offloadLegacyCallLogDetails(db: SqliteDatabase) {
 
       const artifactResult = writeCallArtifact(
         artifact,
-        buildArtifactRelativePath(artifact.summary.timestamp, artifact.summary.id),
+        buildArtifactRelativePath(artifact.summary.timestamp, artifact.summary.id)
       );
       if (!artifactResult) {
         failed++;
@@ -779,7 +779,7 @@ function offloadLegacyCallLogDetails(db: SqliteDatabase) {
 
   if (failed > 0) {
     console.warn(
-      `[DB] Kept call_logs_v1_legacy after partial call log offload (${failed} failed row(s)).`,
+      `[DB] Kept call_logs_v1_legacy after partial call log offload (${failed} failed row(s)).`
     );
     return;
   }
@@ -840,7 +840,7 @@ function createHealthCheckBackup(db: SqliteDatabase): boolean {
 function autoMigrateLegacyEncryptedConnections(db: SqliteDatabase): number {
   const rows = db.prepare("SELECT * FROM provider_connections").all() as JsonRecord[];
   const updateStmt = db.prepare(
-    "UPDATE provider_connections SET api_key = @apiKey, id_token = @idToken, access_token = @accessToken, refresh_token = @refreshToken, updated_at = @updatedAt WHERE id = @id",
+    "UPDATE provider_connections SET api_key = @apiKey, id_token = @idToken, access_token = @accessToken, refresh_token = @refreshToken, updated_at = @updatedAt WHERE id = @id"
   );
   const encryptedFields = ["apiKey", "idToken", "accessToken", "refreshToken"] as const;
   let migratedCount = 0;
@@ -980,22 +980,22 @@ export function getDbInstance(): SqliteDatabase {
         `[DB] Aborting startup: probe-failed/restore loop detected after 3 attempts. ` +
           `The preserved database at ${path.dirname(sqliteFile)} is unloadable under this runtime. ` +
           `Remove the probe-failed backups (storage.sqlite.probe-failed-*) from ${path.dirname(
-            sqliteFile,
-          )} and restart, or restore the database from a known-good backup.`,
+            sqliteFile
+          )} and restart, or restore the database from a known-good backup.`
       );
     }
     const latestBackup = probeFailureBackups[0];
     try {
       fs.renameSync(latestBackup, sqliteFile);
       console.log(
-        `[DB] Auto-restored preserved database from previous probe failure: ${path.basename(latestBackup)}`,
+        `[DB] Auto-restored preserved database from previous probe failure: ${path.basename(latestBackup)}`
       );
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
       throw new Error(
         `[DB] Manual recovery required before startup. ` +
           `Failed to auto-restore preserved database ${latestBackup}: ${msg}. ` +
-          `Restore the preserved file or another backup to ${sqliteFile} before restarting.`,
+          `Restore the preserved file or another backup to ${sqliteFile} before restarting.`
       );
     }
   }
@@ -1028,8 +1028,7 @@ export function getDbInstance(): SqliteDatabase {
         let hasData = false;
         try {
           const count = probe.prepare("SELECT COUNT(*) as c FROM provider_connections").get() as
-            | { c: number }
-            | undefined;
+            { c: number } | undefined;
           hasData = Boolean(count && count.c > 0);
         } catch {
           // Table might not exist at all — truly incompatible
@@ -1038,7 +1037,7 @@ export function getDbInstance(): SqliteDatabase {
 
         if (hasData) {
           console.log(
-            `[DB] Old schema_migrations table found but data exists — preserving data (#146)`,
+            `[DB] Old schema_migrations table found but data exists — preserving data (#146)`
           );
           const fixDb = openSqliteDatabase(sqliteFile);
           try {
@@ -1053,7 +1052,7 @@ export function getDbInstance(): SqliteDatabase {
         } else {
           const oldPath = sqliteFile + ".old-schema";
           console.log(
-            `[DB] Old incompatible schema detected (empty) — renaming to ${path.basename(oldPath)}`,
+            `[DB] Old incompatible schema detected (empty) — renaming to ${path.basename(oldPath)}`
           );
           fs.renameSync(sqliteFile, oldPath);
           for (const ext of ["-wal", "-shm"]) {
@@ -1085,7 +1084,7 @@ export function getDbInstance(): SqliteDatabase {
       // signal instead of silently renaming a perfectly good DB.
       if (
         /out of memory|allocation failure|Array buffer allocation failed|allocation failed/i.test(
-          message,
+          message
         )
       ) {
         // Cycle-breaker (#6835): the OOM path never renames the file away,
@@ -1101,7 +1100,7 @@ export function getDbInstance(): SqliteDatabase {
             `[DB] Aborting startup: persistent out-of-memory probing ${sqliteFile} after 3 attempts. ` +
               `Increase the V8 heap with NODE_OPTIONS=--max-old-space-size=4096 (or higher) — the ` +
               `current heap is insufficient for this database — and restart, or shrink/restore the ` +
-              `database from a backup. Original error: ${message}`,
+              `database from a backup. Original error: ${message}`
           );
         }
         throw new Error(
@@ -1109,7 +1108,7 @@ export function getDbInstance(): SqliteDatabase {
             `The bundled sql.js driver loads the entire file into WASM memory; ` +
             `increase the V8 heap with NODE_OPTIONS=--max-old-space-size=4096 (or higher) ` +
             `and restart, or restore the database from a backup. ` +
-            `Original error: ${message}`,
+            `Original error: ${message}`
         );
       }
       preservedCriticalState = captureCriticalDbState(sqliteFile);
@@ -1139,7 +1138,7 @@ export function getDbInstance(): SqliteDatabase {
         `[DB] Manual recovery required after probe failure. ` +
           `Preserved database: ${failedProbePath}. ` +
           `Automatic recovery was aborted because ${details}. ` +
-          `Original probe error: ${failedProbeMessage || "unknown"}.`,
+          `Original probe error: ${failedProbeMessage || "unknown"}.`
       );
     }
   }
@@ -1188,8 +1187,8 @@ export function getDbInstance(): SqliteDatabase {
       const restoredTables = restoreCriticalDbState(db, preservedCriticalState);
       console.log(
         `[DB] Restored preserved critical DB state after probe failure: ${summarizePreservedTables(
-          restoredTables,
-        )}`,
+          restoredTables
+        )}`
       );
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
@@ -1202,14 +1201,14 @@ export function getDbInstance(): SqliteDatabase {
       throw new Error(
         `[DB] Automatic recovery aborted after probe failure. ` +
           `Preserved database: ${failedProbePath}. ` +
-          `Restore failure: ${message}.`,
+          `Restore failure: ${message}.`
       );
     }
   }
 
   // Store schema version
   const versionStmt = db.prepare(
-    "INSERT OR REPLACE INTO db_meta (key, value) VALUES ('schema_version', '1')",
+    "INSERT OR REPLACE INTO db_meta (key, value) VALUES ('schema_version', '1')"
   );
   versionStmt.run();
   if (shouldRunStartupDbHealthCheck()) {
@@ -1242,7 +1241,7 @@ export function getDbInstance(): SqliteDatabase {
   // diagnosable straight from the logs. (#3147)
   console.log(
     `[DB] SQLite database ready: ${sqliteFile} ` +
-      `(DATA_DIR=${path.resolve(DATA_DIR)}, SQLITE_FILE=${path.resolve(sqliteFile)})`,
+      `(DATA_DIR=${path.resolve(DATA_DIR)}, SQLITE_FILE=${path.resolve(sqliteFile)})`
   );
   return db;
 }
@@ -1369,7 +1368,7 @@ function migrateFromJson(db: SqliteDatabase, jsonPath: string) {
     }
 
     console.log(
-      `[DB] Migrating db.json → SQLite (${connCount} connections, ${nodeCount} nodes, ${keyCount} keys)...`,
+      `[DB] Migrating db.json → SQLite (${connCount} connections, ${nodeCount} nodes, ${keyCount} keys)...`
     );
 
     const migrate = db.transaction(() => {
@@ -1461,7 +1460,7 @@ function migrateFromJson(db: SqliteDatabase, jsonPath: string) {
 
       // 3. Key-Value pairs
       const insertKv = db.prepare(
-        "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
+        "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
       );
 
       for (const [alias, model] of Object.entries(data.modelAliases || {})) {
@@ -1535,7 +1534,7 @@ function migrateFromJson(db: SqliteDatabase, jsonPath: string) {
       const jsonBackups = fs.readdirSync(legacyBackupDir).filter((f) => f.endsWith(".json"));
       if (jsonBackups.length > 0) {
         console.log(
-          `[DB] Note: ${jsonBackups.length} legacy .json backups remain in ${legacyBackupDir}`,
+          `[DB] Note: ${jsonBackups.length} legacy .json backups remain in ${legacyBackupDir}`
         );
       }
     }

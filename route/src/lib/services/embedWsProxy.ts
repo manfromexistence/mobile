@@ -82,7 +82,7 @@ function registerConnection(name: string, socket: net.Socket): boolean {
     writeError(
       socket,
       503,
-      `Service '${name}' connection limit reached (max ${MAX_CONNECTIONS_PER_SERVICE})`,
+      `Service '${name}' connection limit reached (max ${MAX_CONNECTIONS_PER_SERVICE})`
     );
     return false;
   }

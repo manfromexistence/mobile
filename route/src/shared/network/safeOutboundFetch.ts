@@ -12,11 +12,7 @@ const DEFAULT_IDEMPOTENT_METHODS = ["GET", "HEAD", "OPTIONS", "PUT", "DELETE"];
 
 export type SafeOutboundFetchGuard = OutboundUrlGuardMode;
 export type SafeOutboundFetchErrorCode =
-  | "INVALID_URL"
-  | "URL_GUARD_BLOCKED"
-  | "TIMEOUT"
-  | "REDIRECT_BLOCKED"
-  | "NETWORK_ERROR";
+  "INVALID_URL" | "URL_GUARD_BLOCKED" | "TIMEOUT" | "REDIRECT_BLOCKED" | "NETWORK_ERROR";
 
 export interface SafeOutboundFetchRetryOptions {
   attempts?: number;
@@ -194,7 +190,7 @@ function getRetryConfig(retry: SafeOutboundFetchRetryOptions | false | undefined
   }
 
   const methods = new Set(
-    (retry?.methods || DEFAULT_IDEMPOTENT_METHODS).map((value) => value.toUpperCase()),
+    (retry?.methods || DEFAULT_IDEMPOTENT_METHODS).map((value) => value.toUpperCase())
   );
   const attempts = Math.max(1, retry?.attempts || 1);
   const backoffMs = Array.isArray(retry?.backoffMs)
@@ -234,7 +230,7 @@ function normalizeFetchFailure(
   error: unknown,
   targetUrl: string,
   method: string,
-  attempts: number,
+  attempts: number
 ): SafeOutboundFetchError {
   if (error instanceof SafeOutboundFetchError) {
     error.attempts = attempts;
@@ -317,7 +313,7 @@ export async function safeOutboundFetch(url: string | URL, options: SafeOutbound
             status: response.status,
             location,
             isRetryable: false,
-          },
+          }
         );
       }
 

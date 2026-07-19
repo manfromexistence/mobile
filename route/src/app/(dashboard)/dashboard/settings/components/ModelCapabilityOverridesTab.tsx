@@ -92,7 +92,7 @@ function useModelCapabilityOverridesData() {
         showStatus("error", error?.message || t("modelOverrideSaveFailed"));
       }
     },
-    [showStatus, t],
+    [showStatus, t]
   );
 
   const removeOverride = useCallback(
@@ -110,7 +110,7 @@ function useModelCapabilityOverridesData() {
         showStatus("error", error?.message || t("modelOverrideRemoveFailed"));
       }
     },
-    [showStatus, t],
+    [showStatus, t]
   );
 
   useEffect(() => {
@@ -127,7 +127,7 @@ function toTargets(catalog: Record<string, PricingCatalogProvider>): ModelOverri
       provider: provider.id,
       modelId: model.id,
       label: `${provider.id}/${model.id}`,
-    })),
+    }))
   );
 }
 
@@ -206,8 +206,8 @@ function useFilteredTargets(targets: ModelOverrideTarget[], search: string) {
     const source = query
       ? targets.filter((entry) =>
           [entry.label, entry.target, entry.provider, entry.modelId].some((candidate) =>
-            matchesSearch(candidate, query),
-          ),
+            matchesSearch(candidate, query)
+          )
         )
       : targets;
     return source.slice(0, 80);

@@ -10,7 +10,7 @@ import { logger } from "../../../open-sse/utils/logger.ts";
 const log = logger("MEMORY_VERIFY");
 
 export async function verifyExtractionPipeline(
-  apiKeyId: string,
+  apiKeyId: string
 ): Promise<{ working: boolean; latencyMs: number; error?: string }> {
   const start = Date.now();
   log.info("memory.verify.start", { apiKeyId });

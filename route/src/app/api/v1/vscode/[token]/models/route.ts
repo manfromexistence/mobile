@@ -101,7 +101,7 @@ function isUsableChatModel(model: CatalogModelEntry) {
 
 function getModelImportReasoningEffortValues(
   model: VscodeCatalogModel,
-  reasoningEffortValues: string[],
+  reasoningEffortValues: string[]
 ) {
   const providerId =
     (model.owned_by || "").trim() ||
@@ -184,7 +184,7 @@ export function getVscodeRawModelDisplayName(model: CatalogModelEntry) {
 export function enrichModelForVscode(
   model: CatalogModelEntry,
   request: Request,
-  options: EnrichModelForVscodeOptions = {},
+  options: EnrichModelForVscodeOptions = {}
 ): VscodeImportModel {
   if (!isUsableChatModel(model)) return model;
 
@@ -344,7 +344,7 @@ export function expandVscodeRawModels(models: CatalogModelEntry[]) {
 }
 
 export async function getVscodeModelsCatalogResponse(
-  request: Request,
+  request: Request
 ): Promise<VscodeModelsCatalogResponse> {
   const response = await getUnifiedModelsResponse(request);
   const body = (await response.json()) as { data?: CatalogModelEntry[] };
@@ -363,7 +363,7 @@ export async function getVscodeModelsCatalogResponse(
 
 export async function GET(
   request: Request,
-  { params }: { params?: Promise<{ token: string }> | { token: string } } = {},
+  { params }: { params?: Promise<{ token: string }> | { token: string } } = {}
 ) {
   const resolvedParams = params ? await params : undefined;
   const authorizedRequest = withPathTokenApiKey(request, resolvedParams?.token);
@@ -383,7 +383,7 @@ export async function GET(
       const allModelIds = new Set(
         expandedModels
           .map((model) => (model.id || model.name || model.root || "").trim())
-          .filter(Boolean),
+          .filter(Boolean)
       );
       const groupedModels = new Map<string, CatalogModelEntry>();
       const orderedGroupKeys: string[] = [];
@@ -431,6 +431,6 @@ export async function GET(
     {
       status: catalog.status,
       headers: catalog.headers,
-    },
+    }
   );
 }

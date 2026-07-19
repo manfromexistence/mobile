@@ -119,7 +119,7 @@ export default function ProviderUsdCostModal({
 
   const maxCost = useMemo(
     () => Math.max(...(payload?.rows || []).map((row) => row.costUsd), 0),
-    [payload],
+    [payload]
   );
   const simulatedUsd =
     payload?.estimatedFullQuotaUsd !== null && payload?.estimatedFullQuotaUsd !== undefined

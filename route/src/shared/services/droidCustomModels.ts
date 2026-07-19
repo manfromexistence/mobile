@@ -38,10 +38,7 @@ export interface DroidCustomModelEntry {
  * Accepts either a `models` array (multi-model, upstream #618) or a legacy
  * `model` string (single-model, pre-#618 behavior).
  */
-export function normalizeDroidModelList(input: {
-  model?: unknown;
-  models?: unknown;
-}): string[] {
+export function normalizeDroidModelList(input: { model?: unknown; models?: unknown }): string[] {
   const raw: unknown[] = Array.isArray(input.models)
     ? input.models
     : typeof input.model === "string"
@@ -66,7 +63,7 @@ export function normalizeDroidModelList(input: {
  */
 export function buildDroidCustomModels(
   models: string[],
-  opts: DroidCustomModelOptions,
+  opts: DroidCustomModelOptions
 ): DroidCustomModelEntry[] {
   if (models.length === 0) {
     throw new Error("buildDroidCustomModels requires at least one model");

@@ -39,7 +39,7 @@ const tryRequestSchema = z.object({
     .refine((value) => !value.startsWith("//"), "Path must be a same-origin path")
     .refine(
       (value) => ALLOWED_TRY_PATH_PREFIXES.some((prefix) => value.startsWith(prefix)),
-      "Path must target an OmniRoute API endpoint",
+      "Path must target an OmniRoute API endpoint"
     ),
   headers: z.record(z.string(), z.string()).optional().default({}),
   body: z.any().optional(),
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
         latencyMs: 0,
         contentType: "application/json",
       },
-      { status: 200 }, // Return 200 so the frontend can display the error
+      { status: 200 } // Return 200 so the frontend can display the error
     );
   }
 }

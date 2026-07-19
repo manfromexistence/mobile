@@ -46,7 +46,7 @@ async function resolveProxyForCredentials(provider: string, credentials?: any) {
 export const refreshAccessToken = async (
   provider: string,
   refreshToken: string,
-  credentials: any,
+  credentials: any
 ) => {
   const proxy = await resolveProxyForCredentials(provider, credentials);
   return _refreshAccessToken(provider, refreshToken, credentials, log, proxy);
@@ -62,7 +62,7 @@ export const refreshGoogleToken = async (
   clientId: string,
   clientSecret: string,
   provider: string = "gemini",
-  credentials?: any,
+  credentials?: any
 ) => {
   const proxy = await resolveProxyForCredentials(provider, credentials);
   return _refreshGoogleToken(refreshToken, clientId, clientSecret, log, proxy);
@@ -96,7 +96,7 @@ export const refreshCopilotToken = async (githubAccessToken: string, credentials
 export const getAccessToken = async (
   provider: string,
   credentials: any,
-  onPersist?: (result: any) => Promise<void>,
+  onPersist?: (result: any) => Promise<void>
 ) => {
   const proxy = await resolveProxyForCredentials(provider, credentials);
   return _getAccessToken(provider, credentials, log, proxy, onPersist);
@@ -249,7 +249,7 @@ export async function checkAndRefreshToken(provider: string, credentials: any) {
 
       const copilotToken = await refreshCopilotToken(
         updatedCredentials.accessToken,
-        updatedCredentials,
+        updatedCredentials
       );
       if (copilotToken) {
         await updateProviderCredentials(updatedCredentials.connectionId, {

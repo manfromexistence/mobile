@@ -10,7 +10,7 @@ import type { ProviderModelsConfigEntry } from "./discovery/providerModelsConfig
  * registry entry has no `modelsUrl`.
  */
 export function deriveConfigFromRegistryModelsUrl(
-  provider: string,
+  provider: string
 ): ProviderModelsConfigEntry | undefined {
   const entry = getRegistryEntry(provider);
   if (typeof entry?.modelsUrl === "string" && entry.modelsUrl.length > 0) {

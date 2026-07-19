@@ -25,7 +25,7 @@ export interface TrafficStreamActions {
 }
 
 export function useTrafficStream(
-  filters: FiltersState | ListFilters,
+  filters: FiltersState | ListFilters
 ): [TrafficStreamState, TrafficStreamActions] {
   const [requests, setRequests] = useState<InterceptedRequest[]>([]);
   const [connected, setConnected] = useState(false);

@@ -10,7 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 
 function formatRelativeTime(
   isoDate: string,
-  t: (key: string, values?: Record<string, unknown>) => string,
+  t: (key: string, values?: Record<string, unknown>) => string
 ): string {
   const now = Date.now();
   const then = new Date(isoDate).getTime();

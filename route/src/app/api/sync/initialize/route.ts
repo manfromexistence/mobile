@@ -34,7 +34,7 @@ export async function POST(request) {
       {
         error: "Failed to initialize cloud sync",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

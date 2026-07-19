@@ -38,7 +38,7 @@ function parsePositiveInt(value: string | undefined, fallback: number): number {
 export function getAppLogRotationCheckInterval(): number {
   return parsePositiveInt(
     process.env.APP_LOG_ROTATION_CHECK_INTERVAL_MS,
-    DEFAULT_ROTATION_CHECK_INTERVAL_MS,
+    DEFAULT_ROTATION_CHECK_INTERVAL_MS
   );
 }
 
@@ -80,9 +80,9 @@ export function rotateIfNeeded(logFilePath: string, maxFileSize: number): void {
     const base = basename(logFilePath, ext);
     const now = new Date();
     const ts = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(
-      now.getDate(),
+      now.getDate()
     ).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(
-      now.getMinutes(),
+      now.getMinutes()
     ).padStart(2, "0")}${String(now.getSeconds()).padStart(2, "0")}`;
 
     const rotatedPath = join(dir, `${base}.${ts}${ext}`);
@@ -137,7 +137,7 @@ export function cleanupOverflowLogs(logFilePath: string, maxFiles: number): void
     const rotatedFiles = readdirSync(dir)
       .filter(
         (file) =>
-          file !== basename(logFilePath) && file.startsWith(base + ".") && file.endsWith(ext),
+          file !== basename(logFilePath) && file.startsWith(base + ".") && file.endsWith(ext)
       )
       .map((file) => {
         const filePath = join(dir, file);
@@ -189,7 +189,7 @@ export function initLogRotation(): void {
     intervalMs,
     config.logFilePath,
     config.maxFileSize,
-    config.maxFiles,
+    config.maxFiles
   );
   rotationTimer.unref?.();
 }

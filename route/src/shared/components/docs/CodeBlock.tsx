@@ -26,7 +26,7 @@ export default function CodeBlock({
     <div
       className={cn(
         "group relative my-6 rounded-lg overflow-hidden border border-border",
-        className,
+        className
       )}
     >
       {filename && (

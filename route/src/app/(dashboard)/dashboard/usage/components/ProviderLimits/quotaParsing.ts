@@ -84,7 +84,7 @@ function parseGlmFamily(data: any) {
       details: Array.isArray(quota?.details) ? quota.details : undefined,
       isPercentageOnly:
         Number(quota?.total || 0) === 100 && quota?.remainingPercentage !== undefined,
-    }),
+    })
   );
 }
 
@@ -92,7 +92,7 @@ function buildCreditsQuota(
   name: string,
   remaining: number,
   remainingPercentage: number,
-  extra = {},
+  extra = {}
 ) {
   return {
     name,
@@ -147,7 +147,7 @@ function parseCodex(data: any) {
     normalizeQuotaEntry(quotaType, quota, {
       displayName: quota?.displayName,
       isPercentageOnly: true,
-    }),
+    })
   );
 
   const bankedResetCredits = Number(data?.bankedResetCredits);
@@ -183,7 +183,7 @@ function parseClaude(data: any) {
     return [{ name: "error", used: 0, total: 0, resetAt: null, message: data.message }];
 
   const quotas = quotaEntries(data).map(([name, quota]) =>
-    normalizeQuotaEntry(name, quota, { isPercentageOnly: true }),
+    normalizeQuotaEntry(name, quota, { isPercentageOnly: true })
   );
 
   if (data?.extraUsage?.is_enabled) {
@@ -223,7 +223,7 @@ function sortProviderModelOrder(provider: string, quotas: any[]) {
   const orderMap = new Map(modelOrder.map((m, i) => [m.id, i]));
   quotas.sort(
     (a, b) =>
-      (orderMap.get(a.modelKey || a.name) ?? 999) - (orderMap.get(b.modelKey || b.name) ?? 999),
+      (orderMap.get(a.modelKey || a.name) ?? 999) - (orderMap.get(b.modelKey || b.name) ?? 999)
   );
 }
 

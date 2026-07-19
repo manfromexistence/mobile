@@ -19,7 +19,7 @@ export default function QuotaMiniBar({ percent, size = "xs", className }: Props)
       className={cn(
         "rounded-full overflow-hidden bg-black/[0.06] dark:bg-white/[0.06]",
         heightCls,
-        className,
+        className
       )}
     >
       <div

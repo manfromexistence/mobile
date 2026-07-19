@@ -141,7 +141,7 @@ export const responseValidationSchema = z
           path: z.string().trim().min(1).max(300),
           condition: z.enum(["exists", "nonEmpty", "equals", "notEquals"]),
           value: z.union([z.string().max(1000), z.number(), z.boolean()]).optional(),
-        }),
+        })
       )
       .max(20)
       .optional(),
@@ -277,7 +277,7 @@ export const comboNameSchema = z
   .max(100)
   .regex(
     /^[a-zA-Z0-9_/.\-\[\] ]+$/,
-    "Name can only contain letters, numbers, spaces, -, _, /, ., [ and ].",
+    "Name can only contain letters, numbers, spaces, -, _, /, ., [ and ]."
   );
 
 export const createComboSchema = z.object({

@@ -41,7 +41,7 @@ export function recordPluginMetric(
   pluginName: string,
   event: string,
   durationMs: number,
-  isError: boolean,
+  isError: boolean
 ): void {
   try {
     const db = getDbInstance();
@@ -54,7 +54,7 @@ export function recordPluginMetric(
          calls = calls + 1,
          errors = errors + excluded.errors,
          total_duration_ms = total_duration_ms + excluded.total_duration_ms,
-         last_called_at = excluded.last_called_at`,
+         last_called_at = excluded.last_called_at`
     ).run(pluginName, event, isError ? 1 : 0, durationMs, now);
   } catch {
     // Best-effort: DB hiccup should never break hook execution

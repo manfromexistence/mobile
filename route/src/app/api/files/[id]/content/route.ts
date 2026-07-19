@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!file) {
     return NextResponse.json(
       { error: { message: "File not found", type: "invalid_request_error" } },
-      { status: 404 },
+      { status: 404 }
     );
   }
 
@@ -20,7 +20,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!content) {
     return NextResponse.json(
       { error: { message: "File content not found", type: "invalid_request_error" } },
-      { status: 404 },
+      { status: 404 }
     );
   }
 

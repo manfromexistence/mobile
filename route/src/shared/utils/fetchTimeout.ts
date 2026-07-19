@@ -50,7 +50,7 @@ export async function fetchWithTimeout(url: string | URL, options: FetchTimeoutO
       throw new FetchTimeoutError(
         `Request to ${url} timed out after ${timeoutMs}ms`,
         timeoutMs,
-        String(url),
+        String(url)
       );
     }
     throw error;

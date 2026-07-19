@@ -75,7 +75,7 @@ export async function parseResponseBody(response: Response): Promise<unknown> {
 export function getErrorMessage(
   body: unknown,
   status?: number,
-  fallback = "Request failed",
+  fallback = "Request failed"
 ): string {
   if (body && typeof body === "object") {
     const rec = body as Record<string, unknown>;

@@ -110,7 +110,7 @@ async function requireOAuthRouteAuth(request: Request) {
 // GET /api/oauth/[provider]/device-code - Request device code (for device_code flow)
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ provider: string; action: string }> },
+  { params }: { params: Promise<{ provider: string; action: string }> }
 ) {
   // Phase 1 hotfix (2026-05-29): retired PKCE flows return 410 Gone BEFORE auth.
   // The action permanently does not exist for these providers regardless of who
@@ -134,7 +134,7 @@ export async function GET(
             `(or click the Jupyter "Get Windsurf Authentication Token" button), then copy+paste the shown token. ` +
             `Opening https://windsurf.com/show-auth-token directly only shows a "Redirecting" page — the IDE must initiate the ?state=... flow.`,
         },
-        { status: 410 },
+        { status: 410 }
       );
     }
     // Keychain-import-only providers (e.g. zed) have no OAuth flow — return a
@@ -186,7 +186,7 @@ export async function GET(
       if (providerData.flowType !== "device_code") {
         return NextResponse.json(
           { error: "Provider does not support device code flow" },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -221,17 +221,17 @@ export async function GET(
           };
 
           deviceData = await runWithProxyContextOrDirect(proxy, () =>
-            (requestDeviceCode as any)(provider, null, providerOverrideConfig),
+            (requestDeviceCode as any)(provider, null, providerOverrideConfig)
           );
         } else {
           deviceData = await runWithProxyContextOrDirect(proxy, () =>
-            (requestDeviceCode as any)(provider),
+            (requestDeviceCode as any)(provider)
           );
         }
       } else {
         // Qwen and other providers use PKCE
         deviceData = await runWithProxyContextOrDirect(proxy, () =>
-          requestDeviceCode(provider, authData.codeChallenge),
+          requestDeviceCode(provider, authData.codeChallenge)
         );
       }
 
@@ -272,7 +272,7 @@ async function handleStartCallbackServer(provider: string, searchParams: URLSear
   if (!PKCE_CALLBACK_PROVIDERS.has(provider)) {
     return NextResponse.json(
       { error: `Callback server not supported for provider: ${provider}` },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -339,7 +339,7 @@ async function handleStartCallbackServer(provider: string, searchParams: URLSear
 // POST /api/oauth/[provider]/poll - Poll for token (device_code flow)
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ provider: string; action: string }> },
+  { params }: { params: Promise<{ provider: string; action: string }> }
 ) {
   // Phase 1 hotfix (2026-05-29): retired PKCE flows return 410 Gone BEFORE auth.
   // See GET handler comment.
@@ -358,7 +358,7 @@ export async function POST(
             `(or click the Jupyter "Get Windsurf Authentication Token" button), then copy+paste the shown token. ` +
             `Opening https://windsurf.com/show-auth-token directly only shows a "Redirecting" page — the IDE must initiate the ?state=... flow.`,
         },
-        { status: 410 },
+        { status: 410 }
       );
     }
     // Keychain-import-only providers (e.g. zed) have no OAuth flow (#6041).
@@ -388,7 +388,7 @@ export async function POST(
             `(or click the Jupyter "Get Windsurf Authentication Token" button), then copy+paste the shown token. ` +
             `Opening https://windsurf.com/show-auth-token directly only shows a "Redirecting" page — the IDE must initiate the ?state=... flow.`,
         },
-        { status: 410 },
+        { status: 410 }
       );
     }
 
@@ -404,7 +404,7 @@ export async function POST(
               details: [{ field: "body", message: "Invalid JSON body" }],
             },
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
     }
@@ -460,7 +460,7 @@ export async function POST(
               ],
             },
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -469,7 +469,7 @@ export async function POST(
 
       // Exchange code for tokens (through proxy if configured)
       const tokenData = await runWithProxyContextOrDirect(proxy, () =>
-        exchangeTokens(provider, code, redirectUri, codeVerifier, normalizedState),
+        exchangeTokens(provider, code, redirectUri, codeVerifier, normalizedState)
       );
 
       // Normalize: if name is missing, use email or displayName as fallback so accounts
@@ -509,7 +509,7 @@ export async function POST(
       }
       if (!connection) {
         connection = await createProviderConnection(
-          buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt),
+          buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt)
         );
       }
 
@@ -543,12 +543,12 @@ export async function POST(
       ) {
         // For providers that don't use PKCE (GitHub, Kimi Coding, KiloCode), don't pass codeVerifier
         result = await runWithProxyContextOrDirect(proxy, () =>
-          (pollForToken as any)(provider, deviceCode),
+          (pollForToken as any)(provider, deviceCode)
         );
       } else if (provider === "kiro" || provider === "amazon-q") {
         // Kiro needs extraData (clientId, clientSecret) from device code response
         result = await runWithProxyContextOrDirect(proxy, () =>
-          (pollForToken as any)(provider, deviceCode, null, extraData),
+          (pollForToken as any)(provider, deviceCode, null, extraData)
         );
       } else {
         // Qwen and other providers use PKCE
@@ -556,7 +556,7 @@ export async function POST(
           return NextResponse.json({ error: "Missing code verifier" }, { status: 400 });
         }
         result = await runWithProxyContextOrDirect(proxy, () =>
-          (pollForToken as any)(provider, deviceCode, codeVerifier),
+          (pollForToken as any)(provider, deviceCode, codeVerifier)
         );
       }
 
@@ -597,7 +597,7 @@ export async function POST(
         }
         if (!connection) {
           connection = await createProviderConnection(
-            buildOAuthConnectionCreatePayload(provider, result.tokens, expiresAt),
+            buildOAuthConnectionCreatePayload(provider, result.tokens, expiresAt)
           );
         }
 
@@ -634,7 +634,7 @@ export async function POST(
           {
             error: `poll-callback only supported for PKCE callback providers: ${[...PKCE_CALLBACK_PROVIDERS].join(", ")}`,
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -687,7 +687,7 @@ export async function POST(
 
         // Exchange code for tokens (through proxy if configured)
         const tokenData = await runWithProxyContextOrDirect(proxy, () =>
-          exchangeTokens(provider, params.code, redirectUri, codeVerifier, params.state),
+          exchangeTokens(provider, params.code, redirectUri, codeVerifier, params.state)
         );
 
         // Normalize: if name is missing, use email as fallback display label
@@ -726,7 +726,7 @@ export async function POST(
         }
         if (!connection) {
           connection = await createProviderConnection(
-            buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt),
+            buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt)
           );
         }
 
@@ -745,7 +745,7 @@ export async function POST(
         console.error("OAuth exchange error:", exchangeErr);
         return NextResponse.json(
           { success: false, error: "Internal server error" },
-          { status: 500 },
+          { status: 500 }
         );
       }
     }
@@ -758,7 +758,7 @@ export async function POST(
           {
             error: `import-token not supported for provider: ${provider}. Supported: ${[...IMPORT_TOKEN_PROVIDERS].join(", ")}`,
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -796,7 +796,7 @@ export async function POST(
         }
         if (!connection) {
           connection = await createProviderConnection(
-            buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt),
+            buildOAuthConnectionCreatePayload(provider, tokenData, expiresAt)
           );
         }
 
@@ -814,7 +814,7 @@ export async function POST(
       } catch (importErr: any) {
         return NextResponse.json(
           { success: false, error: sanitizeErrorMessage(importErr.message) || "Import failed" },
-          { status: 500 },
+          { status: 500 }
         );
       }
     }
@@ -827,7 +827,7 @@ export async function POST(
           {
             error: `public-link not supported for provider: ${provider}. Supported: ${[...BROWSER_DEVICE_FLOW_PROVIDERS].join(", ")}`,
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -852,7 +852,7 @@ export async function POST(
           {
             error: `device-complete not supported for provider: ${provider}. Supported: ${[...BROWSER_DEVICE_FLOW_PROVIDERS].join(", ")}`,
           },
-          { status: 400 },
+          { status: 400 }
         );
       }
 
@@ -878,7 +878,7 @@ export async function POST(
             success: false,
             error: sanitizeErrorMessage(finalizeErr?.message) || "Failed to finalize tokens",
           },
-          { status: 500 },
+          { status: 500 }
         );
       }
 

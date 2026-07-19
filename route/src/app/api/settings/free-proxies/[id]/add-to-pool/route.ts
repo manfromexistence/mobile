@@ -10,13 +10,13 @@ import {
 type ConnectivityTester = (
   host: string,
   port: number,
-  type: string,
+  type: string
 ) => Promise<{ success: boolean; latencyMs: number; publicIp?: string }>;
 
 async function testProxyConnectivity(
   host: string,
   port: number,
-  type: string,
+  type: string
 ): Promise<{ success: boolean; latencyMs: number; publicIp?: string }> {
   const proxyUrl = proxyConfigToUrl({ type, host, port });
   if (!proxyUrl) return { success: false, latencyMs: 0 };
@@ -88,7 +88,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           error: "Proxy test failed",
           latencyMs: testResult.latencyMs,
         },
-        { status: 422 },
+        { status: 422 }
       );
     }
 

@@ -101,7 +101,7 @@ function markExpiredForState(stateHash: string, now = nowIso()): void {
     .prepare(
       `UPDATE command_code_auth_sessions
        SET status = 'expired', updated_at = ?
-       WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at <= ?`,
+       WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at <= ?`
     )
     .run(now, stateHash, now);
 }
@@ -117,7 +117,7 @@ export function createPendingCommandCodeAuthSession(input: {
       `INSERT INTO command_code_auth_sessions (
         id, state_hash, status, encrypted_api_key, metadata_json,
         created_at, expires_at, received_at, applied_at, updated_at
-      ) VALUES (?, ?, 'pending', NULL, NULL, ?, ?, NULL, NULL, ?)`,
+      ) VALUES (?, ?, 'pending', NULL, NULL, ?, ?, NULL, NULL, ?)`
     )
     .run(id, input.stateHash, now, input.expiresAt, now);
 
@@ -144,7 +144,7 @@ export function markCommandCodeAuthSessionReceived(input: {
     .prepare(
       `UPDATE command_code_auth_sessions
        SET status = 'received', encrypted_api_key = ?, metadata_json = ?, received_at = ?, updated_at = ?
-       WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at > ?`,
+       WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at > ?`
     )
     .run(encryptedApiKey, JSON.stringify(metadata), now, now, input.stateHash, now);
 
@@ -152,7 +152,7 @@ export function markCommandCodeAuthSessionReceived(input: {
 }
 
 export function getCommandCodeAuthSessionSafeStatus(
-  stateHash: string,
+  stateHash: string
 ): CommandCodeAuthSafeStatus | null {
   markExpiredForState(stateHash);
   const row = db()
@@ -162,7 +162,7 @@ export function getCommandCodeAuthSessionSafeStatus(
 }
 
 export function consumeCommandCodeAuthSecret(
-  stateHash: string,
+  stateHash: string
 ): ConsumedCommandCodeAuthSecret | null {
   const database = db();
   return database.transaction(() => {
@@ -171,14 +171,14 @@ export function consumeCommandCodeAuthSecret(
       .prepare(
         `UPDATE command_code_auth_sessions
          SET status = 'expired', updated_at = ?
-         WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at <= ?`,
+         WHERE state_hash = ? AND status IN ('pending', 'received') AND expires_at <= ?`
       )
       .run(now, stateHash, now);
 
     const row = database
       .prepare<AuthSessionRow>(
         `SELECT * FROM command_code_auth_sessions
-         WHERE state_hash = ? AND status = 'received' AND expires_at > ? AND encrypted_api_key IS NOT NULL`,
+         WHERE state_hash = ? AND status = 'received' AND expires_at > ? AND encrypted_api_key IS NOT NULL`
       )
       .get(stateHash, now);
     if (!row?.encrypted_api_key) return null;
@@ -190,7 +190,7 @@ export function consumeCommandCodeAuthSecret(
       .prepare(
         `UPDATE command_code_auth_sessions
          SET status = 'applied', encrypted_api_key = NULL, applied_at = ?, updated_at = ?
-         WHERE id = ? AND status = 'received'`,
+         WHERE id = ? AND status = 'received'`
       )
       .run(now, now, row.id);
     if (!result.changes) return null;

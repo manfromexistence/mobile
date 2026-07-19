@@ -23,7 +23,7 @@ export function useAnnotations(requestId: string | null) {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ annotation }),
-            },
+            }
           );
           if (!res.ok) {
             const body = (await res.json().catch(() => ({}))) as { error?: { message?: string } };
@@ -36,7 +36,7 @@ export function useAnnotations(requestId: string | null) {
         }
       }, DEBOUNCE_MS);
     },
-    [requestId],
+    [requestId]
   );
 
   return { save, saving, error };

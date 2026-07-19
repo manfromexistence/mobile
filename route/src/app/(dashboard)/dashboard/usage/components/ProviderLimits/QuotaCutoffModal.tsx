@@ -160,7 +160,7 @@ export default function QuotaCutoffModal({
       <p className="text-sm text-text-muted mb-4">
         {tr(
           "quotaCutoffsExplainer",
-          "Override the minimum remaining quota percentage where this account stops being selected for each quota window. Leave blank to inherit the provider default.",
+          "Override the minimum remaining quota percentage where this account stops being selected for each quota window. Leave blank to inherit the provider default."
         )}
       </p>
       <div className="space-y-3">

@@ -197,7 +197,7 @@ function getStatusPresentation(
   connection: ConnectionRowConnection,
   effectiveStatus: string | undefined,
   isCooldown: boolean,
-  t: TFn,
+  t: TFn
 ) {
   if (connection.isActive === false) {
     return {
@@ -376,7 +376,7 @@ export default function ConnectionRow({
     ? pickDisplayValue(
         [connection.name, connection.email, connection.displayName],
         emailsVisible,
-        t("oauthAccount"),
+        t("oauthAccount")
       )
     : connection.name;
   const applyCodexAuthLabel =
@@ -455,7 +455,7 @@ export default function ConnectionRow({
   const codexServiceTier = isCodex
     ? getCodexEffectiveServiceTier(
         connection.providerSpecificData,
-        codexGlobalServiceMode ?? "none",
+        codexGlobalServiceMode ?? "none"
       )
     : "default";
   const codexServiceTierIsGlobal =
@@ -470,12 +470,12 @@ export default function ConnectionRow({
             ? providerText(
                 t,
                 "providerDetailGlobalPriorityActive",
-                "Global Codex priority service tier is active",
+                "Global Codex priority service tier is active"
               )
             : providerText(
                 t,
                 "providerDetailConnectionPriorityActive",
-                "Codex priority service tier is active for this connection",
+                "Codex priority service tier is active for this connection"
               ),
         }
       : codexServiceTier === "flex"
@@ -487,12 +487,12 @@ export default function ConnectionRow({
               ? providerText(
                   t,
                   "providerDetailGlobalFlexActive",
-                  "Global Codex flex service tier is active",
+                  "Global Codex flex service tier is active"
                 )
               : providerText(
                   t,
                   "providerDetailConnectionFlexActive",
-                  "Codex flex service tier is active for this connection",
+                  "Codex flex service tier is active for this connection"
                 ),
           }
         : null;

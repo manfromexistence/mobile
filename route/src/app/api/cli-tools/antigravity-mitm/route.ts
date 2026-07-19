@@ -57,7 +57,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -72,12 +72,11 @@ export async function POST(request) {
     if (!apiKey || apiKey === "sk_omniroute") {
       return NextResponse.json(
         { error: "Missing apiKey: provide a valid apiKey or a resolvable keyId" },
-        { status: 400 },
+        { status: 400 }
       );
     }
-    const { startMitm, getCachedPassword, setCachedPassword } = await import(
-      "@/mitm/manager.runtime"
-    );
+    const { startMitm, getCachedPassword, setCachedPassword } =
+      await import("@/mitm/manager.runtime");
     const isWin = process.platform === "win32";
     const isRootUser = !isWin && isRoot();
     const pwd = sudoPassword || getCachedPassword() || "";
@@ -101,7 +100,7 @@ export async function POST(request) {
     console.log("Error starting MITM:", sanitizeErrorMessage(error));
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to start MITM proxy" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -122,7 +121,7 @@ export async function DELETE(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -132,9 +131,8 @@ export async function DELETE(request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
     const { sudoPassword } = validation.data;
-    const { stopMitm, getCachedPassword, setCachedPassword } = await import(
-      "@/mitm/manager.runtime"
-    );
+    const { stopMitm, getCachedPassword, setCachedPassword } =
+      await import("@/mitm/manager.runtime");
     const isWin = process.platform === "win32";
     const isRootUser = !isWin && isRoot();
     const pwd = sudoPassword || getCachedPassword() || "";
@@ -154,7 +152,7 @@ export async function DELETE(request) {
     console.log("Error stopping MITM:", sanitizeErrorMessage(error));
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to stop MITM proxy" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

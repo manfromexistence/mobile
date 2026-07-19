@@ -16,7 +16,7 @@ export async function GET() {
     const total = oauthConns.length;
     const healthy = oauthConns.filter((c) => c.testStatus === "active" || !c.lastError).length;
     const errored = oauthConns.filter(
-      (c) => c.testStatus === "error" || c.lastErrorType === "token_refresh_failed",
+      (c) => c.testStatus === "error" || c.lastErrorType === "token_refresh_failed"
     ).length;
     const lastCheck = oauthConns.reduce((latest, c) => {
       if (!c.lastHealthCheckAt) return latest;
@@ -34,7 +34,7 @@ export async function GET() {
   } catch (err) {
     return Response.json(
       { error: sanitizeErrorMessage((err as Error)?.message), status: "unknown" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

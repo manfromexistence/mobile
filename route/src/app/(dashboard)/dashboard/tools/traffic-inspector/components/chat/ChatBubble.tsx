@@ -34,7 +34,7 @@ export function ChatBubble({ turn }: ChatBubbleProps) {
       className={cn(
         "max-w-[85%] rounded-lg px-3 py-2",
         isUser ? "ml-auto" : "mr-auto",
-        ROLE_STYLES[turn.role],
+        ROLE_STYLES[turn.role]
       )}
     >
       <div className="flex items-center justify-between gap-2 mb-1">

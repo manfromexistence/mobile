@@ -129,7 +129,7 @@ export function logProxyEvent(entry: ProxyLogInput) {
     console.log(
       `[ProxyEgress] ${log.provider || "-"}/${log.account || "-"} ` +
         `in=${log.clientIp || "?"} out=${log.egressIp || "?"} ` +
-        `proxy=${log.level}${log.proxy ? `:${log.proxy.host}` : ""} status=${log.status}`,
+        `proxy=${log.level}${log.proxy ? `:${log.proxy.host}` : ""} status=${log.status}`
     );
   }
 
@@ -149,7 +149,7 @@ export function logProxyEvent(entry: ProxyLogInput) {
           connection_id, combo_id, account, tls_fingerprint)
         VALUES (@id, @timestamp, @status, @proxyType, @proxyHost, @proxyPort,
           @level, @levelId, @provider, @targetUrl, @clientIp, @latencyMs, @error,
-          @connectionId, @comboId, @account, @tlsFingerprint)`,
+          @connectionId, @comboId, @account, @tlsFingerprint)`
       ).run({
         id: log.id,
         timestamp: log.timestamp,
@@ -216,7 +216,7 @@ export function getProxyLogs(filters: ProxyLogFilters = {}) {
         (l.clientIp || "").toLowerCase().includes(q) ||
         (l.level || "").toLowerCase().includes(q) ||
         (l.error || "").toLowerCase().includes(q) ||
-        (l.account || "").toLowerCase().includes(q),
+        (l.account || "").toLowerCase().includes(q)
     );
   }
 

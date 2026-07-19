@@ -11,7 +11,7 @@ export interface SummarizationResult {
 export async function summarizeMemories(
   apiKeyId: string,
   sessionId?: string,
-  maxTokens: number = 4000,
+  maxTokens: number = 4000
 ): Promise<SummarizationResult> {
   const db = getDbInstance();
 
@@ -54,7 +54,7 @@ export async function summarizeMemories(
     db.prepare("UPDATE memories SET content = ?, updated_at = ? WHERE id = ?").run(
       summary,
       new Date().toISOString(),
-      mem.id,
+      mem.id
     );
   }
 
@@ -141,7 +141,7 @@ export interface SummarizeOlderThanResult {
 export async function summarizeMemoriesOlderThan(
   apiKeyId: string | undefined,
   days: number,
-  dryRun: boolean,
+  dryRun: boolean
 ): Promise<SummarizeOlderThanResult> {
   const db = getDbInstance();
 
@@ -150,7 +150,7 @@ export async function summarizeMemoriesOlderThan(
   const rows: MemoryRow[] = apiKeyId
     ? (db
         .prepare(
-          "SELECT * FROM memories WHERE api_key_id = ? AND created_at < ? ORDER BY created_at ASC",
+          "SELECT * FROM memories WHERE api_key_id = ? AND created_at < ? ORDER BY created_at ASC"
         )
         .all(apiKeyId, cutoff) as MemoryRow[])
     : (db
@@ -166,7 +166,7 @@ export async function summarizeMemoriesOlderThan(
 
   // Build a condensed summary text from all candidates
   const summaryLines = candidates.map(
-    (m) => `[${m.type}] ${m.key ? m.key + ": " : ""}${generateSummary(m.content)}`,
+    (m) => `[${m.type}] ${m.key ? m.key + ": " : ""}${generateSummary(m.content)}`
   );
   const summaryContent = `Resumo de ${candidates.length} memórias (>${days} dias):\n${summaryLines.join("\n")}`;
 

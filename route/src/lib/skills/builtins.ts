@@ -24,7 +24,7 @@ const ALLOWED_SANDBOX_IMAGES = new Set(
   (process.env.SKILLS_ALLOWED_SANDBOX_IMAGES || "")
     .split(",")
     .map((value) => value.trim())
-    .filter(Boolean),
+    .filter(Boolean)
 );
 
 for (const image of [DEFAULT_COMMAND_IMAGE, DEFAULT_JS_IMAGE, DEFAULT_PYTHON_IMAGE]) {
@@ -295,7 +295,7 @@ export const builtinSkills: Record<string, SkillHandler> = {
     const limit = normalizePositiveInteger(
       maxBytes,
       MAX_HTTP_RESPONSE_BYTES,
-      MAX_HTTP_RESPONSE_BYTES,
+      MAX_HTTP_RESPONSE_BYTES
     );
     const responseBody =
       normalizedMethod === "HEAD"
@@ -421,7 +421,7 @@ export const builtinSkills: Record<string, SkillHandler> = {
       selectedImage,
       command,
       {},
-      sandboxConfig({ timeoutMs, networkEnabled }),
+      sandboxConfig({ timeoutMs, networkEnabled })
     );
     const stdout = truncateOutput(result.stdout);
     const stderr = truncateOutput(result.stderr);
@@ -464,7 +464,7 @@ export const builtinSkills: Record<string, SkillHandler> = {
       selectedImage,
       [command, ...normalizedArgs],
       {},
-      sandboxConfig({ timeoutMs, networkEnabled }),
+      sandboxConfig({ timeoutMs, networkEnabled })
     );
     const stdout = truncateOutput(result.stdout);
     const stderr = truncateOutput(result.stderr);

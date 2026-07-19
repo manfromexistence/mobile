@@ -21,7 +21,7 @@ const antigravityDiscoveryInflight = new Map<
 >();
 
 export function normalizeAntigravityModelsResponse(
-  data: unknown,
+  data: unknown
 ): Array<{ id: string; name: string }> {
   const payload = asRecord(data).models;
 
@@ -82,7 +82,7 @@ export async function fetchAntigravityDiscoveryModelsCached(
   accessToken: string,
   connectionId: string,
   proxy: unknown,
-  providerSpecificData?: unknown,
+  providerSpecificData?: unknown
 ): Promise<Array<{ id: string; name: string }>> {
   const profile = normalizeAntigravityClientProfile(asRecord(providerSpecificData).clientProfile);
   const cacheKey = `${connectionId}:${accessToken.substring(0, 16)}:${profile}`;
@@ -94,7 +94,7 @@ export async function fetchAntigravityDiscoveryModelsCached(
     await ensureAntigravityProjectAssigned(
       accessToken,
       fetch,
-      normalizeAntigravityClientProfile(asRecord(providerSpecificData).clientProfile),
+      normalizeAntigravityClientProfile(asRecord(providerSpecificData).clientProfile)
     );
 
     for (const discoveryUrl of [
@@ -114,13 +114,13 @@ export async function fetchAntigravityDiscoveryModelsCached(
         if (!response.ok) {
           const errorText = await response.text();
           console.warn(
-            `[models] antigravity discovery failed at ${discoveryUrl} (${response.status}): ${errorText}`,
+            `[models] antigravity discovery failed at ${discoveryUrl} (${response.status}): ${errorText}`
           );
           continue;
         }
 
         const models = filterUserCallableAntigravityModels(
-          normalizeAntigravityModelsResponse(await response.json()),
+          normalizeAntigravityModelsResponse(await response.json())
         ).map(mapAntigravityModelForClient);
         if (models.length > 0) {
           return models;
@@ -141,7 +141,7 @@ export async function fetchAntigravityDiscoveryModelsCached(
 }
 
 export function normalizeDataRobotCatalogResponse(
-  data: unknown,
+  data: unknown
 ): Array<{ id: string; name: string }> {
   const items = Array.isArray(asRecord(data).data) ? (asRecord(data).data as unknown[]) : [];
 
@@ -160,7 +160,7 @@ export function normalizeDataRobotCatalogResponse(
 
 export function normalizeOpenAiLikeModelsResponse(
   data: unknown,
-  fallbackOwner: string,
+  fallbackOwner: string
 ): Array<{ id: string; name: string; owned_by: string }> {
   const payload = asRecord(data);
   const items = Array.isArray(data)
@@ -190,7 +190,7 @@ export function normalizeOpenAiLikeModelsResponse(
 }
 
 export function normalizeSapModelsResponse(
-  data: unknown,
+  data: unknown
 ): Array<{ id: string; name: string; owned_by: string }> {
   const payload = asRecord(data);
   const items = Array.isArray(payload.resources) ? (payload.resources as unknown[]) : [];

@@ -131,7 +131,7 @@ export async function getOneproxyStats(): Promise<OneproxyStats> {
         SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
         AVG(quality_score) as avg_quality,
         MAX(last_validated) as last_validated
-       FROM proxy_registry WHERE source = 'oneproxy'`,
+       FROM proxy_registry WHERE source = 'oneproxy'`
     )
     .get();
 
@@ -139,13 +139,13 @@ export async function getOneproxyStats(): Promise<OneproxyStats> {
 
   const byProtocol = db
     .prepare(
-      "SELECT type as protocol, COUNT(*) as count FROM proxy_registry WHERE source = 'oneproxy' GROUP BY type ORDER BY count DESC",
+      "SELECT type as protocol, COUNT(*) as count FROM proxy_registry WHERE source = 'oneproxy' GROUP BY type ORDER BY count DESC"
     )
     .all() as Array<JsonRecord>;
 
   const byCountry = db
     .prepare(
-      "SELECT country_code as countryCode, COUNT(*) as count FROM proxy_registry WHERE source = 'oneproxy' AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 20",
+      "SELECT country_code as countryCode, COUNT(*) as count FROM proxy_registry WHERE source = 'oneproxy' AND country_code IS NOT NULL GROUP BY country_code ORDER BY count DESC LIMIT 20"
     )
     .all() as Array<JsonRecord>;
 
@@ -163,7 +163,7 @@ export async function getOneproxyStats(): Promise<OneproxyStats> {
 }
 
 export async function upsertOneproxyProxy(
-  input: OneproxyUpsertInput,
+  input: OneproxyUpsertInput
 ): Promise<{ proxy: OneproxyProxyRecord | null; action: "created" | "updated" }> {
   const db = getDbInstance();
   const now = new Date().toISOString();
@@ -179,7 +179,7 @@ export async function upsertOneproxyProxy(
       `UPDATE proxy_registry
        SET status = ?, quality_score = ?, latency_ms = ?, anonymity = ?,
            google_access = ?, last_validated = ?, country_code = ?, updated_at = ?
-       WHERE id = ?`,
+       WHERE id = ?`
     ).run(
       "active",
       input.qualityScore ?? null,
@@ -189,7 +189,7 @@ export async function upsertOneproxyProxy(
       input.lastValidated ?? now,
       input.countryCode ?? null,
       now,
-      existing.id,
+      existing.id
     );
     backupDbFile("pre-write");
     const proxy = await getOneproxyProxyById(existing.id);
@@ -202,7 +202,7 @@ export async function upsertOneproxyProxy(
      (id, name, type, host, port, region, notes, status, source,
       quality_score, latency_ms, anonymity, google_access, last_validated, country_code,
       created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     name,
@@ -220,7 +220,7 @@ export async function upsertOneproxyProxy(
     input.lastValidated ?? now,
     input.countryCode ?? null,
     now,
-    now,
+    now
   );
   backupDbFile("pre-write");
   const proxy = await getOneproxyProxyById(id);
@@ -285,7 +285,7 @@ export async function markOneproxyProxyFailed(host: string, port: number): Promi
        SET quality_score = MAX(0, COALESCE(quality_score, 50) - 10),
            status = CASE WHEN COALESCE(quality_score, 50) <= 10 THEN 'inactive' ELSE status END,
            updated_at = datetime('now')
-       WHERE host = ? AND port = ? AND source = 'oneproxy'`,
+       WHERE host = ? AND port = ? AND source = 'oneproxy'`
     )
     .run(host, port);
   backupDbFile("pre-write");

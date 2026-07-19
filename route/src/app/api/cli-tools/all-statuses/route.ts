@@ -24,7 +24,7 @@ const TOOL_CHECK_TIMEOUT_MS = 5000; // 5s per tool max
  */
 async function extractEndpointFromConfig(
   toolId: string,
-  configPath: string,
+  configPath: string
 ): Promise<string | null> {
   try {
     const content = await fs.readFile(configPath, "utf-8");
@@ -110,7 +110,7 @@ export async function GET(request: Request): Promise<Response> {
         } catch {
           mtimesMap[toolId] = 0;
         }
-      }),
+      })
     );
 
     // For each tool: use cache hit, or run detection + config check in parallel
@@ -128,7 +128,7 @@ export async function GET(request: Request): Promise<Response> {
           const runtimePromise = Promise.race<Awaited<ReturnType<typeof getCliRuntimeStatus>>>([
             getCliRuntimeStatus(toolId),
             new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error("Timeout")), TOOL_CHECK_TIMEOUT_MS),
+              setTimeout(() => reject(new Error("Timeout")), TOOL_CHECK_TIMEOUT_MS)
             ),
           ]);
 
@@ -183,7 +183,7 @@ export async function GET(request: Request): Promise<Response> {
           };
           statuses[toolId] = result;
         }
-      }),
+      })
     );
 
     // Merge last-configured timestamps from SQLite (non-critical)
@@ -205,7 +205,7 @@ export async function GET(request: Request): Promise<Response> {
       buildErrorBody(500, err instanceof Error ? err.message : String(err)),
       {
         status: 500,
-      },
+      }
     );
   }
 }

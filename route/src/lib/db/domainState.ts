@@ -82,7 +82,7 @@ function ensureBudgetSchema() {
         const record = asRecord(column);
         return typeof record.name === "string" ? record.name : "";
       })
-      .filter(Boolean),
+      .filter(Boolean)
   );
 
   if (!columnNames.has("weekly_limit_usd")) {
@@ -136,7 +136,7 @@ export function saveFallbackChain(model: string, chain: FallbackChainEntry[]) {
   const db = getDbInstance();
   db.prepare("INSERT OR REPLACE INTO domain_fallback_chains (model, chain) VALUES (?, ?)").run(
     model,
-    JSON.stringify(chain),
+    JSON.stringify(chain)
   );
 }
 
@@ -213,7 +213,7 @@ export function saveBudget(apiKeyId: string, config: Partial<BudgetConfigRecord>
        warning_emitted_at,
        warning_period_start
      )
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     apiKeyId,
     toNumber(config.dailyLimitUsd),
@@ -225,7 +225,7 @@ export function saveBudget(apiKeyId: string, config: Partial<BudgetConfigRecord>
     config.budgetResetAt ?? null,
     config.lastBudgetResetAt ?? null,
     config.warningEmittedAt ?? null,
-    config.warningPeriodStart ?? null,
+    config.warningPeriodStart ?? null
   );
 }
 
@@ -302,7 +302,7 @@ export function saveBudgetResetLog(entry: BudgetResetLogRecord) {
   db.prepare(
     `INSERT INTO domain_budget_reset_logs
        (api_key_id, reset_interval, previous_spend, reset_at, next_reset_at, period_start, period_end)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
   ).run(
     entry.apiKeyId,
     entry.resetInterval,
@@ -310,7 +310,7 @@ export function saveBudgetResetLog(entry: BudgetResetLogRecord) {
     entry.resetAt,
     entry.nextResetAt,
     entry.periodStart,
-    entry.periodEnd,
+    entry.periodEnd
   );
 }
 
@@ -329,7 +329,7 @@ export function loadBudgetResetLogs(apiKeyId: string, limit = 10) {
        FROM domain_budget_reset_logs
        WHERE api_key_id = ?
        ORDER BY reset_at DESC
-       LIMIT ?`,
+       LIMIT ?`
     )
     .all(apiKeyId, Math.max(1, Math.floor(limit)))
     .map((row) => {
@@ -376,26 +376,26 @@ export function saveCostEntry(apiKeyId: string, cost: number, timestamp = Date.n
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     apiKeyId,
     cost,
-    timestamp,
+    timestamp
   );
 }
 
 export function batchSaveCostEntries(
-  entries: Array<{ apiKeyId: string; cost: number; timestamp: number }>,
+  entries: Array<{ apiKeyId: string; cost: number; timestamp: number }>
 ) {
   ensureBudgetSchema();
   if (!Array.isArray(entries) || entries.length === 0) return;
 
   const db = getDbInstance();
   const stmt = db.prepare(
-    "INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)",
+    "INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)"
   );
   const tx = db.transaction(
     (rows: Array<{ apiKeyId: string; cost: number; timestamp: number }>) => {
       for (const entry of rows) {
         stmt.run(entry.apiKeyId, entry.cost, entry.timestamp);
       }
-    },
+    }
   );
 
   tx(entries);
@@ -406,7 +406,7 @@ export function loadCostTotal(apiKeyId: string, sinceTimestamp: number) {
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT COALESCE(SUM(cost), 0) AS total FROM domain_cost_history WHERE api_key_id = ? AND timestamp >= ?",
+      "SELECT COALESCE(SUM(cost), 0) AS total FROM domain_cost_history WHERE api_key_id = ? AND timestamp >= ?"
     )
     .get(apiKeyId, sinceTimestamp) as { total?: number } | undefined;
   return Number(row?.total || 0);
@@ -423,7 +423,7 @@ export function loadCostEntries(apiKeyId: string, sinceTimestamp: number) {
   const db = getDbInstance();
   return db
     .prepare(
-      "SELECT cost, timestamp FROM domain_cost_history WHERE api_key_id = ? AND timestamp >= ? ORDER BY timestamp",
+      "SELECT cost, timestamp FROM domain_cost_history WHERE api_key_id = ? AND timestamp >= ? ORDER BY timestamp"
     )
     .all(apiKeyId, sinceTimestamp);
 }
@@ -438,7 +438,7 @@ export function loadCostEntries(apiKeyId: string, sinceTimestamp: number) {
 export function loadCostEntriesInRange(
   apiKeyId: string,
   sinceTimestamp: number,
-  untilTimestamp: number,
+  untilTimestamp: number
 ) {
   ensureBudgetSchema();
   const db = getDbInstance();
@@ -447,7 +447,7 @@ export function loadCostEntriesInRange(
       `SELECT cost, timestamp
        FROM domain_cost_history
        WHERE api_key_id = ? AND timestamp >= ? AND timestamp < ?
-       ORDER BY timestamp`,
+       ORDER BY timestamp`
     )
     .all(apiKeyId, sinceTimestamp, untilTimestamp);
 }
@@ -498,7 +498,7 @@ export function saveLockoutState(identifier: string, state: LockoutStateRecord) 
   const db = getDbInstance();
   db.prepare(
     `INSERT OR REPLACE INTO domain_lockout_state (identifier, attempts, locked_until)
-     VALUES (?, ?, ?)`,
+     VALUES (?, ?, ?)`
   ).run(identifier, JSON.stringify(state.attempts), state.lockedUntil);
 }
 
@@ -538,7 +538,7 @@ export function loadAllLockedIdentifiers() {
   const now = Date.now();
   return db
     .prepare(
-      "SELECT identifier, locked_until FROM domain_lockout_state WHERE locked_until IS NOT NULL AND locked_until > ?",
+      "SELECT identifier, locked_until FROM domain_lockout_state WHERE locked_until IS NOT NULL AND locked_until > ?"
     )
     .all(now)
     .map((row) => {
@@ -562,13 +562,13 @@ export function saveCircuitBreakerState(name: string, cbState: CircuitBreakerSta
   const db = getDbInstance();
   db.prepare(
     `INSERT OR REPLACE INTO domain_circuit_breakers (name, state, failure_count, last_failure_time, options)
-     VALUES (?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?)`
   ).run(
     name,
     cbState.state,
     cbState.failureCount,
     cbState.lastFailureTime,
-    cbState.options ? JSON.stringify(cbState.options) : null,
+    cbState.options ? JSON.stringify(cbState.options) : null
   );
 }
 

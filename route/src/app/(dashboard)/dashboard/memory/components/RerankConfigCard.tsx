@@ -92,7 +92,7 @@ export default function RerankConfigCard({ settings, providers, onSave, saving }
                     <option key={m.id} value={m.id}>
                       {m.name}
                     </option>
-                  )),
+                  ))
                 )}
               </select>
             )}

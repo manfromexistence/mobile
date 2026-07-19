@@ -133,7 +133,7 @@ function NamedCombosManager() {
           method: editingId ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        },
+        }
       );
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -163,13 +163,13 @@ function NamedCombosManager() {
     setSelectedPacks((current) =>
       enabled
         ? [...new Set([...current, language])]
-        : current.filter((item) => item !== language && item !== "en"),
+        : current.filter((item) => item !== language && item !== "en")
     );
   };
 
   const toggleAssignment = (id: string, enabled: boolean) => {
     setAssignmentIds((current) =>
-      enabled ? [...new Set([...current, id])] : current.filter((item) => item !== id),
+      enabled ? [...new Set([...current, id])] : current.filter((item) => item !== id)
     );
   };
 

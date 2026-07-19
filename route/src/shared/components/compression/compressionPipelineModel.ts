@@ -45,7 +45,7 @@ export function moveLayer(steps: PipelineStep[], from: number, to: number): Pipe
 export function addLayer(
   steps: PipelineStep[],
   step: PipelineStep,
-  table: EngineIntensities,
+  table: EngineIntensities
 ): PipelineStep[] {
   return [...steps, normalizeStep(step, table)];
 }
@@ -62,7 +62,7 @@ export function updateLayer(
   steps: PipelineStep[],
   index: number,
   patch: Partial<PipelineStep>,
-  table: EngineIntensities,
+  table: EngineIntensities
 ): PipelineStep[] {
   if (index < 0 || index >= steps.length) return steps.slice();
   return steps.map((step, i) => (i === index ? normalizeStep({ ...step, ...patch }, table) : step));

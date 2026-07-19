@@ -84,7 +84,7 @@ export default function FreeProviderRankingsPage() {
         setLoading(false);
       }
     },
-    [t],
+    [t]
   );
 
   useEffect(() => {

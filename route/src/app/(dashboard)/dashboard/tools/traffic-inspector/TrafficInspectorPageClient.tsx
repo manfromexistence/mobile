@@ -33,7 +33,7 @@ export function TrafficInspectorPageClient() {
   const [streamState, streamActions] = useTrafficStream(filters);
   const recorder = useSessionRecorder();
   const [captureModes, setCaptureModes] = useState<{ systemProxy?: { applied: boolean } } | null>(
-    null,
+    null
   );
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export function TrafficInspectorPageClient() {
     (id: string | undefined) => {
       setSessionId(id);
     },
-    [setSessionId],
+    [setSessionId]
   );
 
   const handleRecordStart = useCallback(() => {

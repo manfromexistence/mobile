@@ -19,7 +19,7 @@ export const qoder = {
   exchangeToken: async (config, code, redirectUri) => {
     if (!config?.enabled || !config?.tokenUrl) {
       throw new Error(
-        "Qoder browser OAuth is experimental and disabled by default. Configure QODER_OAUTH_* environment variables or use a Personal Access Token.",
+        "Qoder browser OAuth is experimental and disabled by default. Configure QODER_OAUTH_* environment variables or use a Personal Access Token."
       );
     }
     const headers: Record<string, string> = {
@@ -59,12 +59,12 @@ export const qoder = {
   postExchange: async (tokens) => {
     if (!QODER_CONFIG.enabled || !QODER_CONFIG.userInfoUrl) {
       throw new Error(
-        "Qoder browser OAuth is experimental and disabled by default. Configure QODER_OAUTH_* environment variables or use a Personal Access Token.",
+        "Qoder browser OAuth is experimental and disabled by default. Configure QODER_OAUTH_* environment variables or use a Personal Access Token."
       );
     }
     const userInfoRes = await fetch(
       `${QODER_CONFIG.userInfoUrl}?accessToken=${encodeURIComponent(tokens.access_token)}`,
-      { headers: { Accept: "application/json" } },
+      { headers: { Accept: "application/json" } }
     );
     const result = userInfoRes.ok ? await userInfoRes.json() : {};
     const userInfo = result.success ? result.data : {};

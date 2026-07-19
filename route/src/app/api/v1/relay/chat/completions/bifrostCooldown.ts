@@ -17,7 +17,7 @@ export function getBifrostFailureCooldownMs(env: NodeJS.ProcessEnv = process.env
 
 export function getActiveBifrostCooldown(
   baseUrl: string,
-  now = Date.now(),
+  now = Date.now()
 ): ActiveBifrostCooldown | null {
   const entry = cooldowns.get(baseUrl);
   if (!entry) return null;
@@ -36,7 +36,7 @@ export function recordBifrostFailure(
   baseUrl: string,
   reason: string,
   now = Date.now(),
-  cooldownMs = getBifrostFailureCooldownMs(),
+  cooldownMs = getBifrostFailureCooldownMs()
 ): void {
   if (cooldownMs <= 0) {
     cooldowns.delete(baseUrl);

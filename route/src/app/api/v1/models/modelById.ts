@@ -22,7 +22,7 @@ type CatalogModel = { id?: unknown } & Record<string, unknown>;
  */
 export function findModelById(
   data: CatalogModel[] | null | undefined,
-  requestedId: string,
+  requestedId: string
 ): CatalogModel | null {
   if (!Array.isArray(data)) return null;
   const exact = data.find((m) => typeof m?.id === "string" && m.id === requestedId);
@@ -40,7 +40,7 @@ export function findModelById(
 export async function handleGetModelById(
   request: Request,
   requestedId: string,
-  getModels: (request: Request, corsHeaders?: Record<string, string>) => Promise<Response>,
+  getModels: (request: Request, corsHeaders?: Record<string, string>) => Promise<Response>
 ): Promise<Response> {
   const listResp = await getModels(request, CORS_HEADERS);
   // Propagate auth rejections / 5xx (already JSON) unchanged.
@@ -67,6 +67,6 @@ export async function handleGetModelById(
         code: "model_not_found",
       },
     },
-    { status: 404, headers: CORS_HEADERS },
+    { status: 404, headers: CORS_HEADERS }
   );
 }

@@ -159,7 +159,7 @@ export default function CompareTab({ configState }: CompareTabProps) {
           prev.map((c) => {
             const extra = snapshot[c.id];
             return extra != null ? { ...c, response: c.response + extra } : c;
-          }),
+          })
         );
       });
     }
@@ -290,8 +290,7 @@ export default function CompareTab({ configState }: CompareTabProps) {
           }
 
           const usage = parsed["usage"] as
-            | { prompt_tokens?: number; completion_tokens?: number }
-            | undefined;
+            { prompt_tokens?: number; completion_tokens?: number } | undefined;
           if (usage != null) {
             tracker.finish(usage);
           }

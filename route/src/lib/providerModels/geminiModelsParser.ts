@@ -59,7 +59,7 @@ export function parseGeminiModelsList(data: any): GeminiDiscoveryModel[] {
     const endpoints = new Set<string>(
       methods
         .filter((method) => !IGNORED_METHODS.has(method))
-        .map((method) => METHOD_TO_ENDPOINT[method] || "chat"),
+        .map((method) => METHOD_TO_ENDPOINT[method] || "chat")
     );
 
     const id = ((m.name as string) || (m.id as string) || "").replace(/^models\//, "");

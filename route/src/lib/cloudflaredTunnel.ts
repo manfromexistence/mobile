@@ -193,7 +193,7 @@ async function ensureTunnelDir() {
 async function ensureTunnelRuntimeDirs() {
   const runtimeDirs = getCloudflaredRuntimeDirs();
   await Promise.all(
-    Object.values(runtimeDirs).map((dirPath) => fs.mkdir(dirPath, { recursive: true })),
+    Object.values(runtimeDirs).map((dirPath) => fs.mkdir(dirPath, { recursive: true }))
   );
 }
 
@@ -326,7 +326,7 @@ function getGenericExitError(code: number | null, signal: NodeJS.Signals | null)
 export function getDefaultCloudflaredCertEnv(
   existsSync: (candidate: string) => boolean = fsSync.existsSync,
   certFileCandidates: readonly string[] = DEFAULT_CERT_FILE_CANDIDATES,
-  certDirCandidates: readonly string[] = DEFAULT_CERT_DIR_CANDIDATES,
+  certDirCandidates: readonly string[] = DEFAULT_CERT_DIR_CANDIDATES
 ) {
   const certEnv: NodeJS.ProcessEnv = {};
   const certFile = certFileCandidates.find((candidate) => existsSync(candidate));
@@ -341,7 +341,7 @@ export function getDefaultCloudflaredCertEnv(
 export function buildCloudflaredChildEnv(
   sourceEnv: NodeJS.ProcessEnv = process.env,
   runtimeDirs: CloudflaredRuntimeDirs = getCloudflaredRuntimeDirs(),
-  defaultCertEnv: NodeJS.ProcessEnv = getDefaultCloudflaredCertEnv(),
+  defaultCertEnv: NodeJS.ProcessEnv = getDefaultCloudflaredCertEnv()
 ): NodeJS.ProcessEnv {
   const childEnv: NodeJS.ProcessEnv = {};
 
@@ -371,7 +371,7 @@ export function buildCloudflaredChildEnv(
   }
 
   const requestedProtocol = String(
-    sourceEnv.CLOUDFLARED_PROTOCOL || sourceEnv.TUNNEL_TRANSPORT_PROTOCOL || "http2",
+    sourceEnv.CLOUDFLARED_PROTOCOL || sourceEnv.TUNNEL_TRANSPORT_PROTOCOL || "http2"
   )
     .trim()
     .toLowerCase();
@@ -409,7 +409,7 @@ function hasTransientRuntimeState(state: PersistedTunnelState) {
 function buildStoppedState(
   state: PersistedTunnelState,
   binaryResolved: boolean,
-  targetUrl = getLocalTargetUrl(),
+  targetUrl = getLocalTargetUrl()
 ): PersistedTunnelState {
   return {
     ...state,
@@ -426,7 +426,7 @@ function buildStoppedState(
 
 export function getCloudflaredAssetSpec(
   platform = process.platform,
-  arch = process.arch,
+  arch = process.arch
 ): AssetSpec | null {
   const matrix: Record<string, Record<string, AssetSpec>> = {
     linux: {
@@ -493,12 +493,12 @@ export function getSha256FromGitHubDigest(digest: string): string | null {
 export function verifyCloudflaredDownloadDigest(
   buffer: Buffer,
   expectedSha256: string,
-  assetName = "cloudflared",
+  assetName = "cloudflared"
 ): void {
   const actualSha256 = createHash("sha256").update(buffer).digest("hex");
   if (actualSha256 !== expectedSha256.toLowerCase()) {
     throw new Error(
-      `cloudflared download checksum mismatch for ${assetName}: expected ${expectedSha256}, got ${actualSha256}`,
+      `cloudflared download checksum mismatch for ${assetName}: expected ${expectedSha256}, got ${actualSha256}`
     );
   }
 }
@@ -510,7 +510,7 @@ async function resolveCloudflaredDownloadSpec(spec: AssetSpec): Promise<Resolved
   });
   if (!response.ok) {
     throw new Error(
-      `Failed to resolve cloudflared release metadata with status ${response.status}`,
+      `Failed to resolve cloudflared release metadata with status ${response.status}`
     );
   }
 
@@ -518,7 +518,7 @@ async function resolveCloudflaredDownloadSpec(spec: AssetSpec): Promise<Resolved
   const assets = Array.isArray(release.assets) ? release.assets : [];
   const asset = assets
     .map((entry) =>
-      entry && typeof entry === "object" ? (entry as Record<string, unknown>) : null,
+      entry && typeof entry === "object" ? (entry as Record<string, unknown>) : null
     )
     .find((entry) => entry?.name === spec.assetName);
 
@@ -585,7 +585,7 @@ async function downloadToFile(
   url: string,
   destinationPath: string,
   expectedSha256: string,
-  assetName: string,
+  assetName: string
 ) {
   const response = await proxyFetch(url, { redirect: "follow" });
   if (!response.ok) {
@@ -610,7 +610,7 @@ async function installManagedBinary() {
     const spec = getCloudflaredAssetSpec();
     if (!spec) {
       throw new Error(
-        `Unsupported platform for managed cloudflared install: ${process.platform}/${process.arch}`,
+        `Unsupported platform for managed cloudflared install: ${process.platform}/${process.arch}`
       );
     }
 
@@ -629,7 +629,7 @@ async function installManagedBinary() {
         downloadSpec.downloadUrl,
         tempDownloadPath,
         downloadSpec.expectedSha256,
-        downloadSpec.assetName,
+        downloadSpec.assetName
       );
 
       if (spec.archive === "tgz") {
@@ -789,7 +789,7 @@ export async function startCloudflaredTunnel(): Promise<CloudflaredTunnelStatus>
     const spec = getCloudflaredAssetSpec();
     if (!spec && !(await resolveBinary()).binaryPath) {
       throw new Error(
-        `Unsupported platform for cloudflared tunnel: ${process.platform}/${process.arch}`,
+        `Unsupported platform for cloudflared tunnel: ${process.platform}/${process.arch}`
       );
     }
 
@@ -883,9 +883,9 @@ export async function startCloudflaredTunnel(): Promise<CloudflaredTunnelStatus>
         settle(() =>
           reject(
             new Error(
-              `cloudflared exited before tunnel URL was ready (${code ?? "signal"}${signal ? `/${signal}` : ""})`,
-            ),
-          ),
+              `cloudflared exited before tunnel URL was ready (${code ?? "signal"}${signal ? `/${signal}` : ""})`
+            )
+          )
         );
       });
 

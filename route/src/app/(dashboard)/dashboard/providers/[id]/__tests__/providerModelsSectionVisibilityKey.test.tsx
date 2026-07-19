@@ -169,7 +169,7 @@ describe("ProviderModelsSection visibility-toggle key (alias !== id)", () => {
         providerInfo: { name: "Kilo Gateway", passthroughModels: true },
         handleToggleModelHidden,
         handleBulkToggleModelHidden,
-      }),
+      })
     );
 
     // The bug wrote under providerStorageAlias ("kg"); every reader keys on the
@@ -189,7 +189,7 @@ describe("ProviderModelsSection visibility-toggle key (alias !== id)", () => {
         isManagedAvailableModelsProvider: true,
         handleToggleModelHidden,
         handleBulkToggleModelHidden,
-      }),
+      })
     );
 
     expect(handleToggleModelHidden).toHaveBeenCalledWith(PROVIDER_ID, MODEL_ID, true);

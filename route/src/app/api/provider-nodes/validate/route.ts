@@ -37,7 +37,7 @@ function getOutboundCauseCode(error: unknown): string | undefined {
 export function augmentDockerLocalhostHint(
   error: unknown,
   baseUrl: string | undefined,
-  fallbackMessage: string,
+  fallbackMessage: string
 ): string {
   if (!baseUrl || !LOCALHOST_BASE_URL_RE.test(baseUrl)) return fallbackMessage;
 
@@ -144,7 +144,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -162,7 +162,7 @@ export async function POST(request) {
         if (!isCcCompatibleProviderEnabled()) {
           return NextResponse.json(
             { valid: false, error: "CC Compatible provider is disabled" },
-            { status: 403 },
+            { status: 403 }
           );
         }
 

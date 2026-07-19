@@ -59,7 +59,7 @@ function buildUrlCountMap(allResults: CompareResult[]): Map<string, number> {
 export default function CompareTab({ providers, onMetrics }: CompareTabProps) {
   const t = useTranslations("search");
   const activeSearchProviders = providers.filter(
-    (p) => p.kind === "search" && p.status === "configured",
+    (p) => p.kind === "search" && p.status === "configured"
   );
 
   const [query, setQuery] = useState("");
@@ -142,7 +142,7 @@ export default function CompareTab({ providers, onMetrics }: CompareTabProps) {
             error: err instanceof Error ? err.message : "Failed",
           } as CompareResult;
         }
-      }),
+      })
     );
 
     const resolved = settled.map((s) =>
@@ -157,7 +157,7 @@ export default function CompareTab({ providers, onMetrics }: CompareTabProps) {
             urls: [],
             results: [],
             error: "Request failed",
-          } as CompareResult),
+          } as CompareResult)
     );
     setResults(resolved);
     setLoading(false);

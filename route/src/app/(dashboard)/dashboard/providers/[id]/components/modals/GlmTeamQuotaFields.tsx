@@ -28,7 +28,7 @@ export default function GlmTeamQuotaFields({ values, onChange, t }: GlmTeamQuota
         hint={providerText(
           t,
           "glmOrganizationIdHint",
-          "Optional for team plan quota. Copy bigmodel-organization from the team usage page network request.",
+          "Optional for team plan quota. Copy bigmodel-organization from the team usage page network request."
         )}
         autoComplete="off"
         spellCheck={false}
@@ -42,7 +42,7 @@ export default function GlmTeamQuotaFields({ values, onChange, t }: GlmTeamQuota
         hint={providerText(
           t,
           "glmProjectIdHint",
-          "Optional for team plan quota. Copy bigmodel-project from the team usage page network request.",
+          "Optional for team plan quota. Copy bigmodel-project from the team usage page network request."
         )}
         autoComplete="off"
         spellCheck={false}

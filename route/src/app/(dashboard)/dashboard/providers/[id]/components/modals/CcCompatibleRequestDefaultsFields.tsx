@@ -13,7 +13,7 @@ type CcCompatibleRequestDefaultsFieldsProps = {
 };
 
 export default function CcCompatibleRequestDefaultsFields(
-  props: CcCompatibleRequestDefaultsFieldsProps,
+  props: CcCompatibleRequestDefaultsFieldsProps
 ) {
   const t = useTranslations("providers");
 

@@ -9,7 +9,7 @@ function fallbackCatalogRequest(request: Request | undefined, pathname: string) 
 export async function getSpecialtyModelsResponse(
   request: Request | undefined,
   pathname: string,
-  predicate: (model: UnifiedModelEntry) => boolean,
+  predicate: (model: UnifiedModelEntry) => boolean
 ) {
   const catalogResponse = await getUnifiedModelsResponse(fallbackCatalogRequest(request, pathname));
   if (!catalogResponse.ok) return catalogResponse;

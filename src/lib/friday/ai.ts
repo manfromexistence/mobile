@@ -1,10 +1,9 @@
 import type { Message } from "@/features/dx/components/friday/types";
-import type { ZenModel } from "@/lib/friday/models";
 
 export async function* streamAssistantReply(
   userMessage: string,
   history: Message[],
-  model: ZenModel,
+  opts: { providerId: string; modelId: string },
 ): AsyncGenerator<string, void, void> {
   const apiMessages: { role: "user" | "assistant" | "system"; content: string }[] = [
     {
@@ -24,7 +23,11 @@ export async function* streamAssistantReply(
     const res = await fetch("/api/friday/chat", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ model: model.id, messages: apiMessages }),
+      body: JSON.stringify({
+        providerId: opts.providerId,
+        modelId: opts.modelId,
+        messages: apiMessages,
+      }),
     });
 
     if (!res.ok || !res.body) {
@@ -70,23 +73,20 @@ function composeReply(userMessage: string, _history: Message[]): string {
   if (q.includes("who are you") || q.includes("what are you")) {
     return (
       "I'm an AI chat assistant running on a Next.js + Tailwind + Motion stack. " +
-      "I use **Plate** to render rich markdown in my replies, and I stream " +
-      "token-by-token from the OpenCode Zen free model family. " +
-      "Pick any of the 7 free models from the picker — they're all **$0.00** to run."
+      "I stream responses token-by-token from a wide range of AI providers. " +
+      "Pick any provider and model from the picker above."
     );
   }
-  if (q.includes("opencode") || q.includes("zen") || q.includes("model")) {
+  if (q.includes("model") || q.includes("provider")) {
     return (
-      "### Available free models\n\n" +
-      "All powered by **OpenCode Zen** — no auth, no API key, just `Content-Type: application/json`:\n\n" +
-      "1. **Big Pickle** — stealth general-purpose\n" +
-      "2. **DeepSeek V4 Flash** — fast responses\n" +
-      "3. **MiMo V2.5** — balanced (Xiaomi)\n" +
-      "4. **HY3** — Tencent via Novita\n" +
-      "5. **North Mini Code** — code generation\n" +
-      "6. **Nemotron 3 Ultra** — NVIDIA reasoning\n" +
-      "7. **GPT-4o mini** — fallback\n\n" +
-      "> All models stream responses at $0 / 0 / 0 (input / output / cached)."
+      "### Models & providers\n\n" +
+      "I support **120+ providers** and **1400+ models** across categories:\n\n" +
+      "- **NoAuth** — free models, no API key needed\n" +
+      "- **OAuth** — sign-in with your account\n" +
+      "- **API Key** — bring your own key\n" +
+      "- **Local** — run models on your machine\n" +
+      "- **Search**, **Audio**, **Proxy**, and more\n\n" +
+      "> Open the model picker to browse and select any provider."
     );
   }
   if (

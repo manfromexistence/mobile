@@ -83,7 +83,7 @@ export class TrafficBuffer {
 
   constructor(
     maxSize: number = parseEnvNumber(process.env.INSPECTOR_BUFFER_SIZE, 1000),
-    maxBodyBytes: number = getMaxBodyBytes(),
+    maxBodyBytes: number = getMaxBodyBytes()
   ) {
     this.maxSize = Math.max(1, Math.floor(maxSize));
     this.maxBodyBytes = Math.max(1, Math.floor(maxBodyBytes));

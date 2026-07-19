@@ -205,7 +205,7 @@ export async function validateAzureOpenAIProvider({ apiKey, providerSpecificData
       "Content-Type": "application/json",
       "api-key": apiKey,
     },
-    providerSpecificData,
+    providerSpecificData
   );
   const encodedVersion = encodeURIComponent(apiVersion);
 
@@ -298,7 +298,7 @@ export async function validateAzureAiProvider({ apiKey, providerSpecificData = {
       "Content-Type": "application/json",
       "api-key": apiKey,
     },
-    providerSpecificData,
+    providerSpecificData
   );
 
   try {
@@ -341,7 +341,7 @@ export async function validateAzureAiProvider({ apiKey, providerSpecificData = {
 
   const chatUrl = buildAzureAiChatUrl(
     rawBaseUrl,
-    providerSpecificData.apiType === "responses" ? "responses" : "chat",
+    providerSpecificData.apiType === "responses" ? "responses" : "chat"
   );
   const chatBody =
     providerSpecificData.apiType === "responses"
@@ -394,7 +394,7 @@ export async function validateWatsonxProvider({ apiKey, providerSpecificData = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
-    providerSpecificData,
+    providerSpecificData
   );
 
   try {
@@ -485,7 +485,7 @@ export async function validateOciProvider({ apiKey, providerSpecificData = {} }:
       Authorization: `Bearer ${apiKey}`,
       ...(projectId ? { "OpenAI-Project": projectId } : {}),
     },
-    providerSpecificData,
+    providerSpecificData
   );
 
   try {
@@ -580,7 +580,7 @@ export async function validateSapProvider({ apiKey, providerSpecificData = {} }:
       Authorization: `Bearer ${apiKey}`,
       "AI-Resource-Group": resourceGroup,
     },
-    providerSpecificData,
+    providerSpecificData
   );
 
   try {

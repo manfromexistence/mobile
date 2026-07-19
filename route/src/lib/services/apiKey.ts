@@ -12,7 +12,7 @@ export class ServiceApiKeyDecryptError extends Error {
       `Stored API key for service '${tool}' could not be decrypted. ` +
         `STORAGE_ENCRYPTION_KEY may have changed, the row may be corrupted, ` +
         `or it was written on a different machine. Reinstall the service ` +
-        `or rotate the key via POST /api/services/${tool}/rotate-key.`,
+        `or rotate the key via POST /api/services/${tool}/rotate-key.`
     );
     this.name = "ServiceApiKeyDecryptError";
   }

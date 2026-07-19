@@ -139,7 +139,7 @@ function getStepLabel(step: ComboStep): string {
 
 export function getComboControlCenterTargets(
   combo: ComboControlCenterCombo,
-  health?: ComboControlCenterHealth | null,
+  health?: ComboControlCenterHealth | null
 ): ComboControlCenterTarget[] {
   const steps = normalizeComboModels(combo.models || [], { comboName: combo.name || null });
   const healthByStepId = new Map<string, ComboControlCenterTargetHealth>();
@@ -176,7 +176,7 @@ export function getComboControlCenterTargets(
 }
 
 export function getResolvedComboControlCenterTargets(
-  health?: ComboControlCenterHealth | null,
+  health?: ComboControlCenterHealth | null
 ): ComboControlCenterTargetHealth[] {
   return Array.isArray(health?.targetHealth) ? health.targetHealth : [];
 }
@@ -184,7 +184,7 @@ export function getResolvedComboControlCenterTargets(
 export function summarizeComboControlCenter(
   combo: ComboControlCenterCombo,
   metrics?: ComboControlCenterMetrics | null,
-  health?: ComboControlCenterHealth | null,
+  health?: ComboControlCenterHealth | null
 ): ComboControlCenterSummary {
   const targets = getComboControlCenterTargets(combo, health);
   const resolvedTargets = getResolvedComboControlCenterTargets(health);
@@ -213,7 +213,7 @@ export function summarizeComboControlCenter(
       : null;
   const usageSkew = toNumber(health?.usageSkew?.giniCoefficient, 0);
   const hasExhaustedQuota = Boolean(
-    health?.quotaHealth?.providers?.some((provider) => provider.isExhausted),
+    health?.quotaHealth?.providers?.some((provider) => provider.isExhausted)
   );
 
   const healthReasons: string[] = [];

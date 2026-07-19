@@ -206,7 +206,7 @@ export default function McpDashboardPage() {
 
   const selectedCombo = useMemo(
     () => combos.find((combo) => combo.id === selectedComboId) || null,
-    [combos, selectedComboId],
+    [combos, selectedComboId]
   );
 
   const refreshSummary = useCallback(async () => {
@@ -281,7 +281,7 @@ export default function McpDashboardPage() {
     const confirmLabel = nextState ? t("activate") : t("deactivate");
     if (
       !globalThis.confirm(
-        t("confirmSwitchCombo", { action: confirmLabel, combo: selectedCombo.name }),
+        t("confirmSwitchCombo", { action: confirmLabel, combo: selectedCombo.name })
       )
     )
       return;
@@ -639,7 +639,7 @@ export default function McpDashboardPage() {
             disabled={auditOffset + AUDIT_PAGE_SIZE >= auditData.total}
             onClick={() =>
               setAuditOffset((current) =>
-                current + AUDIT_PAGE_SIZE < auditData.total ? current + AUDIT_PAGE_SIZE : current,
+                current + AUDIT_PAGE_SIZE < auditData.total ? current + AUDIT_PAGE_SIZE : current
               )
             }
           >

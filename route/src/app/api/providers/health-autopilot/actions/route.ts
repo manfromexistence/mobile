@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     console.error("[API] POST /api/providers/health-autopilot/actions error:", error);
     return NextResponse.json(
       { error: { message: "Failed to apply provider health autopilot action" } },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -22,7 +22,7 @@ export default function UpstreamProxyCard({ t }: UpstreamProxyCardProps) {
             {providerText(
               t,
               "upstreamProxyManagedDescription",
-              "CLIProxyAPI is configured as an upstream proxy layer, not as a direct provider connection. Manage the binary/runtime in CLI Tools and enable proxy routing on each provider via the provider proxy controls.",
+              "CLIProxyAPI is configured as an upstream proxy layer, not as a direct provider connection. Manage the binary/runtime in CLI Tools and enable proxy routing on each provider via the provider proxy controls."
             )}
           </p>
         </div>

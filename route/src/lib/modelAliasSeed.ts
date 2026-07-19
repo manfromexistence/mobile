@@ -30,10 +30,10 @@ function isValidAliasTarget(value: unknown): boolean {
   if (typeof value === "string" && value.trim().length > 0) return true;
   return Boolean(
     value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      typeof (value as { provider?: unknown }).provider === "string" &&
-      typeof (value as { model?: unknown }).model === "string",
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    typeof (value as { provider?: unknown }).provider === "string" &&
+    typeof (value as { model?: unknown }).model === "string"
   );
 }
 

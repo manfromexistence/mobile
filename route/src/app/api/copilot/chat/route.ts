@@ -11,7 +11,7 @@ const copilotRequestSchema = z.object({
       z.object({
         role: z.enum(["user", "assistant", "system"]),
         content: z.string().min(1, "message content is required"),
-      }),
+      })
     )
     .min(1, "messages array is required"),
 });

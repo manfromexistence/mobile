@@ -9,7 +9,7 @@ function serverErrorResponse(error: unknown): Response {
         type: "server_error",
       },
     },
-    { status: 500 },
+    { status: 500 }
   );
 }
 

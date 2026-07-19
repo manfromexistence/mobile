@@ -67,11 +67,11 @@ export function resolveTypedDecayConfig(env: NodeJS.ProcessEnv = process.env): T
   const enabled = env.MEMORY_TYPED_DECAY_ENABLED === "true";
   const episodicDays = parseNonNegativeInt(
     env.MEMORY_TYPED_DECAY_EPISODIC_DAYS,
-    DEFAULT_TTL_DAYS_BY_TYPE[MemoryType.EPISODIC] as number,
+    DEFAULT_TTL_DAYS_BY_TYPE[MemoryType.EPISODIC] as number
   );
   const accessImmunityThreshold = parseNonNegativeInt(
     env.MEMORY_TYPED_DECAY_ACCESS_IMMUNITY,
-    DEFAULT_ACCESS_IMMUNITY_THRESHOLD,
+    DEFAULT_ACCESS_IMMUNITY_THRESHOLD
   );
   return {
     enabled,
@@ -101,7 +101,7 @@ export function isAccessImmune(accessCount: number, config: TypedDecayConfig): b
  */
 export function computeDecayDeadline(
   memory: DecayCandidate,
-  config: TypedDecayConfig,
+  config: TypedDecayConfig
 ): Date | null {
   if (isTypeImmune(memory.type, config)) return null;
   if (isAccessImmune(memory.accessCount, config)) return null;
@@ -115,7 +115,7 @@ export function computeDecayDeadline(
 export function isMemoryDecayed(
   memory: DecayCandidate,
   config: TypedDecayConfig,
-  now: Date,
+  now: Date
 ): boolean {
   const deadline = computeDecayDeadline(memory, config);
   if (deadline == null) return false;
@@ -148,7 +148,7 @@ export async function sweepDecayedMemories(
     now?: Date;
     dryRun?: boolean;
     apiKeyId?: string;
-  } = {},
+  } = {}
 ): Promise<SweepResult> {
   const config = options.config ?? resolveTypedDecayConfig();
   const now = options.now ?? new Date();

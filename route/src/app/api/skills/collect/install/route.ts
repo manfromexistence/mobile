@@ -75,7 +75,7 @@ function resolveDestDir(target: string, skillName: string, description: string):
   const template = CODING_TOOL_PATHS[target];
   if (!template) {
     throw new Error(
-      `Unknown target tool: "${target}". Supported: ${Object.keys(CODING_TOOL_PATHS).join(", ")}`,
+      `Unknown target tool: "${target}". Supported: ${Object.keys(CODING_TOOL_PATHS).join(", ")}`
     );
   }
   const category = inferCategory(skillName, description);

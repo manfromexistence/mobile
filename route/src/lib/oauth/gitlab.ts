@@ -59,8 +59,8 @@ export function parseGitLabDirectAccessDetails(payload: unknown): GitLabDirectAc
   const headers = Object.fromEntries(
     Object.entries(rawHeaders).filter(
       (entry): entry is [string, string] =>
-        typeof entry[0] === "string" && typeof entry[1] === "string",
-    ),
+        typeof entry[0] === "string" && typeof entry[1] === "string"
+    )
   );
 
   const expiresAt =
@@ -78,7 +78,7 @@ export function parseGitLabDirectAccessDetails(payload: unknown): GitLabDirectAc
 
 export function getCachedGitLabDirectAccess(
   providerSpecificData?: unknown,
-  minValidityMs = 60_000,
+  minValidityMs = 60_000
 ): GitLabDirectAccessDetails | null {
   const data = asRecord(providerSpecificData);
   const cache = data.gitlabDirectAccess ?? data.directAccessCache;

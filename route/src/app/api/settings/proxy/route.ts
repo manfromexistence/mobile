@@ -62,7 +62,7 @@ function toApiRouteError(error: unknown): ApiRouteError {
 }
 
 function getRegistryScopeForLevel(
-  level: string,
+  level: string
 ): "global" | "provider" | "combo" | "account" | undefined {
   if (!Object.prototype.hasOwnProperty.call(PROXY_LEVEL_TO_REGISTRY_SCOPE, level)) {
     return undefined;
@@ -96,7 +96,7 @@ function toProxyConfig(proxyData: NonNullable<Awaited<ReturnType<typeof getProxy
 
 function normalizeAndValidateProxy(
   proxy: ProxyConfigInput | null | undefined,
-  pathLabel: string,
+  pathLabel: string
 ): ProxyConfigInput | null | undefined {
   if (proxy === null || proxy === undefined) return proxy;
   if (typeof proxy !== "object" || Array.isArray(proxy)) {
@@ -106,7 +106,7 @@ function normalizeAndValidateProxy(
   const type = String(proxy.type || "http").toLowerCase() as NonNullable<ProxyConfigInput["type"]>;
   if (type === "socks5" && !isSocks5Enabled()) {
     throw createInvalidProxyError(
-      "SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)",
+      "SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)"
     );
   }
   if (type.startsWith("socks") && type !== "socks5") {
@@ -121,7 +121,7 @@ function normalizeAndValidateProxy(
 
 function normalizeAndValidateProxyMap(
   proxyMap: ProxyMapInput | undefined,
-  mapName: string,
+  mapName: string
 ): ProxyMapInput | undefined {
   if (proxyMap === undefined) return undefined;
   if (proxyMap === null || typeof proxyMap !== "object" || Array.isArray(proxyMap)) {
@@ -204,7 +204,7 @@ export async function GET(request: Request) {
           const proxyData = await getProxyById(assignment.proxyId, { includeSecrets: true });
           if (!proxyData) return null;
           return { scopeId: assignment.scopeId, proxyData };
-        }),
+        })
       );
 
       for (const result of providerProxyResults) {

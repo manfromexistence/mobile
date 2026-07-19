@@ -72,7 +72,7 @@ type ProviderStatus = "configured" | "missing" | "rate_limited";
  */
 async function resolveProviderStatus(
   providerId: string,
-  useCredentialFallback = true,
+  useCredentialFallback = true
 ): Promise<ProviderStatus> {
   try {
     const credentials = await getProviderCredentials(providerId).catch(() => null);
@@ -133,8 +133,8 @@ export async function GET(request: Request) {
     // -----------------------------------------------------------------------
     const searchProviderStatuses = await Promise.all(
       Object.values(SEARCH_PROVIDERS).map((p) =>
-        resolveProviderStatus(p.id).then((status) => ({ p, status })),
-      ),
+        resolveProviderStatus(p.id).then((status) => ({ p, status }))
+      )
     );
 
     const searchItems: SearchProviderCatalogItem[] = searchProviderStatuses.map(
@@ -147,7 +147,7 @@ export async function GET(request: Request) {
         searchTypes: p.searchTypes,
         status,
         configureHref: "/dashboard/providers",
-      }),
+      })
     );
 
     // -----------------------------------------------------------------------
@@ -155,8 +155,8 @@ export async function GET(request: Request) {
     // -----------------------------------------------------------------------
     const fetchProviderStatuses = await Promise.all(
       FETCH_PROVIDERS.map((fp) =>
-        resolveProviderStatus(fp.id, false).then((status) => ({ fp, status })),
-      ),
+        resolveProviderStatus(fp.id, false).then((status) => ({ fp, status }))
+      )
     );
 
     const fetchItems: SearchProviderCatalogItem[] = fetchProviderStatuses.map(({ fp, status }) => ({
@@ -182,7 +182,7 @@ export async function GET(request: Request) {
     if (!parseResult.success) {
       log.warn(
         "SEARCH_PROVIDERS",
-        `Response schema validation warning: ${parseResult.error.message}`,
+        `Response schema validation warning: ${parseResult.error.message}`
       );
     }
 

@@ -34,7 +34,7 @@ export function SessionRecorderBar({
         "flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm border",
         recording
           ? "border-red-500/40 bg-red-900/20 text-red-200"
-          : "border-border bg-bg-subtle text-text-muted",
+          : "border-border bg-bg-subtle text-text-muted"
       )}
     >
       {recording ? (

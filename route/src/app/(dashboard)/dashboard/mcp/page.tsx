@@ -307,7 +307,7 @@ export default function McpPage() {
         setTransportSaving(false);
       }
     },
-    [patchSetting],
+    [patchSetting]
   );
 
   return (

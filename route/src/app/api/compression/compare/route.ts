@@ -20,7 +20,7 @@ const CompareRequestSchema = z.object({
 function messagesToText(messages: Array<{ role: string; content: unknown }>): string {
   return messages
     .map(
-      (m) => `${m.role}: ${typeof m.content === "string" ? m.content : JSON.stringify(m.content)}`,
+      (m) => `${m.role}: ${typeof m.content === "string" ? m.content : JSON.stringify(m.content)}`
     )
     .join("\n");
 }
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400 },
+      { status: 400 }
     );
   }
   const { messages, engineIds } = parsed.data;
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     console.error("[/api/compression/compare]", msg);
     return NextResponse.json(
       { error: "Compare failed", details: sanitizeErrorMessage(msg) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

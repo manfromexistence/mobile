@@ -49,7 +49,7 @@ const ANOMALY_Z_THRESHOLD = 3;
 export async function validateScoreChange(
   apiKeyId: string,
   _action: string,
-  amount: number,
+  amount: number
 ): Promise<ScoreValidation> {
   // Rate limiting: max XP per window
   const recentXp = await getRecentXp(apiKeyId, RATE_LIMIT_WINDOW_MS);
@@ -81,7 +81,7 @@ export async function getAnomalies(): Promise<AnomalyFlag[]> {
        FROM xp_audit_log
        WHERE created_at > datetime('now', '-1 hour')
        GROUP BY api_key_id
-       HAVING hourly_total > 1000`,
+       HAVING hourly_total > 1000`
     )
     .all() as Array<{ api_key_id: string; hourly_total: number }>;
 
@@ -110,7 +110,7 @@ async function computeZScore(apiKeyId: string): Promise<number | null> {
     .prepare(
       `SELECT COALESCE(SUM(xp_earned), 0) AS total
        FROM xp_audit_log
-       WHERE api_key_id = ? AND created_at > datetime('now', '-1 hour')`,
+       WHERE api_key_id = ? AND created_at > datetime('now', '-1 hour')`
     )
     .get(apiKeyId) as { total: number };
 
@@ -125,7 +125,7 @@ async function computeZScore(apiKeyId: string): Promise<number | null> {
          FROM xp_audit_log
          WHERE created_at > datetime('now', '-1 hour')
          GROUP BY api_key_id
-       )`,
+       )`
     )
     .get() as { mean: number; variance: number } | undefined;
 
@@ -144,7 +144,7 @@ async function getRecentXp(apiKeyId: string, windowMs: number): Promise<number> 
 
   const row = d
     .prepare(
-      "SELECT COALESCE(SUM(xp_earned), 0) AS total FROM xp_audit_log WHERE api_key_id = ? AND created_at > ?",
+      "SELECT COALESCE(SUM(xp_earned), 0) AS total FROM xp_audit_log WHERE api_key_id = ? AND created_at > ?"
     )
     .get(apiKeyId, since) as { total: number };
 

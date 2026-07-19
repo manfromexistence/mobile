@@ -78,7 +78,7 @@ function toProviderPluginModel(tool: string, model: ServiceModel): ProviderPlugi
 
 function pickServiceModels(
   tool: string,
-  reader: (toolName: string) => ServiceModel[],
+  reader: (toolName: string) => ServiceModel[]
 ): ProviderPluginModel[] {
   const models = reader(tool).filter(isValidServiceModelEntry);
 
@@ -109,7 +109,7 @@ function shouldInjectBackendPluginModels(provider: ProviderPluginManifestEntry) 
 export async function injectServiceModelsIntoManifest(
   manifest: ProviderPluginManifest,
   reader: (toolName: string) => ServiceModel[] = getServiceModels,
-  exposeReader?: (toolName: string) => Promise<boolean> | boolean,
+  exposeReader?: (toolName: string) => Promise<boolean> | boolean
 ): Promise<ProviderPluginManifest> {
   const providers: ProviderPluginManifestEntry[] = [...manifest.providers];
   for (const providerId of SERVICE_BACKEND_PLUGIN_ID_SET) {
@@ -146,7 +146,7 @@ export async function injectServiceModelsIntoManifest(
       } catch {
         return provider;
       }
-    }),
+    })
   );
 
   return {
@@ -170,6 +170,6 @@ export async function GET() {
     JSON.stringify(await injectServiceModelsIntoManifest(generateProviderPluginManifest())),
     {
       headers: SERVICE_MODEL_CACHE_HEADERS,
-    },
+    }
   );
 }

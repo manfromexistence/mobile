@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     const message = sanitizeErrorMessage(
-      error instanceof Error ? error.message : "Failed to check for updates",
+      error instanceof Error ? error.message : "Failed to check for updates"
     );
     console.error("[version-manager] check-update error:", message);
     return NextResponse.json({ error: message }, { status: 500 });

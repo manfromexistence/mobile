@@ -20,7 +20,7 @@ function mockFetchOnce(results: unknown[]) {
       new Response(JSON.stringify({ results }), {
         status: 200,
         headers: { "content-type": "application/json" },
-      }),
+      })
   );
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;

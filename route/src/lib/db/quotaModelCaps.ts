@@ -77,7 +77,7 @@ export function getModelCap(poolId: string, apiKeyId: string, model: string): Mo
     .prepare<ModelCapRow>(
       `SELECT pool_id, api_key_id, model, cap_value, cap_unit
        FROM quota_allocation_model_caps
-       WHERE pool_id = ? AND api_key_id = ? AND model = ?`,
+       WHERE pool_id = ? AND api_key_id = ? AND model = ?`
     )
     .get(poolId, apiKeyId, model);
   return row ? rowToModelCap(row) : null;
@@ -91,7 +91,7 @@ export function listModelCaps(poolId: string, apiKeyId: string): ModelCap[] {
     .prepare<ModelCapRow>(
       `SELECT pool_id, api_key_id, model, cap_value, cap_unit
        FROM quota_allocation_model_caps
-       WHERE pool_id = ? AND api_key_id = ?`,
+       WHERE pool_id = ? AND api_key_id = ?`
     )
     .all(poolId, apiKeyId);
   return rows.map(rowToModelCap);
@@ -109,7 +109,7 @@ export function setModelCap(cap: ModelCap): void {
        VALUES (?, ?, ?, ?, ?)
        ON CONFLICT(pool_id, api_key_id, model) DO UPDATE SET
          cap_value = excluded.cap_value,
-         cap_unit  = excluded.cap_unit`,
+         cap_unit  = excluded.cap_unit`
     )
     .run(cap.poolId, cap.apiKeyId, cap.model, cap.capValue, cap.capUnit);
 }
@@ -122,7 +122,7 @@ export function deleteModelCap(poolId: string, apiKeyId: string, model: string):
   getDb()
     .prepare(
       `DELETE FROM quota_allocation_model_caps
-       WHERE pool_id = ? AND api_key_id = ? AND model = ?`,
+       WHERE pool_id = ? AND api_key_id = ? AND model = ?`
     )
     .run(poolId, apiKeyId, model);
 }

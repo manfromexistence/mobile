@@ -151,7 +151,7 @@ const RERANK_LOOPBACK_URL = "http://127.0.0.1:20128/v1/rerank";
 async function applyRerank<T extends { memory: Memory; score: number }>(
   items: T[],
   query: string,
-  rerankProviderModel: string,
+  rerankProviderModel: string
 ): Promise<T[]> {
   if (items.length === 0) return items;
 
@@ -230,7 +230,7 @@ async function applyRerank<T extends { memory: Memory; score: number }>(
  */
 export async function retrieveMemories(
   apiKeyId: string,
-  config: RetrievalOptions = {},
+  config: RetrievalOptions = {}
 ): Promise<Memory[]> {
   const result = await retrieveMemoriesInternal(apiKeyId, config);
   if (result.length > 0) {
@@ -241,7 +241,7 @@ export async function retrieveMemories(
 
 async function retrieveMemoriesInternal(
   apiKeyId: string,
-  config: RetrievalOptions = {},
+  config: RetrievalOptions = {}
 ): Promise<Memory[]> {
   log.info("memory.retrieval.start", { apiKeyId, strategy: config.retrievalStrategy });
 
@@ -303,7 +303,7 @@ async function retrieveMemoriesInternal(
 
   if (normalizedConfig.retentionDays > 0) {
     const cutoff = new Date(
-      Date.now() - normalizedConfig.retentionDays * 24 * 60 * 60 * 1000,
+      Date.now() - normalizedConfig.retentionDays * 24 * 60 * 60 * 1000
     ).toISOString();
     query += ` AND datetime(${columns.createdAt}) >= datetime(?)`;
     params.push(cutoff);
@@ -357,7 +357,7 @@ async function retrieveMemoriesInternal(
                   qdrantItems = (await applyRerank(
                     qdrantItems,
                     config.query,
-                    settings.rerankProviderModel,
+                    settings.rerankProviderModel
                   )) as typeof qdrantItems;
                 }
                 for (const entry of qdrantItems) {
@@ -409,7 +409,7 @@ async function retrieveMemoriesInternal(
                   rankedItems = (await applyRerank(
                     rankedItems,
                     config.query,
-                    settings.rerankProviderModel,
+                    settings.rerankProviderModel
                   )) as typeof rankedItems;
                 }
 
@@ -485,7 +485,7 @@ async function retrieveMemoriesInternal(
                   qdrantItems = (await applyRerank(
                     qdrantItems,
                     config.query,
-                    settings.rerankProviderModel,
+                    settings.rerankProviderModel
                   )) as typeof qdrantItems;
                 }
                 for (const entry of qdrantItems) {
@@ -525,7 +525,7 @@ async function retrieveMemoriesInternal(
                   embeddingResult.vector,
                   config.query,
                   100,
-                  apiKeyId,
+                  apiKeyId
                 );
                 const hitIds = hybridHits.map((h) => h.memoryId);
                 const hitMemories = fetchMemoriesByIds(hitIds);
@@ -533,7 +533,7 @@ async function retrieveMemoriesInternal(
                   hybridHits.map((h) => [
                     h.memoryId,
                     { rrfScore: h.rrfScore, vecDistance: h.vecDistance, ftsScore: h.ftsScore },
-                  ]),
+                  ])
                 );
 
                 let rankedHybridItems = hitMemories.map((m) => {
@@ -550,7 +550,7 @@ async function retrieveMemoriesInternal(
                   rankedHybridItems = (await applyRerank(
                     rankedHybridItems,
                     config.query,
-                    settings.rerankProviderModel,
+                    settings.rerankProviderModel
                   )) as typeof rankedHybridItems;
                 }
 
@@ -659,7 +659,7 @@ async function retrieveMemoriesInternal(
 export async function retrievePreview(
   apiKeyId: string | null,
   query: string,
-  options: { strategy: "exact" | "semantic" | "hybrid"; maxTokens: number; limit: number },
+  options: { strategy: "exact" | "semantic" | "hybrid"; maxTokens: number; limit: number }
 ): Promise<RetrievePreviewBundle> {
   const { strategy, maxTokens, limit } = options;
 
@@ -696,7 +696,7 @@ export async function retrievePreview(
           const qres = await searchSemanticMemory(
             query,
             limit,
-            apiKeyId ? { apiKeyId } : undefined,
+            apiKeyId ? { apiKeyId } : undefined
           );
           if (qres.ok && qres.results && qres.results.length > 0) {
             const hitIds = qres.results.map((r) => r.id);
@@ -720,7 +720,7 @@ export async function retrievePreview(
               items = (await applyRerank(
                 items,
                 query,
-                settings.rerankProviderModel,
+                settings.rerankProviderModel
               )) as typeof items;
               rerankApplied = true;
             }
@@ -767,7 +767,7 @@ export async function retrievePreview(
               const hits = await vec.searchVector(
                 embeddingResult.vector,
                 limit,
-                apiKeyId ?? undefined,
+                apiKeyId ?? undefined
               );
               const hitIds = hits.map((h) => h.memoryId);
               const hitMemories = fetchMemoriesByIds(hitIds).slice(0, limit);
@@ -791,7 +791,7 @@ export async function retrievePreview(
                 items = (await applyRerank(
                   items,
                   query,
-                  settings.rerankProviderModel,
+                  settings.rerankProviderModel
                 )) as typeof items;
                 rerankApplied = true;
               }
@@ -809,7 +809,7 @@ export async function retrievePreview(
                 embeddingResult.vector,
                 query,
                 limit,
-                apiKeyId ?? undefined,
+                apiKeyId ?? undefined
               );
               const hitIds = hybridHits.map((h) => h.memoryId);
               const hitMemories = fetchMemoriesByIds(hitIds);
@@ -821,7 +821,7 @@ export async function retrievePreview(
                     vecDistance: h.vecDistance,
                     ftsScore: h.ftsScore,
                   },
-                ]),
+                ])
               );
 
               let items = hitMemories.slice(0, limit).map((m) => {
@@ -839,7 +839,7 @@ export async function retrievePreview(
                 items = (await applyRerank(
                   items,
                   query,
-                  settings.rerankProviderModel,
+                  settings.rerankProviderModel
                 )) as typeof items;
                 rerankApplied = true;
               }

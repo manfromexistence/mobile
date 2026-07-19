@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     console.error("[API] DB health diagnosis failed:", message);
     return NextResponse.json(
       { error: { message: sanitizeErrorMessage(message) } },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     console.error("[API] DB health repair failed:", message);
     return NextResponse.json(
       { error: { message: sanitizeErrorMessage(message) } },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

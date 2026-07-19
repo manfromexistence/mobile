@@ -75,7 +75,7 @@ function hasElapsedCooldown(rateLimitedUntil: string | null | undefined, nowMs: 
  */
 export function isRecoverableCooldownConnection(
   connection: RecoverableConnectionInput | null | undefined,
-  nowMs: number,
+  nowMs: number
 ): boolean {
   if (!connection || typeof connection.id !== "string" || connection.id.length === 0) {
     return false;
@@ -92,7 +92,7 @@ export function isRecoverableCooldownConnection(
  */
 export function selectRecoverableConnections<T extends RecoverableConnectionInput>(
   connections: readonly T[] | null | undefined,
-  nowMs: number,
+  nowMs: number
 ): T[] {
   if (!Array.isArray(connections)) return [];
   return connections.filter((connection) => isRecoverableCooldownConnection(connection, nowMs));
@@ -123,10 +123,10 @@ export async function runConnectionRecoveryTick(
     loadConnections?: () => Promise<RecoverableConnectionInput[]>;
     clearConnectionError?: (
       connectionId: string,
-      current: RecoverableConnectionInput,
+      current: RecoverableConnectionInput
     ) => Promise<void>;
     logger?: { info?: (msg: string) => void; warn?: (msg: string) => void };
-  } = {},
+  } = {}
 ): Promise<ConnectionRecoveryTickResult> {
   const nowMs = deps.nowMs ?? Date.now();
   const result: ConnectionRecoveryTickResult = { scanned: 0, recovered: 0, recoveredIds: [] };
@@ -153,7 +153,7 @@ export async function runConnectionRecoveryTick(
     connections = await load();
   } catch (err) {
     deps.logger?.warn?.(
-      `[ConnectionRecovery] failed to load connections: ${err instanceof Error ? err.message : String(err)}`,
+      `[ConnectionRecovery] failed to load connections: ${err instanceof Error ? err.message : String(err)}`
     );
     return result;
   }
@@ -176,14 +176,14 @@ export async function runConnectionRecoveryTick(
       result.recoveredIds.push(connection.id);
     } catch (err) {
       deps.logger?.warn?.(
-        `[ConnectionRecovery] failed to recover ${connection.id.slice(0, 8)}: ${err instanceof Error ? err.message : String(err)}`,
+        `[ConnectionRecovery] failed to recover ${connection.id.slice(0, 8)}: ${err instanceof Error ? err.message : String(err)}`
       );
     }
   }
 
   if (result.recovered > 0) {
     deps.logger?.info?.(
-      `[ConnectionRecovery] proactively restored ${result.recovered} connection(s) with elapsed cooldown`,
+      `[ConnectionRecovery] proactively restored ${result.recovered} connection(s) with elapsed cooldown`
     );
   }
   return result;
@@ -202,8 +202,7 @@ const TRUE_ENV_VALUES = new Set(["1", "true", "yes", "on"]);
 
 declare global {
   var __omnirouteConnRecovery:
-    | { initialized: boolean; interval: ReturnType<typeof setInterval> | null }
-    | undefined;
+    { initialized: boolean; interval: ReturnType<typeof setInterval> | null } | undefined;
 }
 
 function getRecoveryState() {
@@ -247,7 +246,7 @@ function isRecoverySchedulerDisabled(): boolean {
 export function resolveConnectionRecoveryIntervalMs(
   rawValue: string | undefined = typeof process !== "undefined"
     ? process.env.OMNIROUTE_CONNECTION_RECOVERY_INTERVAL_MS
-    : undefined,
+    : undefined
 ): number {
   if (!rawValue) return DEFAULT_TICK_MS;
   const parsed = Number(rawValue);
@@ -279,7 +278,7 @@ export function initConnectionRecoveryScheduler(): void {
   };
 
   console.log(
-    `${RECOVERY_LOG_PREFIX} Starting proactive cooldown recovery (tick every ${Math.round(tickMs / 1000)}s)`,
+    `${RECOVERY_LOG_PREFIX} Starting proactive cooldown recovery (tick every ${Math.round(tickMs / 1000)}s)`
   );
 
   // Delay the first tick a little so it never piles onto cold-start work.

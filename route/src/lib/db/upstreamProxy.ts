@@ -54,7 +54,7 @@ function isPrivateHost(hostname: string): boolean {
 }
 
 export function validateProxyUrl(
-  url: string,
+  url: string
 ): { valid: true; url: string } | { valid: false; error: string } {
   try {
     const parsed = new URL(url);
@@ -147,7 +147,7 @@ export async function upsertUpstreamProxyConfig(data: {
        cliproxyapi_priority = excluded.cliproxyapi_priority,
        enabled = excluded.enabled,
        family = excluded.family,
-       updated_at = datetime('now')`,
+       updated_at = datetime('now')`
   ).run(
     data.providerId,
     mode,
@@ -155,7 +155,7 @@ export async function upsertUpstreamProxyConfig(data: {
     nativePriority,
     cliproxyapiPriority,
     enabled,
-    family,
+    family
   );
 
   return getUpstreamProxyConfig(data.providerId);
@@ -163,7 +163,7 @@ export async function upsertUpstreamProxyConfig(data: {
 
 export async function updateUpstreamProxyConfig(
   providerId: string,
-  updates: Record<string, unknown>,
+  updates: Record<string, unknown>
 ) {
   const db = getDbInstance();
   const current = await getUpstreamProxyConfig(providerId);
@@ -183,7 +183,7 @@ export async function updateUpstreamProxyConfig(
     params.push(
       updates.cliproxyapiModelMapping === null
         ? null
-        : JSON.stringify(updates.cliproxyapiModelMapping),
+        : JSON.stringify(updates.cliproxyapiModelMapping)
     );
   }
   if (updates.nativePriority !== undefined) {
@@ -205,7 +205,7 @@ export async function updateUpstreamProxyConfig(
 
   params.push(providerId);
   db.prepare(`UPDATE upstream_proxy_config SET ${sets.join(", ")} WHERE provider_id = ?`).run(
-    ...params,
+    ...params
   );
 
   return getUpstreamProxyConfig(providerId);
@@ -223,7 +223,7 @@ export async function getProvidersByMode(mode: string) {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT * FROM upstream_proxy_config WHERE mode = ? AND enabled = 1 ORDER BY provider_id",
+      "SELECT * FROM upstream_proxy_config WHERE mode = ? AND enabled = 1 ORDER BY provider_id"
     )
     .all(mode) as UpstreamProxyRow[];
   return rows.map((row) => rowToConfig(toRecord(row)));

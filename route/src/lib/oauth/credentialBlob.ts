@@ -69,7 +69,7 @@ export function encodeCredentialBlob(input: CredentialBlob): string {
 export function decodeCredentialBlob(blob: string): CredentialBlob {
   if (typeof blob !== "string" || !blob.startsWith(CREDENTIAL_BLOB_PREFIX)) {
     throw new Error(
-      `decodeCredentialBlob: invalid format — must start with "${CREDENTIAL_BLOB_PREFIX}"`,
+      `decodeCredentialBlob: invalid format — must start with "${CREDENTIAL_BLOB_PREFIX}"`
     );
   }
   const b64 = blob.slice(CREDENTIAL_BLOB_PREFIX.length).trim();
@@ -87,7 +87,7 @@ export function decodeCredentialBlob(blob: string): CredentialBlob {
 
   if (parsed.v !== CREDENTIAL_BLOB_VERSION) {
     throw new Error(
-      `decodeCredentialBlob: unsupported blob version ${String(parsed.v)} (expected ${CREDENTIAL_BLOB_VERSION})`,
+      `decodeCredentialBlob: unsupported blob version ${String(parsed.v)} (expected ${CREDENTIAL_BLOB_VERSION})`
     );
   }
   if (typeof parsed.provider !== "string" || !parsed.provider.trim()) {

@@ -75,7 +75,7 @@ export function AgentBridgeMaintenanceCard({
       setNotice(
         repaired.length === 0
           ? t("repairNothing") || "Nothing to repair — system state is clean."
-          : (t("repairDone") || "Repaired: {items}").replace("{items}", repaired.join(", ")),
+          : (t("repairDone") || "Repaired: {items}").replace("{items}", repaired.join(", "))
       );
       await onRefresh();
     });
@@ -110,7 +110,7 @@ export function AgentBridgeMaintenanceCard({
         (t("importDone") || "Imported {bypass} bypass · {hosts} hosts · {agents} agents")
           .replace("{bypass}", String(result.bypassPatterns))
           .replace("{hosts}", String(result.customHosts))
-          .replace("{agents}", String(result.agents)),
+          .replace("{agents}", String(result.agents))
       );
       await onRefresh();
     });

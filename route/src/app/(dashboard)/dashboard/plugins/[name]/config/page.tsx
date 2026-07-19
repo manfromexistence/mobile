@@ -20,11 +20,7 @@ interface PluginConfig {
   configSchema: Record<string, ConfigField>;
 }
 
-export default function PluginConfigPage({
-  params,
-}: {
-  params: Promise<{ name: string }>;
-}) {
+export default function PluginConfigPage({ params }: { params: Promise<{ name: string }> }) {
   const { name } = use(params);
   const { addNotification } = useNotificationStore();
   const t = useTranslations("plugins");

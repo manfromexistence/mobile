@@ -16,7 +16,7 @@ export function clampRefreshIntervalSec(value: number): number {
 }
 
 export function readSavedRefreshIntervalSec(
-  storage: RefreshIntervalStorage | null = getBrowserStorage(),
+  storage: RefreshIntervalStorage | null = getBrowserStorage()
 ): number {
   if (!storage) return DEFAULT_REFRESH_INTERVAL_SEC;
   try {
@@ -30,7 +30,7 @@ export function readSavedRefreshIntervalSec(
 
 export function writeSavedRefreshIntervalSec(
   value: number,
-  storage: RefreshIntervalStorage | null = getBrowserStorage(),
+  storage: RefreshIntervalStorage | null = getBrowserStorage()
 ): boolean {
   if (!storage) return false;
   try {

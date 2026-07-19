@@ -61,7 +61,7 @@ export function comboErrorResponse(
   code: ComboErrorCode,
   status?: number,
   details?: unknown,
-  request?: Request,
+  request?: Request
 ): Response {
   const def = ERROR_CODES[code] ?? ERROR_CODES.INTERNAL_001;
   const httpStatus = status ?? def.httpStatus;

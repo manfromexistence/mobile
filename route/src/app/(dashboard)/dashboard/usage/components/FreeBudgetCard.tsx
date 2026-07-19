@@ -143,7 +143,7 @@ function sortRows(rows: FreeBudgetPerModel[], sort: FreeBudgetSort): FreeBudgetP
   if (sort === "name") return copy.sort((a, b) => a.displayName.localeCompare(b.displayName));
   if (sort === "provider")
     return copy.sort(
-      (a, b) => a.provider.localeCompare(b.provider) || b.monthlyTokens - a.monthlyTokens,
+      (a, b) => a.provider.localeCompare(b.provider) || b.monthlyTokens - a.monthlyTokens
     );
   return copy.sort((a, b) => b.monthlyTokens - a.monthlyTokens || b.creditTokens - a.creditTokens);
 }

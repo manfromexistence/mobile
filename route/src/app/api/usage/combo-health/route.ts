@@ -24,7 +24,7 @@ export async function GET(request: Request) {
         {
           error: parsedQuery.error.issues[0]?.message ?? "Invalid query parameters",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 

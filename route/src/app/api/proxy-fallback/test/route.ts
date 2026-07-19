@@ -70,7 +70,7 @@ export async function POST(request: Request) {
           results: [],
           message: "No proxy candidates available to test. Configure a proxy first.",
         },
-        { status: 200 },
+        { status: 200 }
       );
     }
 

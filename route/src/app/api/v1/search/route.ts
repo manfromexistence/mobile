@@ -75,7 +75,7 @@ async function resolveSearchCredentials(providerId: string): Promise<SearchCrede
   if (!fallbackId) return credentials;
 
   const fallbackCredentials = await getProviderCredentialsWithQuotaPreflight(fallbackId).catch(
-    () => null,
+    () => null
   );
   if (fallbackCredentials && !isAllRateLimitedCredentials(fallbackCredentials)) {
     return fallbackCredentials;
@@ -136,7 +136,7 @@ async function postHandler(request: Request, context: unknown) {
     if (!supportsSearchType(explicitProvider, body.search_type)) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `Search provider ${body.provider} does not support search_type: ${body.search_type}`,
+        `Search provider ${body.provider} does not support search_type: ${body.search_type}`
       );
     }
   }
@@ -145,7 +145,7 @@ async function postHandler(request: Request, context: unknown) {
   if (!providerConfig) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      body.provider ? `Unknown search provider: ${body.provider}` : "No search providers available",
+      body.provider ? `Unknown search provider: ${body.provider}` : "No search providers available"
     );
   }
 
@@ -167,7 +167,7 @@ async function postHandler(request: Request, context: unknown) {
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials configured for search provider: ${providerConfig.id}. Add an API key for "${providerConfig.id}" in the dashboard.`,
+        `No credentials configured for search provider: ${providerConfig.id}. Add an API key for "${providerConfig.id}" in the dashboard.`
       );
     }
   } else {
@@ -187,7 +187,7 @@ async function postHandler(request: Request, context: unknown) {
       // are reached via the last-resort step below, never the primary pick).
       const sortedIds = Object.values(SEARCH_PROVIDERS)
         .filter(
-          (provider) => !provider.fallbackOnly && supportsSearchType(provider, body.search_type),
+          (provider) => !provider.fallbackOnly && supportsSearchType(provider, body.search_type)
         )
         .sort((a, b) => a.costPerQuery - b.costPerQuery)
         .map((p) => p.id);
@@ -212,12 +212,12 @@ async function postHandler(request: Request, context: unknown) {
       if (firstRateLimitedCredentials) {
         return rateLimitedProviderResponse(
           firstRateLimitedCredentials.providerId,
-          firstRateLimitedCredentials.credentials,
+          firstRateLimitedCredentials.credentials
         );
       }
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials configured for any search provider. Add an API key for a search provider (${Object.keys(SEARCH_PROVIDERS).join(", ")}) in the dashboard.`,
+        `No credentials configured for any search provider. Add an API key for a search provider (${Object.keys(SEARCH_PROVIDERS).join(", ")}) in the dashboard.`
       );
     }
 
@@ -225,7 +225,7 @@ async function postHandler(request: Request, context: unknown) {
     // Exclude fallback-only providers; they are only used by the last-resort step.
     const otherIds = Object.values(SEARCH_PROVIDERS)
       .filter(
-        (provider) => !provider.fallbackOnly && supportsSearchType(provider, body.search_type),
+        (provider) => !provider.fallbackOnly && supportsSearchType(provider, body.search_type)
       )
       .sort((a, b) => a.costPerQuery - b.costPerQuery)
       .map((p) => p.id)
@@ -270,7 +270,7 @@ async function postHandler(request: Request, context: unknown) {
     clampedMaxResults,
     body.country,
     body.language,
-    { filters: body.filters, offset: body.offset, time_range: body.time_range },
+    { filters: body.filters, offset: body.offset, time_range: body.time_range }
   );
 
   const ttl = providerConfig.cacheTTLMs ?? SEARCH_CACHE_DEFAULT_TTL_MS;

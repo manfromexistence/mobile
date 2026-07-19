@@ -40,8 +40,8 @@ describe("auth-import modals (Phase 1a extraction)", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(() =>
-        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response),
-      ),
+        Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response)
+      )
     );
   });
 

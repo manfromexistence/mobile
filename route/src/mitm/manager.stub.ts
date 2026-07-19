@@ -36,7 +36,7 @@ export const getAllAgentsStatus = (): never[] => [];
 export const startMitm = async (
   _apiKey: string,
   _sudoPassword: string,
-  _options: { port?: number } = {},
+  _options: { port?: number } = {}
 ): Promise<never> => {
   throw new Error(STUB_ERROR);
 };

@@ -38,10 +38,8 @@ async function getProviderDisplayPrefix(providerId: string): Promise<string> {
 function normalizeModelIds(modelIds: string[]): string[] {
   return Array.from(
     new Set(
-      modelIds
-        .map((modelId) => (typeof modelId === "string" ? modelId.trim() : ""))
-        .filter(Boolean),
-    ),
+      modelIds.map((modelId) => (typeof modelId === "string" ? modelId.trim() : "")).filter(Boolean)
+    )
   );
 }
 
@@ -52,7 +50,7 @@ function getManagedFullModelSet(providerId: string, modelIds: string[]): Set<str
 
 export async function deleteManagedAvailableModelAliases(
   providerId: string,
-  modelIds: string[],
+  modelIds: string[]
 ): Promise<string[]> {
   if (!usesManagedAvailableModels(providerId)) return [];
 
@@ -72,7 +70,7 @@ export async function deleteManagedAvailableModelAliases(
 }
 
 export async function deleteManagedAvailableModelAliasesForProvider(
-  providerId: string,
+  providerId: string
 ): Promise<string[]> {
   if (!usesManagedAvailableModels(providerId)) return [];
 
@@ -92,7 +90,7 @@ export async function deleteManagedAvailableModelAliasesForProvider(
 export async function syncManagedAvailableModelAliases(
   providerId: string,
   modelIds: string[],
-  { pruneMissing = true }: { pruneMissing?: boolean } = {},
+  { pruneMissing = true }: { pruneMissing?: boolean } = {}
 ) {
   if (!usesManagedAvailableModels(providerId)) {
     return {
@@ -109,7 +107,7 @@ export async function syncManagedAvailableModelAliases(
     Object.entries(existingAliasesRaw).filter((entry): entry is [string, string] => {
       const [, value] = entry;
       return typeof value === "string";
-    }),
+    })
   );
 
   const targetModelIds = normalizeModelIds(modelIds);

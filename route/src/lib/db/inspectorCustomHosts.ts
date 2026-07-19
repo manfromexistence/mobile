@@ -45,13 +45,13 @@ export function listCustomHosts(opts?: { enabledOnly?: boolean }): InspectorCust
 export function addCustomHost(
   host: string,
   kind: "llm" | "app" | "custom" = "custom",
-  label?: string,
+  label?: string
 ): void {
   const db = getDbInstance();
   const now = new Date().toISOString();
   db.prepare(
     `INSERT OR IGNORE INTO inspector_custom_hosts (host, enabled, label, kind, added_at)
-     VALUES (?, 1, ?, ?, ?)`,
+     VALUES (?, 1, ?, ?, ?)`
   ).run(host, label ?? null, kind, now);
 }
 
@@ -64,7 +64,7 @@ export function toggleCustomHost(host: string, enabled: boolean): void {
   const db = getDbInstance();
   db.prepare("UPDATE inspector_custom_hosts SET enabled = ? WHERE host = ?").run(
     enabled ? 1 : 0,
-    host,
+    host
   );
 }
 

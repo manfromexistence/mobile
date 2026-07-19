@@ -109,7 +109,7 @@ export function warmEgressIp(proxyUrl: string | null): void {
  */
 export async function resolveEgressIp(
   proxyUrl: string | null,
-  opts: { cacheTtlMs?: number; force?: boolean } = {},
+  opts: { cacheTtlMs?: number; force?: boolean } = {}
 ): Promise<EgressProbeResult & { cached: boolean }> {
   const key = proxyUrl ?? "__direct__";
   const ttl = opts.cacheTtlMs ?? EGRESS_CACHE_TTL_MS;
@@ -276,7 +276,7 @@ export async function validateProxyPool(deps?: {
   markStatus?: (
     id: string,
     status: string,
-    meta: { latencyMs: number; egressIp: string | null },
+    meta: { latencyMs: number; egressIp: string | null }
   ) => Promise<void>;
 }): Promise<ProxyValidationResult[]> {
   const listProxies =
@@ -346,7 +346,7 @@ export interface DistributionPlan {
 export function planProxyDistribution(
   connections: Array<{ id: string; account?: string }>,
   liveProxyIds: string[],
-  opts: { allowSharing?: boolean } = {},
+  opts: { allowSharing?: boolean } = {}
 ): DistributionPlan {
   const assignments: DistributionPlan["assignments"] = [];
   const unassigned: DistributionPlan["unassigned"] = [];
@@ -388,7 +388,7 @@ export function planProxyDistribution(
  */
 export async function applyProxyDistribution(
   plan: DistributionPlan,
-  deps?: { assign?: (connectionId: string, proxyId: string) => Promise<void> },
+  deps?: { assign?: (connectionId: string, proxyId: string) => Promise<void> }
 ): Promise<{ applied: number }> {
   const assign =
     deps?.assign ??

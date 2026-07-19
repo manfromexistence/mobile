@@ -49,7 +49,7 @@ export const countTokensMessageSchema = z
               type: z.string().optional(),
               text: z.string().optional(),
             })
-            .catchall(z.unknown()),
+            .catchall(z.unknown())
         )
         .min(1, "messages[].content must contain at least one item"),
     ]),
@@ -104,7 +104,7 @@ export const v1OcrDocumentSchema = z.union([
     .catchall(z.unknown())
     .refine(
       (value) => value.document_url !== undefined || value.image_url !== undefined,
-      "document must include document_url or image_url",
+      "document must include document_url or image_url"
     ),
   nonEmptyStringSchema,
 ]);

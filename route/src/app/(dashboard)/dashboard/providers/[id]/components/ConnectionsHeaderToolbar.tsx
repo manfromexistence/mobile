@@ -101,7 +101,7 @@ export default function ConnectionsHeaderToolbar({
             title={providerText(
               t,
               "preferClaudeCodeForUnprefixedClaudeModelsTooltip",
-              "Route bare claude-* model IDs from Claude Code clients through the Claude Code account instead of asking for a provider prefix.",
+              "Route bare claude-* model IDs from Claude Code clients through the Claude Code account instead of asking for a provider prefix."
             )}
           >
             <span className="material-symbols-outlined text-[14px] text-orange-500">alt_route</span>
@@ -109,7 +109,7 @@ export default function ConnectionsHeaderToolbar({
               {providerText(
                 t,
                 "preferClaudeCodeForUnprefixedClaudeModelsLabel",
-                "Claude Code default",
+                "Claude Code default"
               )}
             </span>
             <Toggle
@@ -120,19 +120,19 @@ export default function ConnectionsHeaderToolbar({
               ariaLabel={providerText(
                 t,
                 "preferClaudeCodeForUnprefixedClaudeModelsAria",
-                "Prefer Claude Code for unprefixed Claude models",
+                "Prefer Claude Code for unprefixed Claude models"
               )}
               title={
                 preferClaudeCodeForUnprefixedClaudeModels
                   ? providerText(
                       t,
                       "preferClaudeCodeForUnprefixedClaudeModelsDisable",
-                      "Disable Claude Code preference for bare claude-* model IDs",
+                      "Disable Claude Code preference for bare claude-* model IDs"
                     )
                   : providerText(
                       t,
                       "preferClaudeCodeForUnprefixedClaudeModelsEnable",
-                      "Enable Claude Code preference for bare claude-* model IDs",
+                      "Enable Claude Code preference for bare claude-* model IDs"
                     )
               }
             />
@@ -159,7 +159,7 @@ export default function ConnectionsHeaderToolbar({
             title={providerText(
               t,
               "providerDetailServiceModeTooltip",
-              "Set a global Codex service mode, or leave accounts on their individual service-tier setting.",
+              "Set a global Codex service mode, or leave accounts on their individual service-tier setting."
             )}
           >
             <span>{providerText(t, "providerDetailServiceModeLabel", "Global service mode:")}</span>
@@ -260,7 +260,7 @@ export default function ConnectionsHeaderToolbar({
                   }
                   onClick={() =>
                     gateConnectionFlow(
-                      isCommandCode ? handleOpenCommandCodeConnect : openPrimaryAddFlow,
+                      isCommandCode ? handleOpenCommandCodeConnect : openPrimaryAddFlow
                     )
                   }
                 >

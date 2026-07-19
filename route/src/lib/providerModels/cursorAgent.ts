@@ -8,7 +8,7 @@ import { delimiter, join } from "node:path";
 function runCursorAgent(
   binary: string,
   args: string[],
-  timeoutMs: number,
+  timeoutMs: number
 ): Promise<{ stdout: string; stderr: string; code: number | null; signal: NodeJS.Signals | null }> {
   return new Promise((resolve, reject) => {
     let child;
@@ -127,14 +127,14 @@ export type CursorAgentModelEntry = {
 };
 
 export async function fetchCursorAgentModels(
-  options: { binary?: string; timeoutMs?: number } = {},
+  options: { binary?: string; timeoutMs?: number } = {}
 ): Promise<CursorAgentModelEntry[]> {
   const binary = options.binary || resolveCursorAgentBinary();
   const timeoutMs = options.timeoutMs ?? 5000;
 
   if (!binary) {
     throw new Error(
-      "cursor-agent binary not found. Install it (curl https://cursor.com/install -fsS | bash) so ~/.local/bin/cursor-agent exists, or pass a binary path explicitly.",
+      "cursor-agent binary not found. Install it (curl https://cursor.com/install -fsS | bash) so ~/.local/bin/cursor-agent exists, or pass a binary path explicitly."
     );
   }
 

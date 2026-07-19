@@ -303,7 +303,7 @@ export async function handleExitCleanup(
     removeDNSEntry?: (sudoPassword: string) => Promise<void>;
     removeDNSEntries?: (hosts: string[], sudoPassword: string) => Promise<void>;
     collectManagedHosts?: () => string[];
-  },
+  }
 ): Promise<void> {
   const deps = {
     getCachedPassword: _depsOverride?.getCachedPassword ?? getCachedPassword,
@@ -323,7 +323,7 @@ export async function handleExitCleanup(
     _orphanedStateDetected = true;
     log.warn(
       { signal },
-      "MITM parent received signal — child terminated; no cached sudo password, run Repair if DNS/CA/proxy were applied.",
+      "MITM parent received signal — child terminated; no cached sudo password, run Repair if DNS/CA/proxy were applied."
     );
     return;
   }
@@ -336,13 +336,13 @@ export async function handleExitCleanup(
     }
     log.info(
       { signal },
-      "MITM parent received signal — child terminated and privileged /etc/hosts entries reverted.",
+      "MITM parent received signal — child terminated and privileged /etc/hosts entries reverted."
     );
   } catch (err) {
     _orphanedStateDetected = true;
     log.error(
       { err, signal },
-      "MITM parent received signal — hosts cleanup failed; run Repair if DNS/CA/proxy were applied.",
+      "MITM parent received signal — hosts cleanup failed; run Repair if DNS/CA/proxy were applied."
     );
   }
 }
@@ -412,7 +412,7 @@ export async function getMitmStatus(): Promise<{
 export async function startMitm(
   apiKey: string,
   sudoPassword: string,
-  options: { port?: number } = {},
+  options: { port?: number } = {}
 ): Promise<{ running: true; pid: number | null; certTrusted: boolean }> {
   // Check if already running
   if (serverProcess && !serverProcess.killed) {
@@ -440,7 +440,7 @@ export async function startMitm(
 async function startMitmInternal(
   apiKey: string,
   sudoPassword: string,
-  options: { port?: number },
+  options: { port?: number }
 ): Promise<{ running: true; pid: number | null; certTrusted: boolean }> {
   // Register best-effort teardown on parent SIGINT/SIGTERM (Gap 7).
   installCleanupHandlers();
@@ -474,7 +474,7 @@ async function startMitmInternal(
   } catch (err) {
     log.error(
       { err },
-      `AGENTBRIDGE_UPSTREAM_CA_CERT path invalid: ${(err as Error).message ?? err} (continuing without custom CA)`,
+      `AGENTBRIDGE_UPSTREAM_CA_CERT path invalid: ${(err as Error).message ?? err} (continuing without custom CA)`
     );
   }
 
@@ -501,7 +501,7 @@ async function startMitmInternal(
     if (!certResult.installed) {
       log.warn(
         { reason: certResult.reason },
-        "MITM cert not auto-trusted; bridge starting in skip mode (manual trust required)",
+        "MITM cert not auto-trusted; bridge starting in skip mode (manual trust required)"
       );
     }
   } catch (err) {
@@ -649,7 +649,7 @@ async function removeStopDnsEntries(
     removeDNSEntries: (hosts: string[], sudoPassword: string) => Promise<void>;
     collectManagedHosts: () => string[];
   },
-  sudoPassword: string,
+  sudoPassword: string
 ): Promise<void> {
   log.info("Removing DNS entries...");
   await deps.removeDNSEntry(sudoPassword);
@@ -725,7 +725,7 @@ export async function stopMitm(
     removeDNSEntry?: (sudoPassword: string) => Promise<void>;
     removeDNSEntries?: (hosts: string[], sudoPassword: string) => Promise<void>;
     collectManagedHosts?: () => string[];
-  },
+  }
 ): Promise<{ running: false; pid: null }> {
   const deps = {
     removeDNSEntry: _depsOverride?.removeDNSEntry ?? removeDNSEntry,

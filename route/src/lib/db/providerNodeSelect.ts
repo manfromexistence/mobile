@@ -37,7 +37,7 @@ export function nodeTypeFromId(id: unknown): string {
  */
 export function selectProviderNodeForConnection<T extends SelectableNode>(
   idOrType: string,
-  nodes: T[],
+  nodes: T[]
 ): T | null {
   if (!idOrType) return null;
   const exact = nodes.find((n) => n.id === idOrType);

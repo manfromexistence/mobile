@@ -65,7 +65,7 @@ export async function PATCH(request: Request, { params }: Params): Promise<Respo
   if (!parsed.success) {
     return new Response(
       JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
-      { status: 400, headers: { "content-type": "application/json" } },
+      { status: 400, headers: { "content-type": "application/json" } }
     );
   }
 
@@ -84,7 +84,7 @@ export async function PATCH(request: Request, { params }: Params): Promise<Respo
       if (!parsed.data.name) {
         return new Response(
           JSON.stringify(buildErrorBody(400, "name is required for rename action")),
-          { status: 400, headers: { "content-type": "application/json" } },
+          { status: 400, headers: { "content-type": "application/json" } }
         );
       }
       renameSession(id, parsed.data.name);

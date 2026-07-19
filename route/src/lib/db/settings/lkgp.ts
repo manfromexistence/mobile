@@ -31,7 +31,7 @@ export async function setLKGP(
   comboName: string,
   modelId: string,
   providerId: string,
-  connectionId?: string,
+  connectionId?: string
 ) {
   const db = getDbInstance();
   const key = `${comboName}:${modelId}`;
@@ -39,7 +39,7 @@ export async function setLKGP(
   if (connectionId) value.connectionId = connectionId;
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('lkgp', ?, ?)").run(
     key,
-    JSON.stringify(value),
+    JSON.stringify(value)
   );
 }
 

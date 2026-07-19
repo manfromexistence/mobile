@@ -133,7 +133,7 @@ export default function StreamTransformerAccordion({
         return fallback;
       }
     },
-    [t],
+    [t]
   );
 
   // ── Open state (controlled by forceOpen; local toggle otherwise) ──────────
@@ -217,11 +217,11 @@ export default function StreamTransformerAccordion({
   // ── Titles (computed once per render for readability) ─────────────────────
   const title = translateOrFallback(
     "advancedStreamTransformTitle",
-    "Stream Transformer (Chat → Responses SSE)",
+    "Stream Transformer (Chat → Responses SSE)"
   );
   const subtitle = translateOrFallback(
     "advancedStreamTransformSubtitle",
-    "Converte SSE Chat Completions em Responses API.",
+    "Converte SSE Chat Completions em Responses API."
   );
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -231,7 +231,7 @@ export default function StreamTransformerAccordion({
       <div
         className={cn(
           "flex items-center gap-3 p-4 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors",
-          open && "border-b border-black/5 dark:border-white/5",
+          open && "border-b border-black/5 dark:border-white/5"
         )}
       >
         <button
@@ -278,7 +278,7 @@ export default function StreamTransformerAccordion({
                 <p>
                   {translateOrFallback(
                     "streamTransformerDescription",
-                    "Paste a chat completions SSE stream, run it through OmniRoute's Responses transformer, and inspect the emitted response.* events before wiring a client.",
+                    "Paste a chat completions SSE stream, run it through OmniRoute's Responses transformer, and inspect the emitted response.* events before wiring a client."
                   )}
                 </p>
               </div>
@@ -311,7 +311,7 @@ export default function StreamTransformerAccordion({
                     loading={loading}
                     aria-label={translateOrFallback(
                       "transformToResponses",
-                      "Transform to Responses",
+                      "Transform to Responses"
                     )}
                   >
                     {translateOrFallback("transformToResponses", "Transform to Responses")}
@@ -356,7 +356,7 @@ export default function StreamTransformerAccordion({
                       spellCheck={false}
                       aria-label={translateOrFallback(
                         "rawChatSseInput",
-                        "Raw chat completions SSE",
+                        "Raw chat completions SSE"
                       )}
                     />
                   </div>
@@ -367,7 +367,7 @@ export default function StreamTransformerAccordion({
                       <h3 className="text-sm font-semibold text-text-main">
                         {translateOrFallback(
                           "transformedResponsesSse",
-                          "Transformed Responses API SSE",
+                          "Transformed Responses API SSE"
                         )}
                       </h3>
                       <Button
@@ -424,7 +424,7 @@ export default function StreamTransformerAccordion({
                   <p className="text-sm text-text-muted">
                     {translateOrFallback(
                       "transformerTimelineHint",
-                      "Run the transformer to inspect emitted response.output_* events in order.",
+                      "Run the transformer to inspect emitted response.output_* events in order."
                     )}
                   </p>
                 ) : (

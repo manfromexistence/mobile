@@ -24,7 +24,7 @@ export default function ApiKeyFilterChip({
         "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
         isActive
           ? "bg-primary text-white border-primary"
-          : "bg-bg-subtle border-border text-text-muted hover:text-text-primary hover:border-primary/30",
+          : "bg-bg-subtle border-border text-text-muted hover:text-text-primary hover:border-primary/30"
       )}
     >
       {dotColor && <span className={cn("size-2 rounded-full shrink-0", dotColor)} />}

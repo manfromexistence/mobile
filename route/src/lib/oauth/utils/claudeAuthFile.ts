@@ -127,7 +127,7 @@ export function buildClaudeAuthPayload(connection: ClaudeConnectionLike): Claude
     throw new ClaudeAuthFileError(
       "Claude connection is missing access_token. Refresh or re-authenticate this account first.",
       409,
-      "access_token_missing",
+      "access_token_missing"
     );
   }
 
@@ -135,7 +135,7 @@ export function buildClaudeAuthPayload(connection: ClaudeConnectionLike): Claude
     throw new ClaudeAuthFileError(
       "Claude connection is missing refresh_token. Re-authenticate this account before exporting.",
       409,
-      "reauth_required",
+      "reauth_required"
     );
   }
 
@@ -194,7 +194,7 @@ async function resolveFreshClaudeConnection(connectionId: string): Promise<Claud
     throw new ClaudeAuthFileError(
       "Claude connection requires refresh but no refresh_token is available. Re-authenticate first.",
       409,
-      "reauth_required",
+      "reauth_required"
     );
   }
 
@@ -211,7 +211,7 @@ async function resolveFreshClaudeConnection(connectionId: string): Promise<Claud
     throw new ClaudeAuthFileError(
       "Claude refresh token is no longer valid. Re-authenticate this account before exporting.",
       409,
-      "reauth_required",
+      "reauth_required"
     );
   }
 
@@ -219,7 +219,7 @@ async function resolveFreshClaudeConnection(connectionId: string): Promise<Claud
     throw new ClaudeAuthFileError(
       "Failed to refresh the Claude session before exporting the credentials file. Re-authenticate this account if the session is stale.",
       502,
-      "refresh_failed",
+      "refresh_failed"
     );
   }
 
@@ -275,7 +275,7 @@ export async function writeClaudeAuthFileToLocalCli(connectionId: string) {
     throw new ClaudeAuthFileError(
       "Claude auth path could not be resolved",
       500,
-      "path_unavailable",
+      "path_unavailable"
     );
   }
 

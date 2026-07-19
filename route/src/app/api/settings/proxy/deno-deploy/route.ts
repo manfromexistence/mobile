@@ -27,7 +27,7 @@ const POLL_MAX_ATTEMPTS = 30; // ~60 s
  */
 export function resolveRelayTarget(
   target: string,
-  relayPath: string,
+  relayPath: string
 ): { ok: true; url: string } | { ok: false; status: 400 | 403; reason: string } {
   let targetUrl;
   try {
@@ -158,7 +158,7 @@ export const __buildRelayWorkerForTest = buildRelayWorker;
 
 async function pollRevision(
   revisionId: string,
-  token: string,
+  token: string
 ): Promise<"succeeded" | "failed" | "timeout"> {
   for (let i = 0; i < POLL_MAX_ATTEMPTS; i++) {
     await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));

@@ -228,7 +228,7 @@ export default function PoolWizard({
 
   const selectedConn = useMemo(
     () => connections.find((c) => c.id === primaryConnectionId),
-    [connections, primaryConnectionId],
+    [connections, primaryConnectionId]
   );
 
   // Locked provider: once the first connection is selected, all subsequent
@@ -243,9 +243,9 @@ export default function PoolWizard({
       connections.filter(
         (c) =>
           !existingPoolConnectionIds.has(c.id) &&
-          (lockedProvider ? c.provider === lockedProvider : true),
+          (lockedProvider ? c.provider === lockedProvider : true)
       ),
-    [connections, existingPoolConnectionIds, lockedProvider],
+    [connections, existingPoolConnectionIds, lockedProvider]
   );
 
   // ── Load dimensions when primary connection changes ───────────────────────
@@ -347,7 +347,7 @@ export default function PoolWizard({
 
   const totalWeight = allocations.reduce(
     (s, a) => s + (Number.isFinite(a.weight) ? a.weight : 0),
-    0,
+    0
   );
 
   const availableKeys = apiKeys.filter((k) => !allocations.some((a) => a.apiKeyId === k.id));
@@ -367,9 +367,7 @@ export default function PoolWizard({
 
   const updateWeight = (id: string, value: number) => {
     setAllocations((prev) =>
-      prev.map((a) =>
-        a.apiKeyId === id ? { ...a, weight: Math.max(0, Math.min(100, value)) } : a,
-      ),
+      prev.map((a) => (a.apiKeyId === id ? { ...a, weight: Math.max(0, Math.min(100, value)) } : a))
     );
   };
 
@@ -390,7 +388,7 @@ export default function PoolWizard({
     const each = Math.floor(100 / allocations.length);
     const remainder = 100 - each * allocations.length;
     setAllocations((prev) =>
-      prev.map((a, i) => ({ ...a, weight: each + (i < remainder ? 1 : 0) })),
+      prev.map((a, i) => ({ ...a, weight: each + (i < remainder ? 1 : 0) }))
     );
   };
 
@@ -418,7 +416,7 @@ export default function PoolWizard({
   // Flat list (for legacy single-provider path, kept for step-3 rendering simplicity)
   const previewNames = useMemo(
     () => previewByProvider.flatMap((p) => p.names),
-    [previewByProvider],
+    [previewByProvider]
   );
 
   // Default pool name uses provider slug — NOT the raw connection label/email.
@@ -457,7 +455,7 @@ export default function PoolWizard({
         if (!createRes.ok) {
           const errBody = await createRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message || `POST /api/quota/pools failed: HTTP ${createRes.status}`,
+            errBody?.error?.message || `POST /api/quota/pools failed: HTTP ${createRes.status}`
           );
         }
         const createData = (await createRes.json()) as { pool: { id: string } };
@@ -473,7 +471,7 @@ export default function PoolWizard({
           if (!planRes.ok) {
             const errBody = await planRes.json().catch(() => null);
             throw new Error(
-              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`,
+              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`
             );
           }
         }
@@ -487,7 +485,7 @@ export default function PoolWizard({
         if (!patchRes.ok) {
           const errBody = await patchRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${patchRes.status}`,
+            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${patchRes.status}`
           );
         }
       } else {
@@ -509,7 +507,7 @@ export default function PoolWizard({
         if (!editPatchRes.ok) {
           const errBody = await editPatchRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${editPatchRes.status}`,
+            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${editPatchRes.status}`
           );
         }
 
@@ -523,7 +521,7 @@ export default function PoolWizard({
           if (!planRes.ok) {
             const errBody = await planRes.json().catch(() => null);
             throw new Error(
-              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`,
+              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`
             );
           }
         }
@@ -871,7 +869,7 @@ export default function PoolWizard({
                         onChange={(e) =>
                           updateCapValue(
                             a.apiKeyId,
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                         placeholder={t("policyCapAbsolutePlaceholder")}

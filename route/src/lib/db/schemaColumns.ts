@@ -20,7 +20,7 @@ export function ensureProviderConnectionsColumns(db: SqliteDatabase) {
     const columnNames = new Set(columns.map((column) => String(column.name ?? "")));
     if (!columnNames.has("rate_limit_protection")) {
       db.exec(
-        "ALTER TABLE provider_connections ADD COLUMN rate_limit_protection INTEGER DEFAULT 0",
+        "ALTER TABLE provider_connections ADD COLUMN rate_limit_protection INTEGER DEFAULT 0"
       );
       console.log("[DB] Added provider_connections.rate_limit_protection column");
     }
@@ -38,13 +38,13 @@ export function ensureProviderConnectionsColumns(db: SqliteDatabase) {
     }
     if (!columnNames.has("proxy_enabled")) {
       db.exec(
-        "ALTER TABLE provider_connections ADD COLUMN proxy_enabled INTEGER NOT NULL DEFAULT 1",
+        "ALTER TABLE provider_connections ADD COLUMN proxy_enabled INTEGER NOT NULL DEFAULT 1"
       );
       console.log("[DB] Added provider_connections.proxy_enabled column");
     }
     if (!columnNames.has("per_key_proxy_enabled")) {
       db.exec(
-        "ALTER TABLE provider_connections ADD COLUMN per_key_proxy_enabled INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE provider_connections ADD COLUMN per_key_proxy_enabled INTEGER NOT NULL DEFAULT 0"
       );
       console.log("[DB] Added provider_connections.per_key_proxy_enabled column");
     }
@@ -57,7 +57,7 @@ export function ensureProviderConnectionsColumns(db: SqliteDatabase) {
       console.log("[DB] Added provider_connections.rate_limit_overrides_json column");
     }
     db.exec(
-      "CREATE INDEX IF NOT EXISTS idx_pc_max_concurrent ON provider_connections(provider, max_concurrent)",
+      "CREATE INDEX IF NOT EXISTS idx_pc_max_concurrent ON provider_connections(provider, max_concurrent)"
     );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -189,11 +189,11 @@ export function ensureCallLogsColumns(db: SqliteDatabase) {
     }
 
     db.exec(
-      "CREATE INDEX IF NOT EXISTS idx_call_logs_requested_model ON call_logs(requested_model)",
+      "CREATE INDEX IF NOT EXISTS idx_call_logs_requested_model ON call_logs(requested_model)"
     );
     db.exec("CREATE INDEX IF NOT EXISTS idx_call_logs_request_type ON call_logs(request_type)");
     db.exec(
-      "CREATE INDEX IF NOT EXISTS idx_cl_combo_target ON call_logs(combo_name, combo_execution_key, timestamp)",
+      "CREATE INDEX IF NOT EXISTS idx_cl_combo_target ON call_logs(combo_name, combo_execution_key, timestamp)"
     );
     db.exec("CREATE INDEX IF NOT EXISTS idx_cl_correlation_id ON call_logs(correlation_id)");
   } catch (error: unknown) {
@@ -209,7 +209,7 @@ export function hasColumn(db: SqliteDatabase, tableName: string, columnName: str
 
 export function hasTable(db: SqliteDatabase, tableName: string): boolean {
   return Boolean(
-    db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(tableName),
+    db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(tableName)
   );
 }
 

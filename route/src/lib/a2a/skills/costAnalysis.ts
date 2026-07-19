@@ -72,7 +72,7 @@ function toCostEntries(value: unknown): CostEntry[] {
 function buildSavings(
   providerCosts: CostEntry[],
   modelCosts: CostEntry[],
-  fallbackRatePct: number,
+  fallbackRatePct: number
 ) {
   const suggestions: string[] = [];
   const topProvider = providerCosts[0];
@@ -80,17 +80,17 @@ function buildSavings(
 
   if (topProvider?.cost > 0) {
     suggestions.push(
-      `Review ${topProvider.id}: it is the largest provider cost at ${formatCost(topProvider.cost)}.`,
+      `Review ${topProvider.id}: it is the largest provider cost at ${formatCost(topProvider.cost)}.`
     );
   }
   if (topModel?.cost > 0) {
     suggestions.push(
-      `Check model ${topModel.id}: it is the largest model cost at ${formatCost(topModel.cost)}.`,
+      `Check model ${topModel.id}: it is the largest model cost at ${formatCost(topModel.cost)}.`
     );
   }
   if (fallbackRatePct > 10) {
     suggestions.push(
-      `Fallback rate is ${fallbackRatePct.toFixed(1)}%; tune combo priority or quota strategy to avoid expensive fallback paths.`,
+      `Fallback rate is ${fallbackRatePct.toFixed(1)}%; tune combo priority or quota strategy to avoid expensive fallback paths.`
     );
   }
   if (suggestions.length === 0) {
@@ -115,7 +115,7 @@ export interface CostAnalysisResult {
 export async function executeCostAnalysis(task: A2ATask): Promise<CostAnalysisResult> {
   const range = detectRange(task);
   const analytics = await costFetch(
-    `/api/usage/analytics?range=${encodeURIComponent(range)}&presets=1d,7d,30d,90d,ytd`,
+    `/api/usage/analytics?range=${encodeURIComponent(range)}&presets=1d,7d,30d,90d,ytd`
   );
   const summary = (analytics.summary || {}) as AnalyticsRecord;
   const providerCosts = toCostEntries(analytics.byProvider).slice(0, 10);
@@ -141,7 +141,7 @@ export async function executeCostAnalysis(task: A2ATask): Promise<CostAnalysisRe
                 .slice(0, 5)
                 .map(
                   (entry, index) =>
-                    `${index + 1}. ${entry.id} - ${formatCost(entry.cost)} (${entry.requests.toLocaleString()} requests)`,
+                    `${index + 1}. ${entry.id} - ${formatCost(entry.cost)} (${entry.requests.toLocaleString()} requests)`
                 )
             : ["No provider cost data available."]),
           "",

@@ -130,18 +130,18 @@ export async function executeProviderDiscovery(task: A2ATask): Promise<ProviderD
   const activeProviders = new Set(
     connections
       .filter((connection) => connection.provider && connection.isActive !== false)
-      .map((connection) => connection.provider as string),
+      .map((connection) => connection.provider as string)
   );
   const configuredProviders = new Set(
     connections
       .filter((connection) => connection.provider)
-      .map((connection) => connection.provider as string),
+      .map((connection) => connection.provider as string)
   );
   const breakers = new Map(
     getAllCircuitBreakerStatuses().map((breaker: CircuitBreakerLike) => [
       breaker.name || "",
       breaker,
-    ]),
+    ])
   );
 
   const candidates = Object.entries(AI_PROVIDERS)
@@ -160,11 +160,11 @@ export async function executeProviderDiscovery(task: A2ATask): Promise<ProviderD
     .filter((candidate) =>
       requestedCapability === "chat"
         ? candidate.capabilities.includes("chat")
-        : candidate.capabilities.includes(requestedCapability),
+        : candidate.capabilities.includes(requestedCapability)
     )
     .sort(
       (left, right) =>
-        scoreCandidate(right, requestedCapability) - scoreCandidate(left, requestedCapability),
+        scoreCandidate(right, requestedCapability) - scoreCandidate(left, requestedCapability)
     );
 
   const top = candidates.slice(0, 10);
@@ -185,7 +185,7 @@ export async function executeProviderDiscovery(task: A2ATask): Promise<ProviderD
                   (candidate, index) =>
                     `${index + 1}. ${candidate.name} (${candidate.id}) - ${candidate.health}, ` +
                     `${candidate.configured ? "configured" : "not configured"}, ` +
-                    `${candidate.modelCount} catalog models`,
+                    `${candidate.modelCount} catalog models`
                 ),
               ].join("\n")
             : `No providers matched capability: ${requestedCapability}`,

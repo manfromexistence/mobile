@@ -39,7 +39,7 @@ const defaultRunner: CommandRunner = async (bin, args) => {
  */
 export async function applyTproxy(
   cfg: TproxyConfig,
-  run: CommandRunner = defaultRunner,
+  run: CommandRunner = defaultRunner
 ): Promise<void> {
   const invalid = validateTproxyConfig(cfg);
   if (invalid) throw new Error(invalid);
@@ -62,7 +62,7 @@ export async function applyTproxy(
  */
 export async function revertTproxy(
   cfg: TproxyConfig,
-  run: CommandRunner = defaultRunner,
+  run: CommandRunner = defaultRunner
 ): Promise<void> {
   for (const cmd of buildTproxyRevertCommands(cfg)) {
     try {

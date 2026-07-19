@@ -103,7 +103,7 @@ export function createAccessToken(input: {
   db.prepare(
     `INSERT INTO cli_access_tokens
        (id, token_hash, token_prefix, name, scope, created_at, expires_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
   ).run(id, tokenHash, tokenPrefix, name, scope, createdAt, expiresAt);
 
   return {
@@ -139,7 +139,7 @@ export function verifyAccessToken(secret: string | null | undefined): VerifiedAc
   try {
     db.prepare("UPDATE cli_access_tokens SET last_used_at = ? WHERE id = ?").run(
       new Date().toISOString(),
-      row.id,
+      row.id
     );
   } catch {
     /* non-fatal */
@@ -161,8 +161,7 @@ export function listAccessTokens(): AccessTokenRecord[] {
 export function getAccessToken(id: string): AccessTokenRecord | null {
   const db = getDbInstance();
   const row = db.prepare("SELECT * FROM cli_access_tokens WHERE id = ?").get(id) as
-    | AccessTokenRow
-    | undefined;
+    AccessTokenRow | undefined;
   return row ? rowToRecord(row) : null;
 }
 
@@ -176,7 +175,7 @@ export function revokeAccessToken(idOrPrefix: string): boolean {
   const res = db
     .prepare(
       `UPDATE cli_access_tokens SET revoked_at = ?
-         WHERE (id = ? OR token_prefix = ?) AND revoked_at IS NULL`,
+         WHERE (id = ? OR token_prefix = ?) AND revoked_at IS NULL`
     )
     .run(new Date().toISOString(), idOrPrefix, idOrPrefix);
   return res.changes > 0;

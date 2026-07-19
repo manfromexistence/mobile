@@ -79,7 +79,7 @@ export function listSemanticCacheEntries(opts: SemanticCacheListOptions): Semant
       `SELECT id, signature, model, hit_count, tokens_saved, created_at, expires_at
        FROM semantic_cache ${whereClause}
        ORDER BY ${orderBy} ${order}
-       LIMIT ? OFFSET ?`,
+       LIMIT ? OFFSET ?`
     )
     .all(...params, limit, offset) as SemanticCacheEntry[];
 
@@ -95,7 +95,7 @@ export interface DeleteSemanticCacheBySignatureResult {
  * Returns `{ deleted: 1 }` on success.
  */
 export function deleteSemanticCacheBySignature(
-  signature: string,
+  signature: string
 ): DeleteSemanticCacheBySignatureResult {
   const db = getDbInstance();
   db.prepare("DELETE FROM semantic_cache WHERE signature = ?").run(signature);

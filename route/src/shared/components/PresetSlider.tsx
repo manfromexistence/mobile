@@ -34,7 +34,7 @@ export default function PresetSlider({
               "border",
               value === preset.value
                 ? "bg-primary text-white border-primary"
-                : "bg-transparent text-text-muted border-black/10 dark:border-white/10 hover:border-primary/30 hover:text-text-main",
+                : "bg-transparent text-text-muted border-black/10 dark:border-white/10 hover:border-primary/30 hover:text-text-main"
             )}
           >
             {preset.label}
@@ -51,7 +51,7 @@ export default function PresetSlider({
         className={cn(
           "w-full h-1.5 rounded-full appearance-none cursor-pointer",
           "bg-black/10 dark:bg-white/10",
-          "accent-primary",
+          "accent-primary"
         )}
       />
       <div className="flex justify-between text-[10px] text-text-muted">

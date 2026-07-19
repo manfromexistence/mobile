@@ -78,7 +78,7 @@ export default function NoAuthProviderControls({
         setSavingEnabled(false);
       }
     },
-    [blockedProviders, notify, providerAlias, providerId, providerName],
+    [blockedProviders, notify, providerAlias, providerId, providerName]
   );
 
   const accountProviderName = ACCOUNT_PROVIDER_NAMES[providerId];

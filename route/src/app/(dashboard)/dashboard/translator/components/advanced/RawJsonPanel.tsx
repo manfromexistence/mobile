@@ -59,7 +59,7 @@ export default function RawJsonPanel({
       if (next) setHasOpened(true);
       onOpenChange?.(next);
     },
-    [onOpenChange],
+    [onOpenChange]
   );
 
   // ── Translator state (copied from PlaygroundMode.tsx) ──────────────────────
@@ -240,7 +240,7 @@ export default function RawJsonPanel({
       title={tr("advancedRawJsonTitle", "Raw JSON (auto-detecção + Monaco)")}
       subtitle={tr(
         "advancedRawJsonSubtitle",
-        "Cole um request JSON; o formato é detectado automaticamente.",
+        "Cole um request JSON; o formato é detectado automaticamente."
       )}
       icon="code"
       defaultOpen={defaultOpen || forceOpen}
@@ -631,7 +631,7 @@ export default function RawJsonPanel({
                     </span>
                     {tr("templateLoadHint", "Template loaded for format: {format}").replace(
                       "{format}",
-                      FORMAT_META[sourceFormat]?.label ?? sourceFormat,
+                      FORMAT_META[sourceFormat]?.label ?? sourceFormat
                     )}
                   </div>
                 )}

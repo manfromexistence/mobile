@@ -38,7 +38,7 @@ export async function GET(request?: Request) {
   return getSpecialtyModelsResponse(
     request,
     "/v1/music/generations",
-    (model) => model.type === "music",
+    (model) => model.type === "music"
   );
 }
 
@@ -65,7 +65,7 @@ async function postHandler(request, context) {
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid music model: ${body.model}. Use format: provider/model`,
+      `Invalid music model: ${body.model}. Use format: provider/model`
     );
   }
 
@@ -79,7 +79,7 @@ async function postHandler(request, context) {
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials for music provider: ${provider}`,
+        `No credentials for music provider: ${provider}`
       );
     }
     if (isAllRateLimitedCredentials(credentials)) {

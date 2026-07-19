@@ -175,7 +175,7 @@ export default function PassthroughModelsSection({
               connectionId,
               modelId: model.modelId,
               autoHideFailed,
-            }),
+            })
           ),
         }).then((r) => r.json());
 
@@ -214,9 +214,9 @@ export default function PassthroughModelsSection({
   const providerAliases = useMemo(
     () =>
       Object.entries(modelAliases).filter(([, model]: [string, any]) =>
-        (model as string).startsWith(`${providerAlias}/`),
+        (model as string).startsWith(`${providerAlias}/`)
       ),
-    [modelAliases, providerAlias],
+    [modelAliases, providerAlias]
   );
 
   const allModels = useMemo(() => {
@@ -274,7 +274,7 @@ export default function PassthroughModelsSection({
     for (const model of customModels) {
       addModel(
         model,
-        normalizeModelCatalogSource(model.source) === "imported" ? "imported" : "custom",
+        normalizeModelCatalogSource(model.source) === "imported" ? "imported" : "custom"
       );
     }
 
@@ -399,13 +399,13 @@ export default function PassthroughModelsSection({
             onSelectAll={() =>
               onBulkToggleHidden(
                 filteredModels.map((m) => m.modelId),
-                false,
+                false
               )
             }
             onDeselectAll={() =>
               onBulkToggleHidden(
                 filteredModels.map((m) => m.modelId),
-                true,
+                true
               )
             }
             selectAllDisabled={bulkTogglePending || filteredModels.length === 0}

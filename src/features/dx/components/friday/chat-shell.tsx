@@ -16,7 +16,7 @@ import { newId } from "@/lib/friday/utils";
 import type { Message } from "@/features/dx/components/friday/types";
 import { loadFileSystem, saveFileSystem, type FileSystemState } from "@/lib/friday/file-system";
 import type { Attachment } from "@/features/dx/components/friday/attachment-chip";
-import { ZEN_MODELS, type ZenModel } from "@/lib/friday/models";
+import { defaultProvider, defaultModel } from "@/lib/ai/providers";
 
 export function FridayChatShell({
   onModelPickerOpenChange,
@@ -25,7 +25,8 @@ export function FridayChatShell({
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [rightPane, setRightPane] = useState<RightPaneTab>("menu");
   const [rightPaneExpanded, setRightPaneExpanded] = useState(true);
-  const [model, setModel] = useState<ZenModel>(ZEN_MODELS[2]);
+  const [providerId, setProviderId] = useState<string>(defaultProvider);
+  const [modelId, setModelId] = useState<string>(defaultModel);
   const [sections, setSections] = useState<MessageSection[]>([]);
   const [fileSystem, setFileSystem] = useState<FileSystemState>(() => loadFileSystem());
   const [activeFile, setActiveFile] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export function FridayChatShell({
         role: "assistant",
         content: "",
         createdAt: Date.now(),
-        model: model.id,
+        model: modelId,
         streaming: true,
       };
 
@@ -66,7 +67,10 @@ export function FridayChatShell({
       abortRef.current = { aborted: false };
 
       try {
-        for await (const token of streamAssistantReply(fullContent, messages, model)) {
+        for await (const token of streamAssistantReply(fullContent, messages, {
+          providerId,
+          modelId,
+        })) {
           if (abortRef.current.aborted) break;
           await new Promise<void>((resolve) => {
             setMessages((prev) =>
@@ -82,7 +86,7 @@ export function FridayChatShell({
         setStreamingId(null);
       }
     },
-    [model, messages],
+    [providerId, modelId, messages],
   );
 
   const handleStop = useCallback(() => {
@@ -154,8 +158,10 @@ export function FridayChatShell({
                 onSend={handleSend}
                 onStop={handleStop}
                 streaming={!!streamingId}
-                model={model}
-                onModelChange={setModel}
+                providerId={providerId}
+                modelId={modelId}
+                onProviderChange={setProviderId}
+                onModelChange={setModelId}
                 onMenuOpenChange={onModelPickerOpenChange}
               />
             </div>

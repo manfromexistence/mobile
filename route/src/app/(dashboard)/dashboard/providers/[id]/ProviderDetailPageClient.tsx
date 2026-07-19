@@ -89,7 +89,7 @@ export default function ProviderDetailPageClient() {
   )?.serviceKinds;
   const isSearchProvider = providerLacksModelListing(
     providerId,
-    getProviderServiceKinds(providerId, declaredServiceKinds),
+    getProviderServiceKinds(providerId, declaredServiceKinds)
   );
 
   // ── Phase 1f hooks ────────────────────────────────────────────────────────
@@ -381,7 +381,7 @@ export default function ProviderDetailPageClient() {
 
   const compatibleFallbackModels = useMemo(
     () => getCompatibleFallbackModels(providerId, modelMeta.customModels),
-    [providerId, modelMeta.customModels],
+    [providerId, modelMeta.customModels]
   );
 
   // ── Phase 1l: model visibility handlers ─────────────────────────────────

@@ -25,7 +25,7 @@ const EVENT_COLORS: Partial<Record<WebhookEvent, number>> = {
 
 export function buildDiscordPayload(
   event: WebhookEvent,
-  data: Record<string, unknown>,
+  data: Record<string, unknown>
 ): DiscordPayload {
   const desc = EVENT_DESCRIPTIONS[event];
   const model = typeof data.model === "string" ? data.model : null;

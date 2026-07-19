@@ -33,12 +33,12 @@ export function usePoolsUsageAggregate(pools: QuotaPool[]): PoolsUsageAggregate 
       try {
         const snapshots = await Promise.all(
           ids.map((id) =>
-            fetch(`/api/quota/pools/${id}/usage`).then((r) => (r.ok ? r.json() : null)),
-          ),
+            fetch(`/api/quota/pools/${id}/usage`).then((r) => (r.ok ? r.json() : null))
+          )
         );
         if (!mounted) return;
         const valid = snapshots.filter(
-          (s): s is { usage: PoolUsageSnapshot } => s !== null && !!s.usage,
+          (s): s is { usage: PoolUsageSnapshot } => s !== null && !!s.usage
         );
         let totalUtil = 0;
         let utilCount = 0;

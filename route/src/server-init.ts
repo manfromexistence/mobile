@@ -75,7 +75,7 @@ async function startServer() {
     if (runtimeChanges.length > 0) {
       startupLog.info(
         { sections: runtimeChanges.map((entry) => entry.section) },
-        "Runtime settings hydrated",
+        "Runtime settings hydrated"
       );
     }
 

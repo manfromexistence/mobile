@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       config: JSON.parse(plugin.config || "{}"),
       configSchema: JSON.parse(plugin.configSchema || "{}"),
     },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }
 
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       if (field.type === "select" && field.enum && !field.enum.includes(String(value))) {
         return NextResponse.json(
           buildErrorBody(400, `Config '${key}' must be one of: ${field.enum.join(", ")}`),
-          { status: 400, headers: CORS_HEADERS },
+          { status: 400, headers: CORS_HEADERS }
         );
       }
     }
@@ -105,6 +105,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   return NextResponse.json(
     { success: true, config: parsed.data.config },
-    { headers: CORS_HEADERS },
+    { headers: CORS_HEADERS }
   );
 }

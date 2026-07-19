@@ -7,7 +7,7 @@ type SidebarLikeItem = {
 export function matchesSidebarHref(
   pathname: string | null | undefined,
   href: string,
-  exact = false,
+  exact = false
 ): boolean {
   if (!pathname) return false;
   if (exact) return pathname === href;
@@ -16,7 +16,7 @@ export function matchesSidebarHref(
 
 export function getActiveSidebarHref(
   pathname: string | null | undefined,
-  items: SidebarLikeItem[],
+  items: SidebarLikeItem[]
 ): string | null {
   let bestMatch: SidebarLikeItem | null = null;
 

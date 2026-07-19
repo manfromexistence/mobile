@@ -12,7 +12,7 @@ export function getClientIp(request: Request): string {
   return sanitizeForensicHeader(
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
-      null,
+      null
   );
 }
 
@@ -43,7 +43,7 @@ const ipBuckets = new Map<string, { count: number; windowStart: number }>();
 
 export function checkIpRateLimit(
   tokenId: string,
-  ip: string,
+  ip: string
 ): { allowed: boolean; resetIn: number } {
   if (!Number.isFinite(RELAY_IP_PER_MINUTE) || RELAY_IP_PER_MINUTE <= 0) {
     return { allowed: true, resetIn: 0 };

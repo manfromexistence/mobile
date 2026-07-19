@@ -137,11 +137,11 @@ function scoreAutoSkill(
   options: InjectionOptions,
   contextText: string,
   contextTokens: Set<string>,
-  backgroundTokens: Set<string>,
+  backgroundTokens: Set<string>
 ): number {
   const name = skill.name.toLowerCase();
   const tags = (Array.isArray(skill.tags) ? skill.tags : []).map((tag) =>
-    String(tag).toLowerCase(),
+    String(tag).toLowerCase()
   );
   const description = toLowerText(skill.description);
 
@@ -273,7 +273,7 @@ export function injectSkills(options: InjectionOptions): unknown[] {
 export function injectSkillTools(
   messages: any[],
   provider: "openai" | "anthropic" | "google" | "other",
-  apiKeyId: string,
+  apiKeyId: string
 ): any[] {
   const tools = injectSkills({ provider, apiKeyId });
 

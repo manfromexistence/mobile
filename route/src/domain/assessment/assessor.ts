@@ -35,7 +35,7 @@ export class Assessor {
   constructor(
     apiKey: string,
     baseUrl: string = "http://localhost:20128/v1",
-    config: Partial<AssessmentConfig> = {},
+    config: Partial<AssessmentConfig> = {}
   ) {
     this.apiKey = apiKey;
     this.baseUrl = baseUrl;
@@ -45,7 +45,7 @@ export class Assessor {
   async probeModel(
     providerId: string,
     modelId: string,
-    level: ProbeLevel = "quick",
+    level: ProbeLevel = "quick"
   ): Promise<ProbeResult> {
     const messages = PROBE_MESSAGES[level];
     const maxTokens = PROBE_MAX_TOKENS[level];
@@ -154,7 +154,7 @@ export class Assessor {
 
   async runAssessment(
     models: Array<{ providerId: string; modelId: string }>,
-    trigger: AssessmentTrigger = "on_demand",
+    trigger: AssessmentTrigger = "on_demand"
   ): Promise<AssessmentRun> {
     const run: AssessmentRun = {
       id: crypto.randomUUID(),

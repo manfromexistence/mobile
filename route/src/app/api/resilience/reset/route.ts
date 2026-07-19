@@ -11,9 +11,8 @@ export async function POST(request: Request) {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
   try {
-    const { getAllCircuitBreakerStatuses, getCircuitBreaker } = await import(
-      "@/shared/utils/circuitBreaker"
-    );
+    const { getAllCircuitBreakerStatuses, getCircuitBreaker } =
+      await import("@/shared/utils/circuitBreaker");
 
     const statuses = getAllCircuitBreakerStatuses();
     let resetCount = 0;
@@ -25,9 +24,8 @@ export async function POST(request: Request) {
     }
 
     // Also clear in-memory model lockouts (per-model quota cooldowns)
-    const { clearAllModelLockouts } = await import(
-      "@omniroute/open-sse/services/accountFallback.ts"
-    );
+    const { clearAllModelLockouts } =
+      await import("@omniroute/open-sse/services/accountFallback.ts");
     clearAllModelLockouts();
 
     return NextResponse.json({

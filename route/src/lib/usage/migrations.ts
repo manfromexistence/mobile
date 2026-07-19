@@ -56,7 +56,7 @@ function buildLegacyRequestSummary(requestType: unknown, requestBody: unknown) {
   }
 
   const filters = Object.fromEntries(
-    Object.entries(record).filter(([key]) => key !== "query" && key !== "provider"),
+    Object.entries(record).filter(([key]) => key !== "query" && key !== "provider")
   );
   if (Object.keys(filters).length > 0) {
     summary.filters = filters;
@@ -247,8 +247,8 @@ function writeLegacyLayoutMarker(archiveFilename: string) {
         archiveFilename,
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 }
 

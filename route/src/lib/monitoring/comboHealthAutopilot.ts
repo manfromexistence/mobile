@@ -65,7 +65,7 @@ function severityRank(severity: ComboAutopilotSeverity): number {
 
 function targetRef(
   combo: ComboHealthMetrics,
-  target?: NonNullable<ComboHealthMetrics["targetHealth"]>[number],
+  target?: NonNullable<ComboHealthMetrics["targetHealth"]>[number]
 ): ComboAutopilotTargetRef {
   return {
     comboId: combo.comboId,
@@ -81,7 +81,7 @@ function action(
   type: ComboAutopilotActionType,
   label: string,
   target: ComboAutopilotTargetRef,
-  href?: string,
+  href?: string
 ): ComboAutopilotAction {
   return {
     type,
@@ -95,7 +95,7 @@ function action(
 function actionSet(
   target: ComboAutopilotTargetRef,
   includeActions: boolean,
-  types: ComboAutopilotActionType[],
+  types: ComboAutopilotActionType[]
 ): ComboAutopilotAction[] {
   if (!includeActions) return [];
   return types.map((type) => {
@@ -123,7 +123,7 @@ function issue(
   evidence: JsonRecord,
   includeActions: boolean,
   actionTypes: ComboAutopilotActionType[],
-  target?: NonNullable<ComboHealthMetrics["targetHealth"]>[number],
+  target?: NonNullable<ComboHealthMetrics["targetHealth"]>[number]
 ): ComboAutopilotIssue {
   const targetData = targetRef(combo, target);
   return {
@@ -140,14 +140,14 @@ function issue(
 
 function providerIssueMatchesTarget(
   providerIssue: ProviderIssueView,
-  target: NonNullable<ComboHealthMetrics["targetHealth"]>[number],
+  target: NonNullable<ComboHealthMetrics["targetHealth"]>[number]
 ): boolean {
   const provider = providerIssue.target?.provider;
   const connectionId = providerIssue.target?.connectionId;
   return Boolean(
     provider &&
-      provider === target.provider &&
-      (!connectionId || !target.connectionId || connectionId === target.connectionId),
+    provider === target.provider &&
+    (!connectionId || !target.connectionId || connectionId === target.connectionId)
   );
 }
 
@@ -168,7 +168,7 @@ function buildIssuesForCombo(
   combo: ComboHealthMetrics,
   forecast: ComboForecastMetrics | undefined,
   providerIssues: ProviderIssueView[],
-  includeActions: boolean,
+  includeActions: boolean
 ): ComboAutopilotIssue[] {
   const issues: ComboAutopilotIssue[] = [];
   const targets = combo.targetHealth ?? [];
@@ -183,8 +183,8 @@ function buildIssuesForCombo(
         "Open the combo editor and add at least one reachable provider/model target.",
         { targetCount: 0 },
         includeActions,
-        ["open_combo_editor"],
-      ),
+        ["open_combo_editor"]
+      )
     );
   }
 
@@ -198,8 +198,8 @@ function buildIssuesForCombo(
         "Run a combo test or send traffic before relying on health trends.",
         { totalRequests: 0 },
         includeActions,
-        ["run_combo_test"],
-      ),
+        ["run_combo_test"]
+      )
     );
   }
 
@@ -217,8 +217,8 @@ function buildIssuesForCombo(
           totalRequests: combo.performance.totalRequests,
         },
         includeActions,
-        ["run_combo_test", "open_combo_editor"],
-      ),
+        ["run_combo_test", "open_combo_editor"]
+      )
     );
   }
 
@@ -232,8 +232,8 @@ function buildIssuesForCombo(
         "Review strategy weights or fallback order to avoid overloading one target.",
         { giniCoefficient: combo.usageSkew.giniCoefficient },
         includeActions,
-        ["open_combo_editor"],
-      ),
+        ["open_combo_editor"]
+      )
     );
   }
 
@@ -249,8 +249,8 @@ function buildIssuesForCombo(
           { successRate: target.successRate, requests: target.requests },
           includeActions,
           ["run_combo_test", "open_combo_editor"],
-          target,
-        ),
+          target
+        )
       );
     }
 
@@ -265,8 +265,8 @@ function buildIssuesForCombo(
           { lastStatus: target.lastStatus, lastUsedAt: target.lastUsedAt },
           includeActions,
           ["open_provider_health_autopilot", "run_combo_test"],
-          target,
-        ),
+          target
+        )
       );
     }
 
@@ -281,8 +281,8 @@ function buildIssuesForCombo(
           { quotaScope: target.quotaScope, quotaRemainingPct: target.quotaRemainingPct },
           includeActions,
           ["review_quota_limits", "open_combo_editor"],
-          target,
-        ),
+          target
+        )
       );
     } else if (typeof target.quotaRemainingPct === "number" && target.quotaRemainingPct < 15) {
       issues.push(
@@ -295,8 +295,8 @@ function buildIssuesForCombo(
           { quotaScope: target.quotaScope, quotaRemainingPct: target.quotaRemainingPct },
           includeActions,
           ["review_quota_limits", "open_combo_editor"],
-          target,
-        ),
+          target
+        )
       );
     }
 
@@ -312,8 +312,8 @@ function buildIssuesForCombo(
           providerIssueEvidence(providerIssue),
           includeActions,
           ["open_provider_health_autopilot", "open_combo_editor"],
-          target,
-        ),
+          target
+        )
       );
     }
   }
@@ -332,8 +332,8 @@ function buildIssuesForCombo(
           timeToExhaustDays: forecast.quotaRisk.timeToExhaustDays,
         },
         includeActions,
-        ["review_quota_limits", "open_combo_editor"],
-      ),
+        ["review_quota_limits", "open_combo_editor"]
+      )
     );
   }
 
@@ -360,8 +360,8 @@ function buildIssuesForCombo(
             notes: forecast.dataQuality.notes,
           },
           includeActions,
-          ["review_pricing", "review_quota_limits"],
-        ),
+          ["review_pricing", "review_quota_limits"]
+        )
       );
     }
   }
@@ -388,12 +388,12 @@ function buildAutopilotCombo(
   combo: ComboHealthMetrics,
   forecast: ComboForecastMetrics | undefined,
   providerIssues: ProviderIssueView[],
-  includeActions: boolean,
+  includeActions: boolean
 ): ComboAutopilotCombo {
   const issues = buildIssuesForCombo(combo, forecast, providerIssues, includeActions);
   const state = stateForIssues(issues);
   const providerIssueCount = issues.filter(
-    (entry) => entry.kind === "provider_health_issue",
+    (entry) => entry.kind === "provider_health_issue"
   ).length;
 
   return {
@@ -420,7 +420,7 @@ function buildAutopilotCombo(
 }
 
 export async function buildComboHealthAutopilotReport(
-  options: ComboHealthAutopilotOptions,
+  options: ComboHealthAutopilotOptions
 ): Promise<ComboAutopilotReport> {
   const includeHealthy = options.includeHealthy === true;
   const includeActions = options.includeActions !== false;
@@ -452,7 +452,7 @@ export async function buildComboHealthAutopilotReport(
 
   const forecastsByComboId = new Map(forecast.combos.map((entry) => [entry.comboId, entry]));
   const providerIssues = buildProviderIssueIndex(
-    providerHealth.providers.flatMap((provider) => provider.issues as ProviderIssueView[]),
+    providerHealth.providers.flatMap((provider) => provider.issues as ProviderIssueView[])
   );
 
   const allCombos = health.combos.map((combo) =>
@@ -460,8 +460,8 @@ export async function buildComboHealthAutopilotReport(
       combo,
       forecastsByComboId.get(combo.comboId),
       providerIssues,
-      includeActions,
-    ),
+      includeActions
+    )
   );
   const combos = includeHealthy
     ? allCombos
@@ -473,7 +473,7 @@ export async function buildComboHealthAutopilotReport(
   const actionableCount = allCombos.reduce(
     (sum, combo) =>
       sum + combo.issues.reduce((issueSum, issue) => issueSum + issue.actions.length, 0),
-    0,
+    0
   );
 
   return {

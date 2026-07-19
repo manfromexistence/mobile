@@ -69,8 +69,7 @@ export interface UseProviderConnectionsReturn {
   setBatchTestResults: (r: BatchTestResults) => void;
   setConnections: (
     updater:
-      | ConnectionRowConnection[]
-      | ((prev: ConnectionRowConnection[]) => ConnectionRowConnection[]),
+      ConnectionRowConnection[] | ((prev: ConnectionRowConnection[]) => ConnectionRowConnection[])
   ) => void;
   setProviderNode: (node: any) => void;
 
@@ -88,7 +87,7 @@ export interface UseProviderConnectionsReturn {
   handleToggleProxyEnabled: (connectionId: string, proxyEnabled: boolean) => Promise<void>;
   handleTogglePerKeyProxyEnabled: (
     connectionId: string,
-    perKeyProxyEnabled: boolean,
+    perKeyProxyEnabled: boolean
   ) => Promise<void>;
   handleRetestConnection: (connectionId: string) => Promise<void>;
   handleRefreshToken: (connectionId: string) => Promise<void>;
@@ -119,7 +118,7 @@ export interface UseProviderConnectionsReturn {
 export function useProviderConnections(
   providerId: string,
   isCompatible: boolean,
-  isSearchProvider: boolean,
+  isSearchProvider: boolean
 ): UseProviderConnectionsReturn {
   const t = useTranslations("providers");
   const notify = useNotificationStore();
@@ -187,7 +186,7 @@ export function useProviderConnections(
       const nodesData = await nodesRes.json();
       if (connectionsRes.ok) {
         const filtered = (connectionsData.connections || []).filter(
-          (c: any) => c.provider === providerId,
+          (c: any) => c.provider === providerId
         );
         setConnections(filtered);
       }
@@ -225,8 +224,8 @@ export function useProviderConnections(
             fetch(`/api/settings/proxy?resolve=${encodeURIComponent(c.id!)}`, { cache: "no-store" })
               .then((r) => (r.ok ? r.json() : null))
               .then((data) => [c.id!, data] as [string, any])
-              .catch(() => [c.id!, null] as [string, any]),
-          ),
+              .catch(() => [c.id!, null] as [string, any])
+          )
       );
       const map: Record<string, { proxy: any; level: string } | null> = {};
       for (const [id, data] of results) {
@@ -325,7 +324,7 @@ export function useProviderConnections(
         notify.error("Failed to delete connection");
       }
     },
-    [fetchConnections, notify],
+    [fetchConnections, notify]
   );
 
   const handleUpdateConnectionStatus = async (id: string, isActive: boolean) => {
@@ -352,7 +351,7 @@ export function useProviderConnections(
       });
       if (res.ok) {
         setConnections((prev: any[]) =>
-          prev.map((c) => (c.id === connectionId ? { ...c, rateLimitProtection: enabled } : c)),
+          prev.map((c) => (c.id === connectionId ? { ...c, rateLimitProtection: enabled } : c))
         );
       }
     } catch (error) {
@@ -405,13 +404,13 @@ export function useProviderConnections(
                     }
                   : {}),
               }
-            : connection,
-        ),
+            : connection
+        )
       );
       notify.success(
         enabled
           ? "Claude extra-usage blocking enabled (extra usage will be blocked)"
-          : "Claude extra-usage blocking disabled (extra usage is allowed)",
+          : "Claude extra-usage blocking disabled (extra usage is allowed)"
       );
     } catch (error) {
       console.error("Error toggling Claude extra-usage policy:", error);
@@ -463,8 +462,8 @@ export function useProviderConnections(
                   codexLimitPolicy: nextPolicy,
                 },
               }
-            : connection,
-        ),
+            : connection
+        )
       );
       notify.success("Codex limit policy updated");
     } catch (error) {
@@ -491,7 +490,7 @@ export function useProviderConnections(
       notify.success(
         enabled
           ? "Requests now route through CLIProxyAPI (deeper emulation)"
-          : "Requests now use native OmniRoute (direct)",
+          : "Requests now use native OmniRoute (direct)"
       );
     } catch {
       notify.error("Failed to update CLIProxyAPI routing");
@@ -507,7 +506,7 @@ export function useProviderConnections(
       });
       if (res.ok) {
         setConnections((prev: any[]) =>
-          prev.map((c) => (c.id === connectionId ? { ...c, proxyEnabled } : c)),
+          prev.map((c) => (c.id === connectionId ? { ...c, proxyEnabled } : c))
         );
       }
     } catch (error) {
@@ -517,7 +516,7 @@ export function useProviderConnections(
 
   const handleTogglePerKeyProxyEnabled = async (
     connectionId: string,
-    perKeyProxyEnabled: boolean,
+    perKeyProxyEnabled: boolean
   ) => {
     try {
       const res = await fetch(`/api/providers/${connectionId}`, {
@@ -527,7 +526,7 @@ export function useProviderConnections(
       });
       if (res.ok) {
         setConnections((prev: any[]) =>
-          prev.map((c) => (c.id === connectionId ? { ...c, perKeyProxyEnabled } : c)),
+          prev.map((c) => (c.id === connectionId ? { ...c, perKeyProxyEnabled } : c))
         );
       }
     } catch (error) {
@@ -698,7 +697,7 @@ export function useProviderConnections(
         notify.success(
           isActive
             ? t("batchActivateSuccess", { count: updated })
-            : t("batchDeactivateSuccess", { count: updated }),
+            : t("batchDeactivateSuccess", { count: updated })
         );
       }
     } catch (error: any) {
@@ -786,7 +785,7 @@ export function useProviderConnections(
   const handleDistributeProxies = async (tagFilter?: string) => {
     const targetConnections = tagFilter
       ? (connections as any[]).filter(
-          (c: any) => (c.providerSpecificData?.tag as string | undefined)?.trim() === tagFilter,
+          (c: any) => (c.providerSpecificData?.tag as string | undefined)?.trim() === tagFilter
         )
       : connections;
     if ((targetConnections as any[]).length === 0) return;
@@ -803,7 +802,7 @@ export function useProviderConnections(
 
       let assigned = 0;
       const sorted = [...(targetConnections as any[])].sort(
-        (a: any, b: any) => (a.priority || 0) - (b.priority || 0),
+        (a: any, b: any) => (a.priority || 0) - (b.priority || 0)
       );
 
       for (let i = 0; i < sorted.length; i++) {
@@ -848,7 +847,7 @@ export function useProviderConnections(
       await fetchConnections();
       const tagLabel = tagFilter ? `"${tagFilter}" ` : "";
       notify.success(
-        `Distributed ${assigned} proxy assignment(s) across ${tagLabel}${sorted.length} connection(s).`,
+        `Distributed ${assigned} proxy assignment(s) across ${tagLabel}${sorted.length} connection(s).`
       );
     } catch (err) {
       console.error("Error distributing proxies:", err);

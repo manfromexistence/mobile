@@ -51,9 +51,9 @@ async function selectPreferredModels(models: OpenAiCatalogModel[]) {
   const activeProviders = new Set(
     activeConnections
       .map((connection) =>
-        typeof connection.provider === "string" ? connection.provider.trim().toLowerCase() : "",
+        typeof connection.provider === "string" ? connection.provider.trim().toLowerCase() : ""
       )
-      .filter(Boolean),
+      .filter(Boolean)
   );
 
   const preferCodexOnly =
@@ -181,7 +181,7 @@ function toOllamaTagModel(model: OpenAiCatalogModel) {
 
 function filterCanonicalTagModels(models: OpenAiCatalogModel[]) {
   const allModelIds = new Set(
-    models.map((model) => (model.id || model.root || model.name || "").trim()).filter(Boolean),
+    models.map((model) => (model.id || model.root || model.name || "").trim()).filter(Boolean)
   );
   const groupedModels = new Map<string, OpenAiCatalogModel>();
   const orderedGroupKeys: string[] = [];
@@ -226,7 +226,7 @@ export async function OPTIONS() {
 
 export async function GET(
   request: Request,
-  { params }: { params?: Promise<{ token: string }> | { token: string } } = {},
+  { params }: { params?: Promise<{ token: string }> | { token: string } } = {}
 ) {
   const resolvedParams = params ? await params : undefined;
   const authorizedRequest = withPathTokenApiKey(request, resolvedParams?.token);
@@ -247,7 +247,7 @@ export async function GET(
 
   const usableModels = Array.isArray(body.data) ? body.data.filter(isUsableChatModel) : [];
   const preferredModels = filterCanonicalTagModels(
-    expandVscodeServiceTierModels(await selectPreferredModels(usableModels)),
+    expandVscodeServiceTierModels(await selectPreferredModels(usableModels))
   );
   const models = preferredModels.map(toOllamaTagModel);
 
@@ -259,6 +259,6 @@ export async function GET(
       headers: {
         ...CORS_HEADERS,
       },
-    },
+    }
   );
 }

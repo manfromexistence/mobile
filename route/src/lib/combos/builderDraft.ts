@@ -37,7 +37,7 @@ function toTrimmedString(value: unknown): string | null {
 }
 
 export function parseQualifiedModel(
-  value: unknown,
+  value: unknown
 ): { providerId: string; modelId: string } | null {
   const qualifiedModel = toTrimmedString(value);
   if (!qualifiedModel) return null;
@@ -75,10 +75,8 @@ export function buildPrecisionComboModelStep({
     !normalizedConnectionId && Array.isArray(allowedConnectionIds)
       ? Array.from(
           new Set(
-            allowedConnectionIds
-              .map((id) => toTrimmedString(id))
-              .filter((id): id is string => !!id),
-          ),
+            allowedConnectionIds.map((id) => toTrimmedString(id)).filter((id): id is string => !!id)
+          )
         )
       : [];
 
@@ -101,7 +99,7 @@ type ComboBuilderProviderIdentity = {
 
 export function resolveComboBuilderProviderId(
   providerIdOrAlias: unknown,
-  providers: ComboBuilderProviderIdentity[] = [],
+  providers: ComboBuilderProviderIdentity[] = []
 ): string | null {
   const normalizedProviderId = toTrimmedString(providerIdOrAlias);
   if (!normalizedProviderId) return null;
@@ -166,7 +164,7 @@ export function findNextSuggestedConnectionId(
   entries: unknown[],
   providerId: string,
   modelId: string,
-  connections: Array<{ id?: string | null }> = [],
+  connections: Array<{ id?: string | null }> = []
 ): string {
   for (const connection of connections) {
     const connectionId = toTrimmedString(connection?.id);
@@ -209,7 +207,7 @@ export function getComboBuilderStageChecks({
 export function canAccessComboBuilderStage(
   stage: ComboBuilderStage,
   checks: ReturnType<typeof getComboBuilderStageChecks>,
-  options: ComboBuilderStageOptions = {},
+  options: ComboBuilderStageOptions = {}
 ): boolean {
   const availableStages = getComboBuilderStages(options);
   if (!availableStages.includes(stage)) return false;
@@ -223,7 +221,7 @@ export function canAccessComboBuilderStage(
 
 export function getNextComboBuilderStage(
   stage: ComboBuilderStage,
-  options: ComboBuilderStageOptions = {},
+  options: ComboBuilderStageOptions = {}
 ): ComboBuilderStage {
   const stages = getComboBuilderStages(options);
   const stageIndex = stages.indexOf(stage);
@@ -235,7 +233,7 @@ export function getNextComboBuilderStage(
 
 export function getPreviousComboBuilderStage(
   stage: ComboBuilderStage,
-  options: ComboBuilderStageOptions = {},
+  options: ComboBuilderStageOptions = {}
 ): ComboBuilderStage {
   const stages = getComboBuilderStages(options);
   const stageIndex = stages.indexOf(stage);

@@ -46,7 +46,7 @@ export async function GET(request) {
     console.error("Error fetching history:", error);
     return NextResponse.json(
       { success: false, error: sanitizeErrorMessage(error) },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

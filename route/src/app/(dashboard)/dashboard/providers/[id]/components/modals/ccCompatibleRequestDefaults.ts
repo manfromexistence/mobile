@@ -17,7 +17,7 @@ function asRecord(value: unknown): Record<string, unknown> {
 }
 
 export function getCcCompatibleRequestDefaults(
-  formData: CcCompatibleRequestDefaultsForm,
+  formData: CcCompatibleRequestDefaultsForm
 ): Record<string, true> | undefined {
   const defaults: Record<string, true> = {};
   for (const [requestKey, formKey] of CC_COMPATIBLE_BOOLEAN_DEFAULTS) {
@@ -28,7 +28,7 @@ export function getCcCompatibleRequestDefaults(
 
 export function assignCcCompatibleRequestDefaults(
   target: Record<string, unknown>,
-  formData: CcCompatibleRequestDefaultsForm,
+  formData: CcCompatibleRequestDefaultsForm
 ): void {
   const requestDefaults = getCcCompatibleRequestDefaults(formData);
   if (requestDefaults) target.requestDefaults = requestDefaults;
@@ -36,7 +36,7 @@ export function assignCcCompatibleRequestDefaults(
 
 export function mergeCcCompatibleRequestDefaults(
   existing: unknown,
-  formData: CcCompatibleRequestDefaultsForm,
+  formData: CcCompatibleRequestDefaultsForm
 ): Record<string, unknown> | undefined {
   const requestDefaults = { ...asRecord(existing) };
   for (const [requestKey, formKey] of CC_COMPATIBLE_BOOLEAN_DEFAULTS) {
