@@ -2,7 +2,7 @@
 
 import type { JSX } from "react";
 import { useEffect, useRef, useState } from "react";
-import { ElectricBorder } from "@/components/vendor/react-bits/electric-border";
+import { ElectricBorder } from "@/components/react-bits/electric-border";
 import { useSound } from "@/lib/soundcn/hooks/use-sound";
 import { laserSmall001Sound } from "@/lib/soundcn/laser-small-001";
 

@@ -3,7 +3,7 @@ import {
   MarqueeContent,
   MarqueeFade,
   MarqueeItem,
-} from "@/components/vendor/kibo-ui/marquee";
+} from "@/components/kibo-ui/marquee";
 import {
   Testimonial,
   TestimonialAuthor,

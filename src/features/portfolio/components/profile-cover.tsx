@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import { useRef } from "react";
 import { ChanhDaiMark } from "@/components/chanhdai-mark";
-import { Magnet } from "@/components/vendor/react-bits/magnet";
+import { Magnet } from "@/components/react-bits/magnet";
 import { cn } from "@/lib/utils";
 import { DotGridSpotlight } from "@/registry/transformed/components/dot-grid-spotlight";
 
