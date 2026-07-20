@@ -337,10 +337,10 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                 {/* HelloGlow Showcase Rectangle */}
                 <div className="flex items-center justify-center">
                   <HelloGlow className="w-full max-w-2xl rounded-xl">
-                    <div className="text-center space-y-4 py-24">
+                    {/* <div className="text-center space-y-4 py-24">
                       <h2 className="text-4xl font-bold text-foreground">Premium Animations</h2>
                       <p className="text-muted-foreground">Experience the HelloGlow effect</p>
-                    </div>
+                    </div> */}
                   </HelloGlow>
                 </div>
 

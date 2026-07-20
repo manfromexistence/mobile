@@ -16,7 +16,7 @@ import { newId } from "@/lib/friday/utils";
 import type { Message } from "@/features/dx/components/friday/types";
 import { loadFileSystem, saveFileSystem, type FileSystemState } from "@/lib/friday/file-system";
 import type { Attachment } from "@/features/dx/components/friday/attachment-chip";
-import { defaultProvider, defaultModel } from "@/lib/ai/providers";
+import { getAllModels, type ZenModel } from "@/lib/friday/models";
 
 export function FridayChatShell({
   onModelPickerOpenChange,
@@ -25,8 +25,8 @@ export function FridayChatShell({
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [rightPane, setRightPane] = useState<RightPaneTab>("menu");
   const [rightPaneExpanded, setRightPaneExpanded] = useState(true);
-  const [providerId, setProviderId] = useState<string>(defaultProvider);
-  const [modelId, setModelId] = useState<string>(defaultModel);
+  const allModels = getAllModels();
+  const [model, setModel] = useState<ZenModel>(allModels[0]);
   const [sections, setSections] = useState<MessageSection[]>([]);
   const [fileSystem, setFileSystem] = useState<FileSystemState>(() => loadFileSystem());
   const [activeFile, setActiveFile] = useState<string | null>(null);
@@ -58,7 +58,7 @@ export function FridayChatShell({
         role: "assistant",
         content: "",
         createdAt: Date.now(),
-        model: modelId,
+        model: model.id,
         streaming: true,
       };
 
@@ -68,8 +68,8 @@ export function FridayChatShell({
 
       try {
         for await (const token of streamAssistantReply(fullContent, messages, {
-          providerId,
-          modelId,
+          providerId: model.providerId,
+          modelId: model.id,
         })) {
           if (abortRef.current.aborted) break;
           await new Promise<void>((resolve) => {
@@ -86,7 +86,7 @@ export function FridayChatShell({
         setStreamingId(null);
       }
     },
-    [providerId, modelId, messages],
+    [model, messages],
   );
 
   const handleStop = useCallback(() => {
@@ -158,10 +158,8 @@ export function FridayChatShell({
                 onSend={handleSend}
                 onStop={handleStop}
                 streaming={!!streamingId}
-                providerId={providerId}
-                modelId={modelId}
-                onProviderChange={setProviderId}
-                onModelChange={setModelId}
+                model={model}
+                onModelChange={setModel}
                 onMenuOpenChange={onModelPickerOpenChange}
               />
             </div>

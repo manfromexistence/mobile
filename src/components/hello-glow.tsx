@@ -55,7 +55,6 @@ export function HelloGlow({ className, children }: HelloGlowProps) {
           filter: blur(18px);
           border-radius: 12px;
           z-index: -1;
-          opacity: 0.5;
         }
 
         .hello-glow-content {
